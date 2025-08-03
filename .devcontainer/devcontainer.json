@@ -1,6 +1,6 @@
 {
   "name": "Apapesc Django Dev",
-  "dockerComposeFile": "../docker-compose.yml", 
+  "dockerComposeFile": "../docker-compose.local.yml", 
   "service": "web",  // nome do serviço do seu Django no docker-compose
   "workspaceFolder": "/code",
   "customizations": {

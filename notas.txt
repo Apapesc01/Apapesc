@@ -5,6 +5,9 @@ SuperUser
 samara_adm@apapesc.com
 @senhafake
 
+ssh-add ~/.ssh/id_ed25519
+
+
 Apapesc - Alpha2526
 
 ----- Iniciação
