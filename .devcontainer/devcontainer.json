@@ -1,0 +1,18 @@
+{
+  "name": "Apapesc Django Dev",
+  "dockerComposeFile": "../docker-compose.yml", 
+  "service": "web",  // nome do serviço do seu Django no docker-compose
+  "workspaceFolder": "/code",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "batisteo.vscode-django"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "python.pythonPath": "/usr/local/bin/python"
+      }
+    }
+  }
+}

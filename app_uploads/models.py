@@ -43,7 +43,7 @@ def upload_to_path(instance, filename):
     return os.path.join('uploads_associados', 'temp', filename)
 
 
-
+# app_uploads
 class TipoDocumentoUp(models.Model):
     nome = models.CharField(max_length=100, unique=True)
     descricao = models.TextField(null=True, blank=True)
