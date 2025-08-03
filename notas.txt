@@ -1,22 +1,38 @@
-# apapesc2526
-Criar/dodar scripts para grupos:
-docker-compose exec web python manage.py create_groups
-SuperUser
+
+
+# Supoer Usuário e comandos
+sudo docker compose -f docker-compose.prod.yml exec web python manage.py createsuperuser
+
+SuperUser - Local
 samara_adm@apapesc.com
 @senhafake
 
+SSH
 ssh-add ~/.ssh/id_ed25519
-
 
 Apapesc - Alpha2526
 
------ Iniciação
+---------------------------
+Criar/rodar scripts/container para tipos doc:
+docker-compose exec web python manage.py create_tipo_docs
 
------ Criar Grupos Inicial
-python manage.py create_groups
+# Em Produção
+Criar/rodar scripts/container para grupos:
+sudo docker compose -f docker-compose.prod.yml exec web python manage.py create_groups
+
+Criar/rodar scripts/container para tipos doc:
+sudo docker compose -f docker-compose.prod.yml exec web python manage.py create_tipo_docs
+---------------
+Comandos Docker:
+--Local
+docker-compose -f docker-compose.local.yml up --build
+docker-compose -f docker-compose.local.yml down
+docker-compose -f docker-compose.local.yml exec web bash
+docker-compose -f docker-compose.local.yml exec web python manage.py migrate
 
 
------- Criar Postgres
+---Produção
+
 
 
 ------ Instalar pacotes
@@ -45,60 +61,6 @@ pip install tinycss2
 pip install Unidecode
 pip install reportlab
 
------- Tipo Docs
-
-Essencial:
-
-001_Auto_Declaração_Pesca  
-002_Autorização_ACESSO_GOV_ASS_Associado  
-003_Autorização_IMAGEM_ASS_Associado   
-004_CAEPF  
-005_CEI  
-006_CNH_Cart_Motorista  
-007_Comp_Resid_LUZ_AGUA_FATURAS  
-008_Comp_SEGURO_DEFESO  
-009_CPF_Pessoa_Física  
-0010_CTPS_Cart.Trabalho  
-0011_Declaração_Residência_MAPA  
-0012_Ficha_Req_Filiação_ASS_PRESID_JUR  
-0013_Ficha_Req_Filiação_ASS_Associado  
-0014_Foto_3x4  
-0015_Licença_Embarcação  
-0016_NIT_Extrato  
-0017_Procuração_AD_JUDICIA  
-0018_Procuracao_ADMINISTRATIVA  
-0019_Protocolo_ENTRADA_RGP  
-0020_RG_Identidade_CIN  
-0021_RGP_Cart_Pescador  
-0021_TIE_Titulo_Embarcação  
-0022_Titulo_Eleitor
-
-
-        tipos_doc_essencial = [
-            '001_Auto_Declaração_Pesca', 
-            '002_Autorização_ACESSO_GOV_ASS_Associado',  
-            '003_Autorização_IMAGEM_ASS_Associado',   
-            '004_CAEPF',  
-            '005_CEI',  
-            '006_CNH_Cart_Motorista',  
-            '007_Comp_Resid_LUZ_AGUA_FATURAS',  
-            '008_Comp_SEGURO_DEFESO',  
-            '009_CPF_Pessoa_Física',  
-            '0010_CTPS_Cart_Trabalho', 
-            '0011_Declaração_Residência_MAPA',  
-            '0012_Ficha_Req_Filiação_ASS_PRESID_JUR', 
-            '0013_Ficha_Req_Filiação_ASS_Associado',  
-            '0014_Foto_3x4', 
-            '0015_Licença_Embarcação',  
-            '0016_NIT_Extrato',  
-            '0017_Procuração_AD_JUDICIA',  
-            '0018_Procuracao_ADMINISTRATIVA',  
-            '0019_Protocolo_ENTRADA_RGP',  
-            '0020_RG_Identidade_CIN',
-            '0021_RGP_Cart_Pescador',
-            '0021_TIE_Titulo_Embarcação',
-            '0022_Titulo_Eleitor',
-        ]
 
 
 Pessoas / Equipe / Usuário
