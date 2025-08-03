@@ -24,6 +24,7 @@ services:
       - .env
     volumes:
       - .:/code
+      - ~/.ssh:/root/.ssh:ro       
     ports:
       - "8000:8000"
     depends_on:
