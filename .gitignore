@@ -140,6 +140,7 @@ settings.py
 docker-compose.override.yml
 
 notas.txt
+anotacoes.txt
 # PASTAS
 # Ignora todos os arquivos em media/ e subpastas
 media/**
