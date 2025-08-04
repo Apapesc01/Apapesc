@@ -1,6 +1,6 @@
 # core/base_imports.py
 from django.shortcuts import render, redirect, get_object_or_404, reverse
-
+from django.conf import settings
 from django.http import (
     JsonResponse,
     HttpResponse,
@@ -53,3 +53,19 @@ from django.views.generic import(
     TemplateView,
     View
     )
+from urllib.parse import urlencode
+from datetime import datetime
+from pdfrw import PdfReader, PdfWriter, PageMerge
+from pdfrw.buildxobj import pagexobj
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Frame, PageBreak
+from io import BytesIO
+from reportlab.lib.colors import lightgrey, grey
+from reportlab.platypus import Table, TableStyle
+from reportlab.pdfgen import canvas
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
+from reportlab.lib.colors import Color

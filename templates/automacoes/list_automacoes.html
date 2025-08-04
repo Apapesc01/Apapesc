@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista Automação{% endblock title %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="lista-container">
+    <h1>Lista Bases - Automação</h1>
+    
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+<table class="table-list">
+    <thead>
+        <tr>
+            <th>Nome Arquivo</th>
+            <th>ID</th>
+            <th>PDF Base</th>
+            <th>Última Atualização</th>
+            <th>Ação</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if declaracoes_residencia.exists %}
+            {% for declaracao in declaracoes_residencia %}
+            <tr>
+                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                <td>{{ declaracao.id }}</td>
+                <td>
+                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                </td>
+                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                <td>
+                    <a href="{% url 'app_automacoes:upload_pdf_residencia' %}" class="upload-btn">
+                        Substituir Modelo
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="5" style="text-align:center;">
+                    <a href="{% url 'app_automacoes:upload_pdf_residencia' %}" class="upload-btn">
+                        Upload Modelo Base Residência
+                    </a>
+                </td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
+
+
+
+
+
+
+</div>
+
+{% endblock %}

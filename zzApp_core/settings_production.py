@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'app_defeso',
     'app_reap',
     'app_servicos',
+    'app_automacoes',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ações{% endblock title %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="lista-container-small">
+    <h1>Ações / Automações</h1>
+    
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:18px; max-width:420px; margin:40px auto;">
+        <a href="{{ pdf_url }}" class="upload-btn" download>
+            ⬇️ Baixar PDF
+        </a>
+        <a href="#" class="upload-btn-desativada" download>
+            📧 Enviar por Email (em breve)
+         </a>
+        <a href="#" class="upload-btn-desativada" download>
+            📱 Enviar por WhatsApp (em breve)
+         </a>
+    </div>
+
+{% endblock %}

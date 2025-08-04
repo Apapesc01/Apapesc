@@ -7,7 +7,7 @@ SuperUser - Local
 samara_adm@apapesc.com
 @senhafake
 
-SSH
+Conectar git Apapesc SSH
 ssh-add ~/.ssh/id_ed25519
 
 Apapesc - Alpha2526
@@ -30,8 +30,27 @@ docker-compose -f docker-compose.local.yml down
 docker-compose -f docker-compose.local.yml exec web bash
 docker-compose -f docker-compose.local.yml exec web python manage.py migrate
 
+Habilitar conta Apapesc SSH no VScode
+ssh-add ~/.ssh/id_ed25519
+
+Listar / Ver 
+
+sudo docker ps -a         # para ver containers
+
+sudo docker images        # para ver imagens
+
+sudo docker volume ls     # para ver volumes
+
+
+Limpa images <none> Orfas, antigas
+sudo docker image prune
+
 
 ---Produção
+Atualização container
+sudo docker compose -f docker-compose.prod.yml down
+sudo docker compose -f docker-compose.prod.yml build
+sudo docker compose -f docker-compose.prod.yml up -d
 
 
 

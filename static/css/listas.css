@@ -159,7 +159,35 @@
     display: flex;
     justify-content: flex-end;
 }
+.upload-btn {
+    background: #2563eb;
+    color: #fff;
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-size: 0.95em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: inline-block;
+}
+.upload-btn:hover {
+    background: #1e40af;
+}
+.upload-btn-desativada {
+    background: #d1d5db; /* Cinza claro */
+    color: #9ca3af; /* Cinza médio */
 
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-size: 0.95em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: inline-block;
+}
+.upload-btn-desativada:hover {
+    background: #a8a9ab;
+}
 .box-info {
     background: #f8fafc;
     border: 1px solid #e2e8f0;

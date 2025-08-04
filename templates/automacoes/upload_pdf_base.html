@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Upload Base{% endblock title %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="form-container">
+
+    <h1>Upload PDF Base</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="pdf_base" required>
+        <button type="submit" class="upload-btn">Salvar PDF</button>
+    </form>
+    <a href="{% url 'app_automacoes:lista_automacoes' %}" class="upload-btn" style="background:#6b7280;margin-top:15px;">Voltar</a>
+</div>
+
+{% endblock %}
