@@ -56,10 +56,10 @@
         <button class="tab-link" data-tab="uploads">Uploads</button>    
         <button class="tab-link" data-tab="servicos">Serviços</button>
         <button class="tab-link" data-tab="declaracoes">Declarações</button>
-        <button class="tab-link" data-tab="producao">Produção</button>
+        <button class="tab-link" data-tab="inss">INSS</button>
         <button class="tab-link" data-tab="anotacoes">Anotações</button>        
     </div>
-    <!--Vínculos-->
+    <!--Vínculos PRINCIPAL-->
     <div class="tab-content active" id="tab-principal">
         <div class="detail-section three-cols">
             <div>
@@ -70,53 +70,7 @@
                 <p><strong>Circunscrição / Atuação:</strong> {{associado.municipio_circunscricao}}</p>
                 <p><strong>Data Filiação:</strong> {{ associado.data_filiacao|date:"d/m/Y" }}</p>
             </div>
-            <div>
-                <h2>Contato</h2>
-                <p><strong>Celular:</strong> {{associado.associacao.celular}}</p>
-                <p><strong>Correspondência: </strong> {{associado.celular_correspondencia}}</p>
-                <p><strong>Email</strong> {{associado.associacao.email}}</p>
-                <p><strong>Senha Site: </strong> {{associado.senha_site}}</p>
-                <p><strong>Senha Google: </strong> {{associado.senha_google}}</p>
-            </div> 
-            <div>
-                <h2>Endereço Residencial</h2>
-                <p><strong>Logradouro:</strong> {{associado.logradouro}},
-                    {{associado.numero}}, {{associado.complemento}}, {{associado.bairro}}</p>
-                <p><strong>Municipio</strong> {{associado.municipio}}</p>
-                <p><strong>UF</strong> {{associado.uf}}</p>
-                <p><strong>CEP</strong> {{associado.cep}}</p>
-            </div>  
-            <div>
-                <h2>Acesso</h2>
-                <div class="copy-wrapper">
-                    <p id="cpf-{{ associado.pk }}"><strong>CPF:</strong> {{ associado.cpf }}</p>
-                    <button onclick="copyToClipboard('cpf-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
-                        <i class="material-icons">content_copy</i>
-                    </button>
-                </div>
-                <div class="copy-wrapper">
-                    <p id="senha_gov-{{ associado.pk }}"><strong>Senha Gov:</strong> {{ associado.senha_gov }}</p>
-                    <button onclick="copySenhas('senha_gov-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
-                        <i class="material-icons">content_copy</i>
-                    </button>
-                </div>
-
-                <br><hr>
-                {% if associado.drive_folder_id %}
-                    <div class="drive-link">
-                        <a href="https://drive.google.com/drive/folders/{{ associado.drive_folder_id }}" target="_blank">
-                            <img src="https://www.gstatic.com/images/branding/product/2x/drive_2020q4_48dp.png"
-                                alt="Google Drive" class="drive-icon"> 
-                            <span> Acessar Pasta no Drive</span>
-                        </a>
-                        </div>
-                        {% else %}
-                        <div class="drive-link no-folder">
-                        <span>Nenhuma pasta no Drive vinculada.</span>
-                    </div>
-                {% endif %}
-            </div>
-
+            
             <div>
                 <h2>Aplicações</h2>
                 {% if status_ok %}
@@ -215,11 +169,79 @@
                         </tbody>
                     </table>
                 </div>
-            </div>            
+            </div>               
+            <div>
+                <h2>Contato</h2>
+                <div class="copy-wrapper">
+                    <p id="celular-correspondencia-{{ associado.pk }}"><strong>Celular:</strong> {{ associado.celular_correspondencia }}</p>
+                    <button onclick="copyToClipboard('celular-correspondencia-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Celular">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <div class="copy-wrapper">
+                    <p id="email-{{ associado.pk }}"><strong>Email:</strong> {{ associado.email }}</p>
+                    <button onclick="copyToClipboard('email-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Email">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+
+                <div class="copy-wrapper">
+                    <p id="senha-site-{{ associado.pk }}"><strong>Senha Site:</strong> {{ associado.senha_site }}</p>
+                    <button onclick="copySenhas('senha-site-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Site">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+
+                <div class="copy-wrapper">
+                    <p id="senha-google-{{ associado.pk }}"><strong>Senha Google:</strong> {{ associado.senha_google }}</p>
+                    <button onclick="copySenhas('senha-google-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Google">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+            </div> 
+            <div>
+                <h2>Endereço Residencial</h2>
+                <p><strong>Logradouro:</strong> {{associado.logradouro}},
+                    {{associado.numero}}, {{associado.complemento}}, {{associado.bairro}}</p>
+                <p><strong>Municipio</strong> {{associado.municipio}}</p>
+                <p><strong>UF</strong> {{associado.uf}}</p>
+                <p><strong>CEP</strong> {{associado.cep}}</p>
+            </div>  
+            <div>
+                <h2>Acesso</h2>
+                <div class="copy-wrapper">
+                    🗂️<p id="cpf-{{ associado.pk }}"><strong>CPF:</strong> {{ associado.cpf }}</p>
+                    <button onclick="copyToClipboard('cpf-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <div class="copy-wrapper">
+                    ⚠️ <p id="senha_gov-{{ associado.pk }}"><strong>Senha Gov:</strong> {{ associado.senha_gov }}</p>
+                    <button onclick="copySenhas('senha_gov-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+
+                <br><hr>
+                {% if associado.drive_folder_id %}
+                    <div class="drive-link">
+                        <a href="https://drive.google.com/drive/folders/{{ associado.drive_folder_id }}" target="_blank">
+                            <img src="https://www.gstatic.com/images/branding/product/2x/drive_2020q4_48dp.png"
+                                alt="Google Drive" class="drive-icon"> 
+                            <span> Acessar Pasta no Drive</span>
+                        </a>
+                        </div>
+                        {% else %}
+                        <div class="drive-link no-folder">
+                        <span>Nenhuma pasta no Drive vinculada.</span>
+                    </div>
+                {% endif %}
+            </div>
+         
         </div>
     </div>
 
-    <!--Dados Pessoais-->
+    <!--Dados Pessoais PESSOAIS-->
     <div class="tab-content" id="tab-pessoais">
         <div class="detail-section multi-cols">
             <h2>Dados Pessoais</h2>
@@ -287,7 +309,7 @@
         </div>
     </div>
 
-    <!--Documentos-->
+    <!--Documentos DOCUMENTOS COPY-->
     <div class="tab-content" id="tab-documentos">
         {% include "components/associados/copys.html" %}
     </div>
@@ -380,7 +402,7 @@
         </div> 
     </div>
 
-    <!--Serviços-->
+    <!--Serviços SERVICOS-->
     <div class="tab-content" id="tab-servicos">
 
         <a href="{% url 'app_servicos:create_servico' associado.pk %}?type=associado&id={{ associado.id }}" class="upload-link">
@@ -391,44 +413,147 @@
         <div class="detail-section full-width">
             <h2>Serviços</h2>
             {% if servicos %}
-                <ul class="lista-servicos">
-                    {% for servico in servicos %}
-                        <li>
-                            <a href="{% url 'app_servicos:single_servico' servico.pk %}">
-                                {{ servico.get_natureza_servico_display }} /
-                                {{ servico.get_tipo_servico_display }}<br>
-                                <small>Status: {{ servico.status_servico|title }} | Valor: R$ {{ servico.valor|floatformat:2 }}</small>
-                                <small style="color: #999;">- criado em {{ servico.data_inicio|date:'d/m/Y H:i' }}</small>
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
+                <div class="lista-container">
+                    <table class="table-list-small">
+                        <thead>
+                            <tr>
+                                <th>Natureza</th>
+                                <th>Tipo</th>
+                                <th>Status</th>
+                                <th>Valor</th>
+                                <th>Criado em</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for servico in servicos %}
+                            <tr>
+                                <td>{{ servico.get_natureza_servico_display }}</td>
+                                <td>{{ servico.get_tipo_servico_display }}</td>
+                                <td>{{ servico.status_servico|title }}</td>
+                                <td>R$ {{ servico.valor|floatformat:2 }}</td>
+                                <td>{{ servico.data_inicio|date:'d/m/Y H:i' }}</td>
+                                <td>
+                                    <a href="{% url 'app_servicos:single_servico' servico.pk %}" title="Visualizar serviço">
+                                        <span class="material-icons icon-view">visibility</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    </div>
             {% else %}
                 <p>Nenhum serviço vinculado</p>
             {% endif %}
-        </div>
 
+        </div>
     </div>
-    <!--Declarações-->
+    
+    <!--Declarações DECLARAÇÔES-->
     <div class="tab-content" id="tab-declaracoes">
-        <div class="detail-section full-width">
-        <h2>Declarações - Automatizadas</h2>
-        <p>Declaração de Residencia</p>
-        <a href="{% url 'app_automacoes:gerar_declaracao_residencia' associado.id %}">
-            Gerar Declaração de Residência
-        </a>
-        <p>Dec: 5</p>
-        <p>Dec: 40 horas</p>
+        <h2>Declarações automatizadas</h2>
+        <div class="detail-section five-cols">  
+                
+            <div>
+                <h2>Declaração de Filiação Apapesc</h2>
+                <a href="{% url 'app_automacoes:gerar_declaracao_filiado' associado.id %}">
+                    Gerar Documento
+                </a>
+            </div>
+            <div>
+                <h2>Declaração de Ativ. Pesqueira</h2>
+                <a href="{% url 'app_automacoes:gerar_declaracao_atividade_pesqueira' associado.id %}">
+                    Gerar Documento
+                </a>
+            </div>
+            <div>
+                <h2>Declaração de Residência</h2>
+                <a href="{% url 'app_automacoes:gerar_declaracao_residencia' associado.id %}">
+                    Gerar Documento
+                </a>
+            </div> 
+            <div>
+                <h2>Declaração de Hiposuficiência</h2>
+                <a href="{% url 'app_automacoes:gerar_declaracao_hipo' associado.id %}">
+                    Gerar Documento
+                </a>
+            </div>   
+            <div>
+                <h2>Procuração Jurídica (Ad Judicia)</h2>
+                <a href="{% url 'app_automacoes:gerar_procuracao_juridica' associado.id %}">
+                    Gerar Documento
+                </a>
+            </div> 
+            <div>
+                <h2>Procuração Administrativa</h2>
+                <a href="{% url 'app_automacoes:gerar_procuracao_administrativa' associado.id %}">
+                    Gerar Documento
+                </a>
+            </div> 
+            <div>
+                <h2>Autorização Direito e uso de Imagem</h2>
+                <a href="{% url 'app_automacoes:gerar_autorizacao_direitos_imagem' associado.id %}">
+                    Gerar Documento
+                </a>
+            </div> 
+            <div>
+                <h2>Autorização Acesso Conta Gov</h2>
+                <a href="{% url 'app_automacoes:gerar_autorizacao_acesso_gov' associado.id %}">
+                    Gerar Documento
+                </a>
+            </div> 
+            <div>
+                <h2>Regramentos Apapesc Direitos e Deveres</h2>
+                <a href="{% url 'app_automacoes:gerar_direitos_deveres' associado.id %}">
+                    Gerar Documento
+                </a>
+            </div> 
+            <div>
+                <h2>Registro de Retirada de Documentos</h2>
+                <a href="{% url 'app_automacoes:gerar_retirada_documentos' associado.id %}">
+                    Gerar Documento
+                </a>
+            </div> 
+            <div>
+                <h2>Declaração Desfiliação Apapesc</h2>
+                <a href="{% url 'app_automacoes:gerar_declaracao_desfiliacao' associado.id %}">
+                    Gerar Documento
+                </a>
+            </div> 
+            <div>
+                <h2>Carteirinha Associado Apapesc</h2>
+                <a href="{% url 'app_automacoes:gerar_carteirinha_apapesc' associado.id %}">
+                    Gerar Documento
+                </a>
+            </div> 
+            <div>
+                <h2>Aguardando...</h2>
+                <a href="">
+                    Gerar Documento
+                </a>
+            </div> 
+            <div>
+                <h2>Aguardando...</h2>
+                <a href="">
+                    Gerar Documento
+                </a>
+            </div>  
+            <div>
+                <h2>Aguardando...</h2>
+                <a href="">
+                    Gerar Documento
+                </a>
+            </div>                                                                                                                                                                                                                     
         </div>
     </div>    
 
   
 
-    <!--Produção INSS e DEFESO-->
-    <div class="tab-content" id="tab-producao">
-        <div class="detail-section full-width">
+    <!--Produção INSS-->
+    <div class="tab-content" id="tab-inss">
         <h2>Guias INSS</h2>
-        <table class="table table-sm" style="width: auto;">
+        <table class="table-list-small">
             <thead>
                 <tr>
                     <th>Mês/Ano</th>
@@ -447,7 +572,7 @@
                             <td>
                                 <div style="display: flex; gap: 6px; background: #f2faff; border-radius: 4px; padding: 4px 8px;">
                                 {% for value, label in STATUS_EMISSAO_INSS %}
-                                    <label style="font-weight: 400; margin: 0 3px 0 0;">
+                                    <label style="font-size: 11px; margin: 0 3px 0 0;">
                                         <input type="radio" name="status_emissao" value="{{ value }}" {% if guia.status_emissao == value %}checked{% endif %}>
                                         {{ label }}
                                     </label>
@@ -457,7 +582,7 @@
                             <td>
                                 <div style="display: flex; gap: 6px; background: #f6f6f9; border-radius: 4px; padding: 4px 8px;">
                                 {% for value, label in ACESSO_CHOICES %}
-                                    <label style="font-weight: 400; margin: 0 3px 0 0;">
+                                    <label style="font-size: 11px; margin: 0 3px 0 0;">
                                         <input type="radio" name="status_acesso" value="{{ value }}" {% if guia.status_acesso == value %}checked{% endif %}>
                                         {{ label }}
                                     </label>
@@ -475,14 +600,6 @@
                 {% endfor %}
             </tbody>
         </table>
-
-        </div>
-        <div class="detail-section full-width">
-            <h2>Seguro Defeso</h2>
-            <p>Artigos publicados em 2024: 12</p>
-            <p>Participação em eventos: 5</p>
-            <p>Voluntariado: 40 horas</p>
-        </div>        
     </div>
 
     <div class="tab-content" id="tab-anotacoes">

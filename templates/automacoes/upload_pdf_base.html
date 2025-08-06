@@ -12,15 +12,42 @@
 {% block content %}
 {% include 'components/navbar_superuser.html' %}
 
-<div class="form-container">
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
 
-    <h1>Upload PDF Base</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="file" name="pdf_base" required>
-        <button type="submit" class="upload-btn">Salvar PDF</button>
-    </form>
-    <a href="{% url 'app_automacoes:lista_automacoes' %}" class="upload-btn" style="background:#6b7280;margin-top:15px;">Voltar</a>
-</div>
+    <div class="form-container">
+
+        <h1>Upload PDF Base</h1>
+
+        <h1>
+            Upload de PDF Base - {{ automacao|capfirst }}
+        </h1>
+        <p>Nessa página voce fará o upload do modelo base: 
+            <strong>{{ automacao|capfirst }}</strong>, para geração automática do documento. 
+        </p>
+        <p><strong>OBS:</strong>: 
+            Não esqueça de verificar o posicionamento e as dimenções do conteúdo no modelo seu novo modelo base! 
+        </p>    
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="pdf_base" required>
+            <button type="submit" class="upload-btn">Salvar PDF</button>
+        </form>
+
+        <a href="{% url 'app_automacoes:lista_automacoes' %}" class="upload-btn" style="background:#6b7280;margin-top:15px;">Voltar</a>
+    </div>
 
 {% endblock %}

@@ -1,7 +1,18 @@
-        <div class="card-identidade">
-            <div class="identidade-grid">
-                <h2>Identidade - CIN</h2>
-                
+        <div >
+            <div class="identidade-grid" style="background-color:rgb(247, 247, 247); padding: 20px; border-radius: 8px;">
+                <h2>Identidade CIN / CPF</h2>
+                <div class="copy-wrapper">
+                    🗂️<p id="cpf-{{ associado.pk }}"><strong>CPF:</strong> {{ associado.cpf }}</p>
+                    <button onclick="copyToClipboard('cpf-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>           
+                <div class="copy-wrapper">
+                    ⚠️<p id="senha_gov-{{ associado.pk }}"><strong>Senha Gov:</strong> {{ associado.senha_gov }}</p>
+                    <button onclick="copySenhas('senha_gov-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                
                 <div class="copy-wrapper">
                     <p id="rg_numero-{{ associado.pk }}"><strong>RG:</strong> {{ associado.rg_numero }}</p>
                     <button onclick="copyToClipboard('rg_numero-{{ associado.pk }}', this)" class="copy-btn" title="Copiar RG">
@@ -40,20 +51,8 @@
                         <i class="material-icons">content_copy</i>
                     </button>
                 </div>
-                <div class="copy-wrapper">
-                    <p id="cpf-{{ associado.pk }}"><strong>CPF:</strong> {{ associado.cpf }}</p>
-                    <button onclick="copyToClipboard('cpf-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
-                        <i class="material-icons">content_copy</i>
-                    </button>
-                </div>              
-                <div class="copy-wrapper">
-                    <p id="senha_gov-{{ associado.pk }}"><strong>Senha Gov:</strong> {{ associado.senha_gov }}</p>
-                    <button onclick="copySenhas('senha_gov-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
-                        <i class="material-icons">content_copy</i>
-                    </button>
-                </div>
             </div>
-        </div>
+        </div><br>
 
         <div class="detail-section three-cols">
             <div>
@@ -163,10 +162,39 @@
             </div>
             <div>
                 <h2>Contato</h2>
-                <p><strong>Celular:</strong> {{associado.associacao.celular}}</p>
-                <p><strong>Correspondência: </strong> {{associado.celular_correspondencia}}</p>
-                <p><strong>Email</strong> {{associado.associacao.email}}</p>
-                <p><strong>Senha Site: </strong> {{associado.senha_site}}</p>
-                <p><strong>Senha Google: </strong> {{associado.senha_google}}</p>
+                <div class="copy-wrapper">
+                    <p id="celular-{{ associado.pk }}"><strong>Celular:</strong> {{ associado.celular }}</p>
+                    <button onclick="copyToClipboard('celular-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Celular da Associação">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+
+                <div class="copy-wrapper">
+                    <p id="celular-correspondencia-{{ associado.pk }}"><strong>Celular:</strong> {{ associado.celular_correspondencia }}</p>
+                    <button onclick="copyToClipboard('celular-correspondencia-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Celular">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <div class="copy-wrapper">
+                    <p id="email-{{ associado.pk }}"><strong>Email:</strong> {{ associado.email }}</p>
+                    <button onclick="copyToClipboard('email-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Email">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+
+                <div class="copy-wrapper">
+                    <p id="senha-site-{{ associado.pk }}"><strong>Senha Site:</strong> {{ associado.senha_site }}</p>
+                    <button onclick="copySenhas('senha-site-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Site">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+
+                <div class="copy-wrapper">
+                    <p id="senha-google-{{ associado.pk }}"><strong>Senha Google:</strong> {{ associado.senha_google }}</p>
+                    <button onclick="copySenhas('senha-google-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Google">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+
             </div>                                                          
         </div>

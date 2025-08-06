@@ -6,6 +6,7 @@
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
 {% endblock %}
 
 <!--Bloco Página -->
@@ -37,7 +38,7 @@
             </div>
         </div>
     {% empty %}
-        <p>Nenhuma associação encontrada.</p>
+        <p>Hero Associação</p>
     {% endfor %}
 
     <div style="text-align: center; margin-top: 50px;">
