@@ -144,6 +144,14 @@ anotacoes.txt
 # PASTAS
 # Ignora todos os arquivos em media/ e subpastas
 media/**
+app_associados/credentials/service_account.json
+
+.env
+
+/media/pdf/
+/media/documentos/
+/media/images/
+/media/fotos_associados/
 
 # Não ignora as pastas propriamente ditas
 !media/
