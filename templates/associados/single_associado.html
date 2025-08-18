@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load custom_filters %}
+{% load status_tags %}
 
 {% block title %}{{ associado.user.get_full_name }}{% endblock %}
 
@@ -69,6 +70,13 @@
                 <p><strong>Delegado:</strong> {{associado.reparticao.delegado}}</p>
                 <p><strong>Circunscrição / Atuação:</strong> {{associado.municipio_circunscricao}}</p>
                 <p><strong>Data Filiação:</strong> {{ associado.data_filiacao|date:"d/m/Y" }}</p>
+
+                <p>
+                    <strong>Status:</strong>
+                    <span class="status-badge {{ associado.status|status_badge_class }}">
+                        {{ associado.get_status_display }}
+                    </span>
+                </p>
             </div>
             
             <div>
@@ -82,20 +90,20 @@
                             </button>
                         </form>
                     {% elif msg_anuidades_aplicadas %}
-                        <div style="color:green;">
+                        <div style="color:green; font-size:13px;">
                             Todas as anuidades já foram aplicadas a este associado!
                         </div>
                     {% endif %}
                 {% else %}
-                    <div class="alert alert-warning">
-                        Este associado ainda não está ativo/aposentado. Anuidades só podem ser aplicadas quando o status for válido.
+                    <div style="color:gray; font-size:13px;">
+                        <strong>Anuidade: </strong>Anuidades só podem ser aplicadas quando o status for válido = Ativo/Aposentado.
                     </div>
                 {% endif %}
 
                 <!-- BLOCO PARA INSS -->
                 {% if associado.recolhe_inss == 'Sim' %}
                     {% if inss_aplicado %}
-                        <div style="color:green;">
+                        <div style="color:green; font-size:13px;">
                             Todas as guias INSS já foram aplicadas a este associado!
                         </div>
                     {% else %}
@@ -107,19 +115,19 @@
                         </form>
                     {% endif %}
                 {% else %}
-                    <div style="color:#888;">
-                        Associado não recolhe INSS.
+                    <div style="color:#888; font-size:13px;">
+                        <strong>INSS: </strong>Associado com status marcado comonão não recolhe INSS.
                     </div>
                 {% endif %}
 
                 <!-- BLOCO PARA SEGURO DEFESO -->
                 {% if associado.recebe_seguro == 'Recebe' %}
                     {% if not beneficio_defeso_ultimo %}
-                        <div style="color:orange;">
-                            Não há defeso lançado para o estado onde este associado está vinculado.
+                        <div style="color:orange; font-size:13px;">
+                            Não há defeso lançado para o Estado onde este associado está vinculado.
                         </div>
                     {% elif defeso_aplicado %}
-                        <div style="color:green;">
+                        <div style="color:green; font-size:13px;">
                             Seguro Defeso já foi aplicado para este associado!
                         </div>
                     {% else %}
@@ -131,9 +139,37 @@
                         </form>
                     {% endif %}
                 {% else %}
-                    <div style="color:#888;">
-                        Associado não é elegível ao Seguro Defeso.
+                    <div style="color:#888; font-size:13px;">
+                        <strong>Defeso: </strong>Associado com status não elegível para participar do Seguro Defeso.
                     </div>
+                {% endif %}
+
+                <!-- BLOCO PARA REAP -->
+                {% if reap_disponivel %}
+                {% if reap_aplicado %}
+                    <div style="color:green; font-size:13px;">
+                    O REAP {{ reap_ano }}/{{ reap_rodada }} aplicado para este associado!
+                    </div>
+                {% else %}
+                    {% if status_ok_reap %}
+
+                    <form method="post" style="margin: 15px 0;">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="aplicar_reap">
+                        <button type="submit" class="btn btn-info">
+                        Incluir no REAP atual
+                        </button>
+                    </form>
+                    {% else %}
+                    <div style="color:#888; font-size:13px;">
+                        Este associado não é elegível para participar do REAP (status atual: <strong>{{ associado.get_status_display }}</strong>).
+                    </div>
+                    {% endif %}
+                {% endif %}
+                {% else %}
+                <div style="color:#888; font-size:13px;">
+                    <strong>REAP:</strong> Ainda não existem lançamentos REAP disponíveis no sistema.
+                </div>
                 {% endif %}
           
             </div>  

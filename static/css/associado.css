@@ -243,6 +243,21 @@
     text-transform: capitalize;
 }
 
+/* Sattus Choices */
+.status-badge{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 10px; border-radius:999px; font-size:0.85rem;
+  font-weight:600; line-height:1; letter-spacing:.2px;
+  border:1px solid transparent;
+}
+
+/* Cores por tipo */
+.status-ativo        { background:#ecfdf5; color:#065f46; border-color:#a7f3d0; }  /* verde suave */
+.status-aposentado   { background:#fef3c7; color:#92400e; border-color:#fde68a; }  /* âmbar */
+.status-candidato    { background:#e0e7ff; color:#3730a3; border-color:#c7d2fe; }  /* índigo */
+.status-especial     { background:#f0f9ff; color:#075985; border-color:#bae6fd; }  /* azul claro */
+.status-extra        { background:#fff7ed; color:#9a3412; border-color:#c7d2fe; }  /* violeta claro */
+.status-desassociado { background:#fee2e2; color:#991b1b; border-color:#fdba74; }  /* vermelho claro */
 
 
 /* Ajustes responsivos */

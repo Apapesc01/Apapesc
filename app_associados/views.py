@@ -2,7 +2,6 @@
 from core.views.base_imports import *
 from core.views.app_associados_imports import *
 
-
 # CREATES ==================================================================
 class AssociadoCreateView(LoginRequiredMixin, CreateView):
     model = AssociadoModel
@@ -208,8 +207,36 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
                 associado=associado,
                 beneficio=beneficio_defeso_ultimo
             ).exists()
+            
         context['defeso_aplicado'] = defeso_aplicado
         context['beneficio_defeso_ultimo'] = beneficio_defeso_ultimo
+        
+        
+        # --- verificar se pode participar do REAP ---
+        status_ok_reap = associado.status in ['associado_lista_ativo', 'associado_lista_aposentado']
+
+        # --- REAP: último ano/rodada ---
+        ultimo_ano = REAPdoAno.objects.aggregate(Max('ano'))['ano__max']
+        reap_disponivel = bool(ultimo_ano)
+        reap_aplicado = False
+        reap_rodada = None
+
+        if ultimo_ano:
+            reap_rodada = REAPdoAno.objects.filter(ano=ultimo_ano).aggregate(Max('rodada'))['rodada__max'] or 1
+            reap_aplicado = REAPdoAno.objects.filter(
+                associado=associado,
+                ano=ultimo_ano,
+                rodada=reap_rodada,
+            ).exists()
+
+        context.update({
+            'status_ok_reap': status_ok_reap,
+            'reap_disponivel': reap_disponivel,
+            'reap_aplicado': reap_aplicado,
+            'reap_ano': ultimo_ano,
+            'reap_rodada': reap_rodada,
+        })
+    
         context['servicos'] = ServicoModel.objects.filter(associado=self.object)
         context['uploads_docs'] = uploads
         context['ultimas_anuidades'] = ultimas_anuidades
@@ -226,6 +253,7 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         associado = self.object
+        action = request.POST.get('action')
         
         # Verifica se é AJAX e só salva anotações
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -317,6 +345,29 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
             else:
                 messages.info(request, "Nenhum benefício novo a aplicar para o último ano lançado.")
 
+        # Incluir no REAP atual
+        if action == 'aplicar_reap':
+            ultimo_ano = REAPdoAno.objects.aggregate(Max('ano'))['ano__max']
+            if not ultimo_ano:
+                messages.error(request, "Não há REAP disponível para aplicar.")
+                return redirect(request.path)
+
+            ultima_rodada = REAPdoAno.objects.filter(ano=ultimo_ano).aggregate(Max('rodada'))['rodada__max'] or 1
+
+            obj, created = REAPdoAno.objects.get_or_create(
+                associado=self.object,
+                ano=ultimo_ano,
+                rodada=ultima_rodada,
+                defaults={
+                    'status_resposta': 'pendente',
+                    'processada': False,
+                }
+            )
+            if created:
+                messages.success(request, f"Associado incluído no REAP {ultimo_ano}/{ultima_rodada}.")
+            else:
+                messages.info(request, f"Este associado já estava no REAP {ultimo_ano}/{ultima_rodada}.")
+                    
             return redirect('app_associados:single_associado', pk=associado.pk)
 
                     

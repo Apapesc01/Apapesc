@@ -146,8 +146,6 @@ anotacoes.txt
 media/**
 app_associados/credentials/service_account.json
 
-.env
-
 /media/pdf/
 /media/documentos/
 /media/images/

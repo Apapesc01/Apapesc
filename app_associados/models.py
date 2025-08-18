@@ -462,7 +462,7 @@ class AssociadoModel(models.Model):
         null=True, 
         choices=STATUS_CHOICES,
         verbose_name="Status de atividade",
-        default="Candidato(a)"
+        default="candidato", 
     )
     # Espécies e Quantidades
     especie1 = models.CharField(

@@ -31,3 +31,4 @@ from core.choices import (
     STATUS_EMISSAO_INSS
 )
 
+from app_reap.models import REAPdoAno
