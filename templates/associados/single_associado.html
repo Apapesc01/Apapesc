@@ -53,11 +53,12 @@
     <div class="tabs">
         <button class="tab-link active" data-tab="principal">Principal</button>
         <button class="tab-link" data-tab="pessoais">Pessoais</button>
-        <button class="tab-link" data-tab="documentos">Documentos</button>
+        <button class="tab-link" data-tab="documentos">CopyDoc</button>
         <button class="tab-link" data-tab="uploads">Uploads</button>    
         <button class="tab-link" data-tab="servicos">Serviços</button>
         <button class="tab-link" data-tab="declaracoes">Declarações</button>
         <button class="tab-link" data-tab="inss">INSS</button>
+        <button class="tab-link" data-tab="defeso">Defeso</button>
         <button class="tab-link" data-tab="anotacoes">Anotações</button>        
     </div>
     <!--Vínculos PRINCIPAL-->
@@ -636,6 +637,101 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <!--Produção INSS-->
+    <div class="tab-content" id="tab-defeso">
+
+        {% if not beneficio_defeso_ultimo %}
+            <p style="color:#888;">Não há benefício de Seguro Defeso lançado para o estado deste associado.</p>
+        {% else %}
+            <p>
+            <strong>Benefício:</strong>
+            {{ beneficio_defeso_ultimo.lei_federal }} –
+            Início: {{ beneficio_defeso_ultimo.data_inicio|date:"d/m/Y" }} |
+            Fim: {{ beneficio_defeso_ultimo.data_fim|date:"d/m/Y" }}
+            </p>
+
+            {% if not defeso_status_elegivel %}
+            <div class="alert alert-warning" style="background:#fff7ed;border:1px solid #fdba74;color:#c2410c;padding:8px;border-radius:6px;">
+                Este associado não é elegível para operações de Seguro Defeso (status atual não permite).
+            </div>
+            {% else %}
+            <form method="post" enctype="multipart/form-data" style="margin-top:12px;">
+                {% csrf_token %}
+                
+                {% if defeso_form %}
+                <div class="form-grid grid-2-cols">
+                    <div class="form-group">
+                    {{ defeso_form.numero_protocolo.label_tag }}
+                    {{ defeso_form.numero_protocolo }}
+                    {{ defeso_form.numero_protocolo.errors }}
+                    </div>
+
+                    <div class="form-group">
+                    {{ defeso_form.status_pedido.label_tag }}
+                    {{ defeso_form.status_pedido }}
+                    {{ defeso_form.status_pedido.errors }}
+                    </div>
+
+                    <div class="form-group">
+                    {{ defeso_form.data_solicitacao.label_tag }}
+                    {{ defeso_form.data_solicitacao }}
+                    {{ defeso_form.data_solicitacao.errors }}
+                    </div>
+
+                    <div class="form-group">
+                    {{ defeso_form.data_concessao.label_tag }}
+                    {{ defeso_form.data_concessao }}
+                    {{ defeso_form.data_concessao.errors }}
+                    </div>
+
+                    <div class="form-group" style="grid-column:1 / -1;">
+                    {{ defeso_form.motivo_exigencia.label_tag }}
+                    {{ defeso_form.motivo_exigencia }}
+                    {{ defeso_form.motivo_exigencia.errors }}
+                    </div>
+
+                    <div class="form-group" style="grid-column:1 / -1;">
+                    {{ defeso_form.motivo_negativa.label_tag }}
+                    {{ defeso_form.motivo_negativa }}
+                    {{ defeso_form.motivo_negativa.errors }}
+                    </div>
+
+                    <div class="form-group" style="grid-column:1 / -1;">
+                    {{ defeso_form.anotacoes.label_tag }}
+                    {{ defeso_form.anotacoes }}
+                    {{ defeso_form.anotacoes.errors }}
+                    </div>
+
+                    <div class="form-group" style="grid-column:1 / -1;">
+                    {{ defeso_form.resultado_final.label_tag }}
+                    {{ defeso_form.resultado_final }}
+                    {{ defeso_form.resultado_final.errors }}
+                    </div>
+
+                    <div class="form-group" style="grid-column:1 / -1;">
+                    {{ defeso_form.comprovante_protocolo.label_tag }}
+                    {{ defeso_form.comprovante_protocolo }}
+                    {% if controle_defeso and controle_defeso.comprovante_protocolo %}
+                        <div style="margin-top:6px;">
+                        <a href="{{ controle_defeso.comprovante_protocolo.url }}" target="_blank">Ver comprovante atual</a>
+                        </div>
+                    {% endif %}
+                    {{ defeso_form.comprovante_protocolo.errors }}
+                    </div>
+                </div>
+
+                <button type="submit" name="salvar_defeso" class="btn btn-primary" style="margin-top:8px;">
+                    Salvar Seguro Defeso
+                </button>
+                {% else %}
+                <p style="color:#888;">Formulário indisponível neste momento.</p>
+                {% endif %}
+            </form>
+            {% endif %}
+        {% endif %}
+
     </div>
 
     <div class="tab-content" id="tab-anotacoes">

@@ -236,6 +236,35 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
             'reap_ano': ultimo_ano,
             'reap_rodada': reap_rodada,
         })
+
+        # ==== BLOCO DEFESO ====
+        uf = associado.municipio_circunscricao.uf if associado.municipio_circunscricao else None
+        beneficio_defeso_ultimo = (
+            SeguroDefesoBeneficioModel.objects
+            .filter(estado=uf)
+            .order_by('-ano_concessao', '-data_inicio')
+            .first()
+        )
+        context['beneficio_defeso_ultimo'] = beneficio_defeso_ultimo
+
+        controle_defeso = None
+        defeso_form = None
+        if beneficio_defeso_ultimo:
+            controle_defeso = ControleBeneficioModel.objects.filter(
+                associado=associado,
+                beneficio=beneficio_defeso_ultimo
+            ).first()
+
+            if controle_defeso:
+                defeso_form = ControleBeneficioForm(instance=controle_defeso)
+            else:
+                # Pré-instancia o form com defaults (sem criar no bd)
+                defeso_form = ControleBeneficioForm()
+
+        context['controle_defeso'] = controle_defeso
+        context['defeso_form'] = defeso_form
+        context['defeso_status_elegivel'] = associado.status in ['associado_lista_ativo', 'associado_lista_aposentado']
+
     
         context['servicos'] = ServicoModel.objects.filter(associado=self.object)
         context['uploads_docs'] = uploads
@@ -397,6 +426,49 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
             messages.success(request, f"Anuidades {', '.join(str(a) for a in anos_faltantes)} aplicadas com sucesso!")
         else:
             messages.warning(request, "Status do associado não permite aplicar anuidades.")
+
+        # Só permite se clicar no botão do defeso
+        if 'salvar_defeso' in request.POST:
+            # Regra: só Ativo ou Aposentado podem editar/aplicar defeso
+            status_ok = associado.status in ['associado_lista_ativo', 'associado_lista_aposentado']
+
+            if not status_ok:
+                messages.error(request, "Este associado não é elegível para operações de Seguro Defeso (status não permitido).")
+                return redirect(self.request.path)
+
+            # Pegamos o último benefício do estado
+            uf = associado.municipio_circunscricao.uf if associado.municipio_circunscricao else None
+            beneficio_defeso_ultimo = (
+                SeguroDefesoBeneficioModel.objects
+                .filter(estado=uf)
+                .order_by('-ano_concessao', '-data_inicio')
+                .first()
+            )
+
+            if not beneficio_defeso_ultimo:
+                messages.error(request, "Não há benefício de Seguro Defeso lançado para o estado deste associado.")
+                return redirect(self.request.path)
+
+            # Obtemos (ou criamos) o controle do defeso para este associado e este benefício
+            controle, _ = ControleBeneficioModel.objects.get_or_create(
+                associado=associado,
+                beneficio=beneficio_defeso_ultimo,
+                defaults={'status_pedido': 'EM_PREPARO'}
+            )
+
+            form = ControleBeneficioForm(request.POST, request.FILES, instance=controle)
+            if form.is_valid():
+                # opcional: marca lock de processamento no usuário atual enquanto edita
+                controle = form.save(commit=False)
+                # Se quiser, pode remover o lock ao salvar:
+                # controle.em_processamento_por = None
+                controle.save()
+                messages.success(request, "Dados do Seguro Defeso salvos com sucesso.")
+            else:
+                # Para reaproveitar exibição dos erros, jogamos no context via messages (ou deixa que o template leia form.errors)
+                messages.error(request, "Corrija os erros no formulário do Seguro Defeso.")
+                # Para reexibir com erros, renderize via redirect + mensagens (simples) — já é o que estamos fazendo.
+
 
         return redirect('app_associados:single_associado', pk=associado.pk)
 

@@ -32,3 +32,5 @@ from core.choices import (
 )
 
 from app_reap.models import REAPdoAno
+from app_defeso.forms import ControleBeneficioForm
+from app_defeso.models import ControleBeneficioModel, SeguroDefesoBeneficioModel
