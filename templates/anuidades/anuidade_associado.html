@@ -81,30 +81,46 @@
                     {% for p in info.pagamentos %}
                     <li class="pagamento-item">
                         <div class="pagamento-info">
-                            {{ p.data_pagamento }}: R$ {{ p.valor|floatformat:2 }}
-                            {% if p.comprovante_up %}
-                                (<a href="{{ p.comprovante_up.url }}" target="_blank">Comprovante</a>)
-                            {% endif %}
+                        {{ p.data_pagamento|date:"d/m/Y" }}: R$ {{ p.valor|floatformat:2 }}
+                        {% if p.comprovante_up %}
+                            (<a href="{{ p.comprovante_up.url }}" target="_blank" rel="noopener">Comprovante</a>)
+                        {% endif %}
                         </div>
+
                         <div class="pagamento-meta">
-                            <span class="registrado-por">Registrado por: {{ p.registrado_por }}</span>
-                            <button type="button" class="btn-recibo" onclick="alert('Aqui você vai gerar o recibo para este pagamento!')">
-                                🧾 Gerar Recibo
-                            </button>
+                        <span class="registrado-por">
+                            Registrado por:
+                            {% if p.registrado_por %}
+                            {{ p.registrado_por.get_full_name|default:p.registrado_por.username }}
+                            {% else %}
+                            —
+                            {% endif %}
+                        </span>
+
+                        {# Gerar recibo PARCIAL para este pagamento específico #}
+                        <a href="{% url 'app_automacoes:gerar_recibo_parcial_anuidade' info.aa.id %}?pagamento_id={{ p.id }}"
+                            class="btn-recibo inline-block bg-amber-500 text-white py-1 px-3 rounded hover:bg-amber-600 text-sm transition"
+                            target="_blank" rel="noopener"
+                            title="Gerar recibo parcial para o pagamento de {{ p.data_pagamento|date:'d/m/Y' }}">
+                            🧾 Gerar Recibo
+                        </a>
                         </div>
                     </li>
                     <hr>
                     {% empty %}
-                        <li>Nenhum pagamento registrado.</li>
+                    <li>Nenhum pagamento registrado.</li>
                     {% endfor %}
                 </ul>
+                
                 <h3>Pagamentos: {{ info.aa.anuidade.ano }}</h3>
             
                 {% if info.status_anuidade == "PAGA" %}
                     <div style="margin-top:20px; text-align:center;">
-                        <button type="button" class="btn-quitacao" onclick="alert('Aqui você gera o recibo de quitação de toda a anuidade!')">
-                            ✅ Gerar Recibo de Quitação Anuidade
-                        </button>
+                    <a href="{% url 'app_automacoes:gerar_recibo_anuidade' info.aa.id %}"
+                    class="btn-recibo">
+                    ✅ Gerar Recibo de Quitação Anuidade
+                    </a>
+
                         <br>
                         <span style="font-size: 0.95em; color: #008000;">Anuidade quitada!</span>
                     </div>

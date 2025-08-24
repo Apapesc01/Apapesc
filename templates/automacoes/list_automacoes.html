@@ -275,6 +275,36 @@
             </tr>      
         {% endif %}
 
+        {% if recibo_parcial_anuidade.exists %}
+            {% for declaracao in recibo_parcial_anuidade %}
+            <tr>
+                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                <td>{{ declaracao.id }}</td>
+                <td>
+                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                </td>
+                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                <td>
+                    <a href="{% url 'app_automacoes:upload_pdf_recibo_parcial_anuidade' %}">
+                        Substituir Modelo
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="5" style="text-align:center;">
+                    <a href="{% url 'app_automacoes:upload_pdf_recibo_parcial_anuidade' %}">
+                        Upload Modelo Base Recibo Parcial
+                    </a>
+                </td>
+            </tr>        
+        {% endif %}
+
+
+
+
+
         {% if recibos_anuidades.exists %}
             {% for declaracao in recibos_anuidades %}
             <tr>

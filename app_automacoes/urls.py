@@ -16,6 +16,7 @@ urlpatterns = [
      path('upload/cobranca-anuidade/', views.upload_pdf_base, {'automacao': 'cobranca_anuidades'}, name='upload_pdf_cobranca_anuidade'),
      path('upload/recibo-servico-extra/', views.upload_pdf_base, {'automacao': 'recibos_servicos_extra'}, name='upload_pdf_recibo_servico_extra'),
      path('upload/carteirinha/', views.upload_pdf_base, {'automacao': 'carteirinha_apapesc'}, name='upload_pdf_carteirinha_apapesc'),
+     path('upload/recibo-parcial-anuidade/', views.upload_pdf_base, {'automacao': 'recibo_parcial_anuidade'}, name='upload_pdf_recibo_parcial_anuidade'),
      path('upload/recibo-anuidade/<int:anuidade_assoc_id>/', views.upload_pdf_base, {'automacao': 'recibos_anuidades'}, name='upload_pdf_recibo_anuidade'),
      path('upload/procuracao-administrativa/', views.upload_pdf_base, {'automacao': 'procuracao_administrativa'}, name='upload_pdf_procuracao_administrativa'),
      path('upload/autorizacao-direito-imagem/', views.upload_pdf_base, {'automacao': 'autorizacao_direito_imagem'}, name='upload_pdf_autorizacao_direito_imagem'),
@@ -50,6 +51,9 @@ urlpatterns = [
 
      path('procuracao/juridica/<int:associado_id>/', views.gerar_procuracao_juridica,
           name='gerar_procuracao_juridica'),
+     
+     path('gerar-recibo-parcial-anuidade/<int:anuidade_assoc_id>/', views.gerar_recibo_parcial_anuidade,
+          name='gerar_recibo_parcial_anuidade'),
      
      path('gerar-recibo-anuidade/<int:anuidade_assoc_id>/', views.gerar_recibo_anuidade, 
           name='gerar_recibo_anuidade'),

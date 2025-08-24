@@ -9,6 +9,7 @@ MODELO_MAP = {
     'atividade_pesqueira': DeclaracaoAtividadePesqueiraModel,
     'hipossuficiencia': DeclaracaoHipossuficienciaModel,
     'procuracao_juridica': ProcuracaoJuridicaModel,
+    'recibo_parcial_anuidade': ParcialReciboAnuidadeModel,
     'recibos_anuidades': ReciboAnuidadeModel,
     'recibos_servicos_extra': ReciboServicoExtraModel,
     'carteirinha_apapesc': CarteirinhaAssociadoModel,
@@ -23,13 +24,14 @@ MODELO_MAP = {
 }
 
 # UPLOAD DE MODELOS PDF BASE
-def upload_pdf_base(request, automacao):
+def upload_pdf_base(request, automacao, anuidade_assoc_id=None):
     modelo_map = {
         'residencia': DeclaracaoResidenciaModel,
         'filiacao': DeclaracaoFiliacaoModel,
         'atividade_pesqueira': DeclaracaoAtividadePesqueiraModel,
         'hipossuficiencia': DeclaracaoHipossuficienciaModel,
         'procuracao_juridica': ProcuracaoJuridicaModel,
+        'recibo_parcial_anuidade': ParcialReciboAnuidadeModel,
         'recibos_anuidades': ReciboAnuidadeModel,
         'recibos_servicos_extra': ReciboServicoExtraModel,
         'carteirinha_apapesc': CarteirinhaAssociadoModel,
@@ -100,6 +102,7 @@ class ListaTodosArquivosView(LoginRequiredMixin, TemplateView):
         context['declaracoes_atividade_pesqueira'] = DeclaracaoAtividadePesqueiraModel.objects.all()
         context['declaracoes_hipossuficiencia'] = DeclaracaoHipossuficienciaModel.objects.all()
         context['procuracoes_procuracao_juridica'] = ProcuracaoJuridicaModel.objects.all()
+        context['recibo_parcial_anuidade'] = ParcialReciboAnuidadeModel.objects.all()
         context['recibos_anuidades'] = ReciboAnuidadeModel.objects.all()
         context['recibos_servicos_extra'] = ReciboServicoExtraModel.objects.all()
         context['carteirinha_apapesc'] = CarteirinhaAssociadoModel.objects.all()
@@ -840,104 +843,403 @@ def gerar_procuracao_juridica(request, associado_id):
     pdf_url = f"{settings.MEDIA_URL}documentos/{pdf_name}"
     return redirect(f"{reverse('app_automacoes:pagina_acoes', args=[associado.id])}?pdf_url={pdf_url}")
 # ======================================================================================================
+# GERAR RECIBO PARCIAL DE ANUIDADE
 
-# GERAR RECIBO DE ANUIDADE
-from decimal import Decimal
-from django.db.models import Sum
-
-def gerar_recibo_anuidade(request, anuidade_assoc_id):
+def gerar_recibo_parcial_anuidade(request, anuidade_assoc_id):
     anuidade_assoc = get_object_or_404(AnuidadeAssociado, id=anuidade_assoc_id)
     associado = anuidade_assoc.associado
     associacao = associado.associacao
 
-    # ⚠️ Verifica se existe pagamento ou desconto suficiente
-    total_pago = anuidade_assoc.pagamentos.aggregate(total=Sum('valor'))['total'] or Decimal('0.00')
+    # Query param opcional para escolher o pagamento específico
+    pagamento_id = request.GET.get('pagamento_id')
+
+    pagamentos_qs = anuidade_assoc.pagamentos.order_by('data_pagamento')
+    if not pagamentos_qs.exists():
+        return HttpResponse("Não há pagamentos registrados para esta anuidade.", status=400)
+
+    if pagamento_id:
+        pagamento = pagamentos_qs.filter(pk=pagamento_id).first()
+        if not pagamento:
+            return HttpResponse("Pagamento não encontrado para esta anuidade.", status=404)
+    else:
+        pagamento = pagamentos_qs.last()
+
+    # Totais acumulados
+    total_pago = pagamentos_qs.aggregate(total=Sum('valor'))['total'] or Decimal('0.00')
     total_desconto = anuidade_assoc.descontos.aggregate(total=Sum('valor_desconto'))['total'] or Decimal('0.00')
     valor_anuidade = anuidade_assoc.anuidade.valor_anuidade
     soma_total = total_pago + total_desconto
+    saldo_devedor = (valor_anuidade - soma_total) if (valor_anuidade - soma_total) > Decimal('0.00') else Decimal('0.00')
 
-    if soma_total < valor_anuidade:
-        return HttpResponse("Ainda há saldo devedor. O recibo será gerado apenas quando o total for quitado (via pagamento ou desconto).", status=400)
-
-    # ⚠️ Verifica se o template existe
-    template_path = os.path.join(settings.MEDIA_ROOT, 'pdf/recibo_anuidade.pdf')
+    # PDF base específico dos recibos parciais (alinhado ao upload com automacao='recibos_parciais_anuidades')
+    template_path = os.path.join(settings.MEDIA_ROOT, 'pdf', 'parcial_recibo_anuidade.pdf')
     if not os.path.exists(template_path):
-        return HttpResponse("O PDF base para o Recibo de Anuidade não foi encontrado.", status=404)
-
+        return HttpResponse("O PDF base para o Recibo Parcial de Anuidade não foi encontrado.", status=404)
     template_pdf = PdfReader(template_path)
 
-    # Dados de pagamento
-    ultimo_pagamento = anuidade_assoc.pagamentos.order_by('-data_pagamento').first()
-    data_pagamento = (
-        ultimo_pagamento.data_pagamento.strftime('%d/%m/%Y')
-        if ultimo_pagamento else datetime.now().strftime('%d/%m/%Y')
-    )
-    data_hoje = datetime.now().strftime('%d/%m/%Y')
+    # Utilidades de data (pt-BR)
+    MESES_PT = {
+        1: "Janeiro", 2: "Fevereiro", 3: "Março", 4: "Abril", 5: "Maio", 6: "Junho",
+        7: "Julho", 8: "Agosto", 9: "Setembro", 10: "Outubro", 11: "Novembro", 12: "Dezembro"
+    }
+    def data_extenso(dt: datetime) -> str:
+        return f"{dt.day} de {MESES_PT.get(dt.month, dt.strftime('%B'))} de {dt.year}"
 
-    # Construção do texto dinâmico
+    # Dados do pagamento selecionado
+    dp = pagamento.data_pagamento
+    if hasattr(dp, 'strftime'):
+        data_pagamento_extenso = data_extenso(dp)
+    else:
+        try:
+            data_pagamento_extenso = data_extenso(datetime.strptime(str(dp), "%Y-%m-%d"))
+        except Exception:
+            data_pagamento_extenso = str(dp)
+
+    valor_pagamento = Decimal(pagamento.valor)
+    registrador = getattr(pagamento, 'registrado_por', None)
+    registrado_por = registrador.get_full_name() or registrador.get_username() if registrador else "—"
+
+    comprovante_link = None
+    comp = getattr(pagamento, 'comprovante_up', None)
+    try:
+        if comp and getattr(comp, 'url', None):
+            comprovante_link = comp.url
+    except Exception:
+        comprovante_link = None
+
+    data_hoje_extenso = data_extenso(datetime.now())
+    municipio = associacao.municipio.upper() if associacao.municipio else "CIDADE NÃO DEFINIDA"
+    local_data = f"{municipio}, {data_hoje_extenso}."
+
+    # Texto principal
     texto = (
         f"Recebemos de <strong>{associado.user.get_full_name()}</strong>, "
         f"inscrito no CPF sob o nº <strong>{associado.cpf}</strong>, "
-        f"a importância de <strong>R$ {total_pago:.2f}</strong> referente ao pagamento da anuidade do exercício de <strong>{anuidade_assoc.anuidade.ano}</strong>."
+        f"a importância de <strong>R$ {valor_pagamento:.2f}</strong> em <strong>{data_pagamento_extenso}</strong>, "
+        f"referente ao pagamento <u>parcial</u> da contribuição anual do exercício de <strong>{anuidade_assoc.anuidade.ano}</strong>."
     )
 
-    if total_desconto > 0:
-        texto += f" Um desconto de <strong>R$ {total_desconto:.2f}</strong> foi concedido, totalizando o valor integral de <strong>R$ {valor_anuidade:.2f}</strong>."
+    # Styles
+    styles = getSampleStyleSheet()
+    style_title = ParagraphStyle('Title', parent=styles['Title'], fontName='Times-Bold', fontSize=14, alignment=TA_CENTER, leading=28, spaceBefore=40)
+    style_header = ParagraphStyle('Header', parent=styles['Heading3'], fontName='Times-Bold', fontSize=12, leading=16, spaceBefore=10, spaceAfter=6)
+    style_normal = ParagraphStyle('Normal', parent=styles['Normal'], fontName='Times-Roman', fontSize=12, leading=18, alignment=TA_JUSTIFY)
+    style_assinatura = ParagraphStyle('Assinatura', parent=styles['Normal'], fontName='Times-Roman', fontSize=12, leading=18, alignment=TA_CENTER)
+    style_presidente = ParagraphStyle('Presidente', parent=styles['Normal'], fontName='Times-Bold', fontSize=12, alignment=2, textColor=colors.grey)
 
-    texto += (
-        f"<br/><br/>Este pagamento foi efetuado à <strong>{associacao.razao_social}</strong>, "
-        f"inscrita no CNPJ sob o nº {associacao.cnpj}, com sede na {associacao.logradouro}, nº {associacao.numero}, "
-        f"{associacao.bairro}, {associacao.municipio or 'Município não informado'}/{associacao.uf}. "
-        f"<br/><br/><i>Agradecemos por sua confiança. A contribuição anual é essencial para a manutenção das atividades da associação, refletindo diretamente no apoio prestado à categoria.</i>"
-    )
+    # Montagem dos elementos
+    elements = [
+        Spacer(1, 5),
+        Paragraph(associacao.presidente.user.get_full_name(), style_presidente),
+        Spacer(1, 5),
+        Paragraph("RECIBO PARCIAL DE ANUIDADE", style_title),
+        Spacer(1, 16),
+        Paragraph(texto, style_normal),
+        Spacer(1, 12),
+        Paragraph(
+            f"Este pagamento foi efetuado à <strong>{associacao.razao_social}</strong>, CNPJ {associacao.cnpj}, "
+            f"com sede na {associacao.logradouro}, nº {associacao.numero}, {associacao.bairro}, "
+            f"{associacao.municipio or 'Município não informado'}/{associacao.uf}.",
+            style_normal
+        ),
+        Spacer(1, 16),
+        Paragraph("Detalhes deste pagamento", style_header),
+    ]
 
+    # Tabela com os dados do pagamento selecionado
+    det_table_data = [["Data", "Valor (R$)", "Registrado por", "Comprovante"]]
+    comp_cell = "—"
+    if comprovante_link:
+        comp_cell = Paragraph(f'<link href="{comprovante_link}">Comprovante</link>', styles['Normal'])
+    det_table_data.append([data_pagamento_extenso, f"{valor_pagamento:.2f}", registrado_por, comp_cell])
+
+    det_table = Table(det_table_data, colWidths=[120, 80, '*', 100])
+    det_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
+        ('ALIGN', (1, 1), (1, -1), 'RIGHT'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.grey),
+        ('BOX', (0, 0), (-1, -1), 0.25, colors.grey),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+    ]))
+    elements.extend([det_table, Spacer(1, 16)])
+
+    # Local e assinatura
     assinatura = (
         f"{associacao.presidente.user.get_full_name()}<br/>"
         f"Presidente da Associação<br/>"
         f"Forte abraço!"
     )
-
-    municipio = associacao.municipio.upper() if associacao.municipio else "CIDADE NÃO DEFINIDA"
-    local_data = f"{municipio}, {data_hoje}."
-
-    # PDF Elements
-    styles = getSampleStyleSheet()
-    style_title = ParagraphStyle('Title', parent=styles['Title'], fontName='Times-Bold', fontSize=14, alignment=TA_CENTER, leading=28, spaceBefore=40)
-    style_normal = ParagraphStyle('Normal', parent=styles['Normal'], fontName='Times-Roman', fontSize=12, leading=18, alignment=TA_JUSTIFY)
-    style_assinatura = ParagraphStyle('Assinatura', parent=styles['Normal'], fontName='Times-Roman', fontSize=12, leading=18, alignment=TA_CENTER)
-    style_presidente = ParagraphStyle('Presidente', parent=styles['Normal'], fontName='Times-Bold', fontSize=12, alignment=2, textColor=colors.grey)
-
-    buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=50, leftMargin=50, topMargin=120, bottomMargin=50)
-    elements = [
-        Spacer(1, 50),
-        Paragraph(associacao.presidente.user.get_full_name(), style_presidente),
-        Spacer(1, 35),
-        Paragraph("RECIBO DE PAGAMENTO DE ANUIDADE", style_title),
-        Spacer(1, 20),
-        Paragraph(texto, style_normal),
-        Spacer(1, 24),
+    elements.extend([
         Paragraph(local_data, style_normal),
         Spacer(1, 20),
         Paragraph(assinatura, style_assinatura),
-    ]
+    ])
+
+    # Constrói overlay
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=50, leftMargin=50, topMargin=120, bottomMargin=50)
     doc.build(elements)
     buffer.seek(0)
 
+    # Mescla com o template
     overlay_pdf = PdfReader(buffer)
     for index, template_page in enumerate(template_pdf.pages):
         if index < len(overlay_pdf.pages):
             overlay_page = overlay_pdf.pages[index]
             PageMerge(template_page).add(overlay_page).render()
 
-    # Geração do arquivo
+    # Salva arquivo final
+    nome_associado = slugify(associado.user.get_full_name())
+    # inclui o ID do pagamento no nome para não sobrescrever vários parciais
+    pdf_name = f"recibo_parcial_anuidade_{associado.id}_{nome_associado}_{anuidade_assoc.anuidade.ano}_pg{pagamento.id}.pdf"
+    pdf_path = os.path.join(settings.MEDIA_ROOT, 'documentos', pdf_name)
+    os.makedirs(os.path.dirname(pdf_path), exist_ok=True)
+    PdfWriter(pdf_path, trailer=template_pdf).write()
+
+    # Redireciona com link
+    pdf_url = f"{settings.MEDIA_URL}documentos/{pdf_name}"
+    query_string = urlencode({'pdf_url': pdf_url})
+    return redirect(f"{reverse('app_automacoes:pagina_acoes', args=[associado.id])}?{query_string}&tipo=anuidade_parcial")
+
+
+# ======================================================================================================
+# GERAR RECIBO DE ANUIDADE
+
+def gerar_recibo_anuidade(request, anuidade_assoc_id):
+    anuidade_assoc = get_object_or_404(AnuidadeAssociado, id=anuidade_assoc_id)
+    associado = anuidade_assoc.associado
+    associacao = associado.associacao
+
+    # Totais
+    total_pago = anuidade_assoc.pagamentos.aggregate(total=Sum('valor'))['total'] or Decimal('0.00')
+    total_desconto = anuidade_assoc.descontos.aggregate(total=Sum('valor_desconto'))['total'] or Decimal('0.00')
+    valor_anuidade = anuidade_assoc.anuidade.valor_anuidade
+    soma_total = total_pago + total_desconto
+
+    # Só gera se quitado (pago+desconto >= valor)
+    if soma_total < valor_anuidade:
+        return HttpResponse(
+            "Ainda há saldo devedor. O recibo será gerado apenas quando o total for quitado (via pagamento ou desconto).",
+            status=400
+        )
+
+    # PDF base (modelo)
+    template_path = os.path.join(settings.MEDIA_ROOT, 'pdf/recibo_anuidade.pdf')
+    if not os.path.exists(template_path):
+        return HttpResponse("O PDF base para o Recibo de Anuidade não foi encontrado.", status=404)
+    template_pdf = PdfReader(template_path)
+
+    # Utilidades
+    MESES_PT = {
+        1: "Janeiro", 2: "Fevereiro", 3: "Março", 4: "Abril", 5: "Maio", 6: "Junho",
+        7: "Julho", 8: "Agosto", 9: "Setembro", 10: "Outubro", 11: "Novembro", 12: "Dezembro"
+    }
+
+    def data_extenso(dt: datetime) -> str:
+        return f"{dt.day} de {MESES_PT.get(dt.month, dt.strftime('%B'))} de {dt.year}"
+
+    # Dados de itens
+    pagamentos_qs = anuidade_assoc.pagamentos.order_by('data_pagamento')
+    descontos_qs = anuidade_assoc.descontos.order_by('data_concessao')
+
+    # Último pagamento (para fallback, se quiser usar em algum lugar)
+    ultimo_pagamento = pagamentos_qs.last()
+    data_hoje = data_extenso(datetime.now())
+
+    # Texto principal
+    texto = (
+        f"Recebemos de <strong>{associado.user.get_full_name()}</strong>, "
+        f"inscrito no CPF sob o nº <strong>{associado.cpf}</strong>, "
+        f"a importância de <strong>R$ {total_pago:.2f}</strong> referente ao pagamento da anuidade "
+        f"do exercício de <strong>{anuidade_assoc.anuidade.ano}</strong>."
+    )
+    if total_desconto > 0:
+        texto += (
+            f" Um desconto de <strong>R$ {total_desconto:.2f}</strong> foi concedido, "
+            f"totalizando o valor integral de <strong>R$ {valor_anuidade:.2f}</strong>."
+        )
+
+    texto += (
+        f" Este pagamento foi efetuado à <strong>{associacao.razao_social}</strong>, "
+        f"inscrita no CNPJ sob o nº {associacao.cnpj}, com sede na {associacao.logradouro}, nº {associacao.numero}, "
+        f"{associacao.bairro}, {associacao.municipio or 'Município não informado'}/{associacao.uf}. "
+
+    )
+
+    assinatura = (        
+        f"<i>Agradecemos por sua confiança. A contribuição anual é essencial para a manutenção das atividades da associação.</i>"
+        f" Presidente, {associacao.presidente.user.get_full_name()}"
+    )
+
+    municipio = associacao.municipio.upper() if associacao.municipio else "CIDADE NÃO DEFINIDA"
+    local_data = f"{municipio}, {data_hoje}."
+
+    # Styles
+    styles = getSampleStyleSheet()
+    style_title = ParagraphStyle(
+        'Title', parent=styles['Title'], fontName='Times-Bold', fontSize=14,
+        alignment=TA_CENTER, leading=28, spaceBefore=40
+    )
+    style_header = ParagraphStyle(
+        'Header', parent=styles['Heading3'], fontName='Times-Bold', fontSize=12,
+        leading=16, spaceBefore=10, spaceAfter=6
+    )
+    style_normal = ParagraphStyle(
+        'Normal', parent=styles['Normal'], fontName='Times-Roman', fontSize=12,
+        leading=18, alignment=TA_JUSTIFY
+    )
+    style_assinatura = ParagraphStyle(
+        'Assinatura', parent=styles['Normal'], fontName='Times-Roman', fontSize=12,
+        leading=18, alignment=TA_CENTER
+    )
+
+    # Montagem dos elementos
+    elements = [
+
+        Paragraph("RECIBO DE CONTRIBUIÇÃO ANUAL", style_title),
+        Spacer(1, 2),
+        Paragraph(texto, style_normal),
+        Spacer(1, 16),
+    ]
+
+    # ===========================
+    # Detalhamento dos Pagamentos
+    # ===========================
+    if pagamentos_qs.exists():
+        elements.append(Paragraph("Detalhamento das contribuições", style_header))
+
+        # Cabeçalho da tabela
+        data_table = [["Data", "Valor (R$)", "Registrado por", "Comprovante"]]
+
+        for p in pagamentos_qs:
+            # Data
+            dp = p.data_pagamento
+            if hasattr(dp, 'strftime'):
+                data_fmt = data_extenso(dp)
+            else:
+                # caso venha naive/str (fallback)
+                try:
+                    data_fmt = data_extenso(datetime.strptime(str(dp), "%Y-%m-%d"))
+                except Exception:
+                    data_fmt = str(dp)
+
+            # Valor
+            valor_fmt = f"{Decimal(p.valor):.2f}"
+
+            # Registrado por
+            registrador = getattr(p, 'registrado_por', None)
+            if registrador:
+                registrado_por = registrador.get_full_name() or registrador.get_username() or str(registrador)
+            else:
+                registrado_por = "—"
+
+            # Comprovante (link, se houver)
+            comprovante_cell = "—"
+            comp = getattr(p, 'comprovante_up', None)
+            try:
+                if comp and getattr(comp, 'url', None):
+                    comprovante_cell = Paragraph(f'<link href="{comp.url}">Comprovante OK</link>', styles['Normal'])
+            except Exception:
+                comprovante_cell = "—"
+
+            data_table.append([data_fmt, valor_fmt, registrado_por, comprovante_cell])
+
+        pagamentos_table = Table(
+            data_table,
+            colWidths=[120, 80, '*', 100]
+        )
+        pagamentos_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+            ('TEXTCOLOR',   (0, 0), (-1, 0), colors.black),
+            ('FONTNAME',    (0, 0), (-1, 0), 'Times-Bold'),
+            ('ALIGN',       (1, 1), (1, -1), 'RIGHT'),  # valor à direita
+            ('VALIGN',      (0, 0), (-1, -1), 'MIDDLE'),
+            ('INNERGRID',   (0, 0), (-1, -1), 0.25, colors.grey),
+            ('BOX',         (0, 0), (-1, -1), 0.25, colors.grey),
+            ('FONTSIZE',    (0, 0), (-1, -1), 10),
+            ('LEADING',     (0, 0), (-1, -1), 12),
+        ]))
+        elements.extend([pagamentos_table, Spacer(1, 12)])
+    else:
+        elements.append(Paragraph(
+            "Quitação realizada sem pagamentos registrados (apenas por desconto).",
+            styles['Italic']
+        ))
+        elements.append(Spacer(1, 12))
+
+    # ======================
+    # Detalhamento Descontos
+    # ======================
+    if total_desconto > 0 and descontos_qs.exists():
+        elements.append(Paragraph("Descontos Concedidos", style_header))
+        descontos_table_data = [["Data", "Valor (R$)", "Motivo", "Concedido por"]]
+
+        for d in descontos_qs:
+            dt = d.data_concessao
+            if hasattr(dt, 'strftime'):
+                data_fmt = data_extenso(dt)
+            else:
+                try:
+                    data_fmt = data_extenso(datetime.strptime(str(dt), "%Y-%m-%d"))
+                except Exception:
+                    data_fmt = str(dt)
+
+            valor_fmt = f"{Decimal(d.valor_desconto):.2f}"
+            motivo = getattr(d, 'motivo', '') or "—"
+            concedido_por_user = getattr(d, 'concedido_por', None)
+            concedido_por = (
+                concedido_por_user.get_full_name() or concedido_por_user.get_username()
+                if concedido_por_user else "—"
+            )
+
+            descontos_table_data.append([data_fmt, valor_fmt, motivo, concedido_por])
+
+        descontos_table = Table(descontos_table_data, colWidths=[120, 80, '*', 100])
+        descontos_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+            ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
+            ('ALIGN', (1, 1), (1, -1), 'RIGHT'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.grey),
+            ('BOX', (0, 0), (-1, -1), 0.25, colors.grey),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ]))
+        elements.extend([descontos_table, Spacer(1, 12)])
+
+    # =========
+    # Local e assinatura
+    elements.extend([
+        Paragraph(local_data, style_normal),
+        Spacer(1, 20),
+        Paragraph(assinatura, style_assinatura),
+    ])
+
+    # Constrói overlay
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(
+        buffer, pagesize=A4,
+        rightMargin=50, leftMargin=50, topMargin=120, bottomMargin=50
+    )
+    doc.build(elements)
+    buffer.seek(0)
+
+    # Mescla com o template
+    overlay_pdf = PdfReader(buffer)
+    for index, template_page in enumerate(template_pdf.pages):
+        if index < len(overlay_pdf.pages):
+            overlay_page = overlay_pdf.pages[index]
+            PageMerge(template_page).add(overlay_page).render()
+
+    # Salva arquivo final
     nome_associado = slugify(associado.user.get_full_name())
     pdf_name = f"recibo_anuidade_{associado.id}_{nome_associado}_{anuidade_assoc.anuidade.ano}.pdf"
     pdf_path = os.path.join(settings.MEDIA_ROOT, 'documentos', pdf_name)
     os.makedirs(os.path.dirname(pdf_path), exist_ok=True)
     PdfWriter(pdf_path, trailer=template_pdf).write()
 
-    # Redireciona com o link do PDF
+    # Redireciona com link
     pdf_url = f"{settings.MEDIA_URL}documentos/{pdf_name}"
     query_string = urlencode({'pdf_url': pdf_url})
     return redirect(f"{reverse('app_automacoes:pagina_acoes', args=[associado.id])}?{query_string}&tipo=anuidade")

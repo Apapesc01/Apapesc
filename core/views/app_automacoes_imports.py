@@ -6,6 +6,7 @@ from app_automacoes.models import (
     DeclaracaoAtividadePesqueiraModel,
     DeclaracaoHipossuficienciaModel,
     ProcuracaoJuridicaModel,
+    ParcialReciboAnuidadeModel,
     ReciboAnuidadeModel,
     ReciboServicoExtraModel,
     CarteirinhaAssociadoModel,
