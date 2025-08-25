@@ -22,6 +22,7 @@ urlpatterns = [
      path('upload/autorizacao-direito-imagem/', views.upload_pdf_base, {'automacao': 'autorizacao_direito_imagem'}, name='upload_pdf_autorizacao_direito_imagem'),
      path('upload/autorizacao-acesso-gov/', views.upload_pdf_base, {'automacao': 'autorizacao_acesso_gov'}, name='upload_pdf_autorizacao_acesso_gov'),
      path('upload/declaracao-desfiliacao/', views.upload_pdf_base, {'automacao': 'declaracao_desfiliacao'}, name='upload_pdf_declaracao_desfiliacao'),
+     path('upload/declaracao-veracidade/', views.upload_pdf_base, {'automacao': 'declaracao_veracidade'}, name='upload_pdf_declaracao_veracidade'),
      path('upload/direitos-deveres/', views.upload_pdf_base, {'automacao': 'direitos_deveres'}, name='upload_pdf_direitos_deveres'),
      path('upload/retirada-documentos/', views.upload_pdf_base, {'automacao': 'retirada_documentos'}, name='upload_pdf_retirada_documentos'),
 
@@ -82,6 +83,10 @@ urlpatterns = [
      
      path('gerar-declaracao-desfiliacao/<int:associado_id>/', views.gerar_declaracao_desfiliacao,
           name='gerar_declaracao_desfiliacao'),
+     
+     path('gerar-declaracao-veracidade/<int:associado_id>/', views.gerar_declaracao_veracidade,
+          name='gerar_declaracao_veracidade'),
+          
      
      path('gerar-direitos-deveres/<int:associado_id>/', views.gerar_direitos_deveres,
           name='gerar_direitos_deveres'),

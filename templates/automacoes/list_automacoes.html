@@ -434,14 +434,34 @@
                 </td>
             </tr>
         {% endif %}
-            
+
+        {% if declaracao_veracidade.exists %}
+            {% for declaracao in declaracao_veracidade %}
+            <tr>
+                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                <td>{{ declaracao.id }}</td>
+                <td>
+                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                </td>
+                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                <td>
+                    <a href="{% url 'app_automacoes:upload_pdf_declaracao_veracidade' %}">
+                        Substituir Modelo
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="5" style="text-align:center;">
+                    <a href="{% url 'app_automacoes:upload_pdf_declaracao_veracidade' %}">
+                        Upload Modelo Base Declaração Veracidade
+                    </a>
+                </td>
+            </tr>
+        {% endif %}            
     </tbody>
 </table>
-
-
-
-
-
 
 </div>
 

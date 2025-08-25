@@ -20,6 +20,7 @@ MODELO_MAP = {
     'declaracao_desfiliacao': DeclaracaoDesfiliacaoModel,
     'direitos_deveres':DireitosDeveres,
     'retirada_documentos': RetiradaDocumentos,
+    'declaracao_veracidade':DeclaracaoDeVeracidade,
 
 }
 
@@ -40,8 +41,9 @@ def upload_pdf_base(request, automacao, anuidade_assoc_id=None):
         'autorizacao_direito_imagem': AutorizacaoDireitoImagemModel,
         'autorizacao_acesso_gov': AutorizacaoAcessoGovModel,
         'declaracao_desfiliacao': DeclaracaoDesfiliacaoModel,
-        'direitos_deveres':DireitosDeveres,
+        'direitos_deveres': DireitosDeveres,
         'retirada_documentos': RetiradaDocumentos,
+        'declaracao_veracidade': DeclaracaoDeVeracidade,
     }
     
     modelo = modelo_map.get(automacao)
@@ -113,6 +115,7 @@ class ListaTodosArquivosView(LoginRequiredMixin, TemplateView):
         context['declaracao_desfiliacao'] = DeclaracaoDesfiliacaoModel.objects.all()
         context['direitos_deveres'] = DireitosDeveres.objects.all()
         context['retirada_documentos'] = RetiradaDocumentos.objects.all()
+        context['declaracao_veracidade'] = DeclaracaoDeVeracidade.objects.all()
         
         return context
 
@@ -762,14 +765,14 @@ def gerar_procuracao_juridica(request, associado_id):
 
     # Texto da declaração
     texto1 = (
-        f"<strong>OUTORGANTE(S)</strong>: <strong>{associado.user.get_full_name()}</strong>, brasileira, "
-        f"profissão, {associado.profissao}, estado civil, {associado.estado_civil}, CPF nº {associado.cpf}, "
+        f"<strong>OUTORGANTE(S)</strong>: <strong>{associado.user.get_full_name()}</strong>, "
+        f"{associado.profissao}, {associado.estado_civil}, CPF nº {associado.cpf}, "
         f"RG nº {associado.rg_numero}, com residência e domicílio estabelecido á {associado.logradouro}, "
         f"nº {associado.numero}, {associado.complemento}, {associado.bairro}, {associado.municipio} -"
         f" {associado.uf} {associado.cep}. "
         f"<br /><br /><strong>OUTORGADOS</strong>: <strong>CRISTIANI JORDANI DOS SANTOS RAMOS</strong>, "
         f"brasileira, casada, advogada, inscrição na OAB/SC sob o número 51.410, inscrita no CPF 853.801.219-34, "
-        f"<strong>SAMARA IZILDA CORREA DOS SANTOS</strong>,  brasileira, divorciada,"
+        f"<strong>SAMARA IZILDA CORREA DOS SANTOS</strong>,  brasileira, divorciada, "
         f"advogada, inscrição na OAB/SC sob o número 51.380, inscrita no CPF 027.034.419-59, integrantes do "
         f"escritório JORDANI & SANTOS Advogados Associados."
     )
@@ -950,7 +953,7 @@ def gerar_recibo_parcial_anuidade(request, anuidade_assoc_id):
     det_table_data = [["Data", "Valor (R$)", "Registrado por", "Comprovante"]]
     comp_cell = "—"
     if comprovante_link:
-        comp_cell = Paragraph(f'<link href="{comprovante_link}">Comprovante</link>', styles['Normal'])
+        comp_cell = Paragraph(f'<link href="{comprovante_link}">Comprovante Ok</link>', styles['Normal'])
     det_table_data.append([data_pagamento_extenso, f"{valor_pagamento:.2f}", registrado_por, comp_cell])
 
     det_table = Table(det_table_data, colWidths=[120, 80, '*', 100])
@@ -1706,8 +1709,8 @@ def gerar_procuracao_administrativa(request, associado_id):
 
     # Texto da declaração
     texto1 = (
-        f"<strong>OUTORGANTE(S)</strong>: <strong>{associado.user.get_full_name()}</strong>, brasileira, "
-        f"profissão, {associado.profissao}, estado civil, {associado.estado_civil}, CPF nº {associado.cpf}, "
+        f"<strong>OUTORGANTE(S)</strong>: <strong>{associado.user.get_full_name()}</strong>, "
+        f"{associado.profissao}, {associado.estado_civil}, CPF nº {associado.cpf}, "
         f"RG nº {associado.rg_numero}, com residência e domicílio estabelecido á {associado.logradouro}, "
         f"nº {associado.numero}, {associado.complemento}, {associado.bairro}, {associado.municipio} -"
         f" {associado.uf} {associado.cep}. "
@@ -1719,14 +1722,14 @@ def gerar_procuracao_administrativa(request, associado_id):
     )
     texto2 = (
         f"<strong>PODERES:</strong> Pelo presente instrumento, o(a) outorgante confere plenos poderes à <strong>APAPESC - "
-        f"Associação de Assistência aos Servidores Públicos de Santa Catarina</strong> e/ou seus representantes legais, "
+        f"Associação dos Pescadores Artersanais Profissionais do Estado de Santa Catarina</strong> e/ou seus representantes legais, "
         f"para que, em seu nome, representem seus interesses junto a qualquer órgão da Administração Pública Direta ou Indireta, "
         f"entidades autárquicas, fundacionais, ou quaisquer repartições governamentais, em todas as esferas federativas."
         
         f"<br />Esta procuração concede poderes amplos, gerais e ilimitados, inclusive os da cláusula <em>“ad judicia et extra”</em>, "
         f"permitindo aos outorgados propor requerimentos, firmar declarações, prestar informações, protocolar documentos, "
         f"solicitar diligências e praticar todos os atos necessários para assegurar os direitos do(a) associado(a), "
-        f"em especial <strong>para fins de requerimento administrativo do benefício do Seguro Defeso</strong>, junto ao INSS, MAPA, MTE "
+        f"em especial <strong>para fins de requerimentos administrativos</strong>, junto ao INSS, MAPA, MTE "
         f"e demais órgãos competentes."
         
         f"<br /><br />A presente outorga autoriza ainda a obtenção de informações, consultas em sistemas oficiais, assinatura de formulários, "
@@ -1841,17 +1844,17 @@ def gerar_autorizacao_direitos_imagem(request, associado_id):
 
     # Texto da Autorização
     texto1 = (
-        f"<strong>ATORIZAÇÂO</strong>: Eu, <strong>{associado.user.get_full_name()}</strong>, brasileira, "
-        f"profissão, {associado.profissao}, estado civil, {associado.estado_civil}, CPF nº {associado.cpf}, "
+        f"<strong>ATORIZAÇÂO</strong>: Eu, <strong>{associado.user.get_full_name()}</strong>, "
+        f"{associado.profissao}, estado civil, {associado.estado_civil}, CPF nº {associado.cpf}, "
         f"RG nº {associado.rg_numero}, com residência e domicílio estabelecido á {associado.logradouro}, "
         f"nº {associado.numero}, {associado.complemento}, {associado.bairro}, {associado.municipio} -"
         f" {associado.uf} {associado.cep}. "
-        f"<br /><br /><strong>AUTORIZO</strong>: <strong> A ASSOCIAÇÃO APAPESC</strong>: "
+        f"<strong>AUTORIZO A ASSOCIAÇÃO APAPESC utilizar e usufruir de imagem vinculada à minha persona</strong>. "
 
     )
     texto2 = (
-        f"<strong>AUTORIZAÇÃO:</strong> O(A) associado(a) autoriza expressamente a <strong>APAPESC - Associação de "
-        f"Assistência aos Servidores Públicos de Santa Catarina</strong> a utilizar sua imagem, voz e nome para fins institucionais, "
+        f"<strong>AUTORIZAÇÃO:</strong> O(A) associado(a) autoriza expressamente a <strong>APAPESC - Associação dos "
+        f"Pescadores Artesanais Profissionais do Estadao de Santa Catarina</strong> a utilizar sua imagem, voz e nome para fins institucionais, "
         f"incluindo, mas não se limitando a, postagens em redes sociais, inserções em campanhas de divulgação, matérias jornalísticas, "
         f"artigos e publicações no site oficial da associação, bem como em materiais impressos ou digitais voltados à comunicação com os associados "
         f"e à promoção das atividades realizadas pela associação. "
@@ -1963,17 +1966,17 @@ def gerar_autorizacao_acesso_gov(request, associado_id):
 
     # Texto da Autorização acesso e Gestão conta Gov
     texto1 = (
-        f"<strong>ATORIZAÇÂO</strong>: Eu, <strong>{associado.user.get_full_name()}</strong>, brasileira, "
+        f"<strong>ATORIZAÇÂO</strong>: Eu, <strong>{associado.user.get_full_name()}</strong>, "
         f"profissão, {associado.profissao}, estado civil, {associado.estado_civil}, CPF nº {associado.cpf}, "
         f"RG nº {associado.rg_numero}, com residência e domicílio estabelecido á {associado.logradouro}, "
         f"nº {associado.numero}, {associado.complemento}, {associado.bairro}, {associado.municipio} -"
         f" {associado.uf} {associado.cep}. "
-        f"<br /><br /><strong>AUTORIZO</strong>: <strong>INTEGRANTES ADMINISTRATIVOS DA APAPESC</strong>: "
+        f"<br /><br /><strong>AUTORIZO</strong>: <strong>INTEGRANTES ADMINISTRATIVOS DA APAPESC O ACESSO À CONTA GOV</strong>. "
 
     )
     texto2 = (
     f"<strong>AUTORIZAÇÃO DE ACESSO À CONTA GOV.BR:</strong> O(A) associado(a) autoriza formalmente a <strong>APAPESC - "
-    f"Associação de Assistência aos Servidores Públicos de Santa Catarina</strong>, por meio de seus representantes administrativos, "
+    f"Associação dos Pescadores Artersanais Profissionais do Estado de Santa Catarina</strong>, por meio de seus representantes administrativos, "
     f"a realizar acesso e gestão das informações disponíveis na plataforma <strong>Gov.br</strong>, vinculadas ao seu CPF, exclusivamente "
     f"para fins de representação institucional, acompanhamento de benefícios, atualização cadastral, instrução de processos administrativos "
     f"ou judiciais e demais procedimentos relacionados aos direitos e interesses do(a) associado(a) perante órgãos públicos. "
@@ -2089,7 +2092,7 @@ def gerar_declaracao_desfiliacao(request, associado_id):
 
     # Texto do pedido de desfiliação
     texto1 = (
-        f"<strong>EU</strong>: <strong>{associado.user.get_full_name()}</strong>, brasileira, "
+        f"<strong>EU</strong>: <strong>{associado.user.get_full_name()}</strong>, "
         f"profissão, {associado.profissao}, estado civil, {associado.estado_civil}, CPF nº {associado.cpf}, "
         f"RG nº {associado.rg_numero}, com residência e domicílio estabelecido á {associado.logradouro}, "
         f"nº {associado.numero}, {associado.complemento}, {associado.bairro}, {associado.municipio} -"
@@ -2099,14 +2102,14 @@ def gerar_declaracao_desfiliacao(request, associado_id):
     
     texto2 = (
         f"<strong>DECLARAÇÃO DE DESFILIAÇÃO VOLUNTÁRIA:</strong> Eu, <strong>{associado.user.get_full_name()}</strong>, "
-        f"associado(a) da <strong>APAPESC - Associação de Assistência aos Servidores Públicos de Santa Catarina</strong>, "
+        f"associado(a) da <strong>APAPESC - Associação dos Pescadores Artersanais Profissionais do Estado de Santa Catarina</strong>, "
         f"venho por meio desta, manifestar de forma livre, consciente e espontânea minha decisão de <strong>me desligar do quadro de associados da APAPESC</strong>."
         f"<br /><br />Declaro estar ciente de que, a partir desta data, deixarei de usufruir dos benefícios, serviços e representações oferecidos pela associação, "
         f"renunciando voluntariamente a qualquer vínculo associativo ativo."
         f"<br /><br />Solicito que sejam adotadas as providências administrativas necessárias para formalização da minha desfiliação, "
         f"bem como a atualização dos registros internos da associação."
         f"<br /><br />Reitero que esta decisão é tomada por minha livre e espontânea vontade, sem qualquer coação ou influência de terceiros, "
-        f"e reconheço o trabalho e a importância da APAPESC na defesa dos interesses dos servidores públicos catarinenses."
+        f"e reconheço o trabalho e a importância da APAPESC na defesa dos interesses dos pescadores catarinenses."
     )
 
 
@@ -2461,4 +2464,126 @@ def gerar_retirada_documentos(request, associado_id):
     # 🔗 Redireciona com link para download
     pdf_url = f"{settings.MEDIA_URL}documentos/{pdf_name}"
     return redirect(f"{reverse('app_automacoes:pagina_acoes', args=[associado.id])}?pdf_url={pdf_url}")
+#==========================================================================================================
+
+# GERAR DECLARAÇÃO DE VERACIDADE
+def gerar_declaracao_veracidade(request, associado_id):
+    associado = get_object_or_404(AssociadoModel, id=associado_id)
+    associacao = associado.associacao
+
+    # PDF base
+    template_path = os.path.join(settings.MEDIA_ROOT, 'pdf/declaracao_veracidade.pdf')
+    if not os.path.exists(template_path):
+        return HttpResponse("O PDF base para a Declaração de Veracidade não foi encontrado.", status=404)
+
+    template_pdf = PdfReader(template_path)
+    template_page = template_pdf.pages[0]
+
+    buffer = BytesIO()
+
+    # Estilos
+    styles = getSampleStyleSheet()
+    style_title = ParagraphStyle(
+        'Title',
+        parent=styles['Title'],
+        fontName='Times-Bold',
+        fontSize=16,
+        alignment=1,
+        leading=32,
+        spaceBefore=80,
+        textColor=colors.grey,
+    )
+    style_normal = ParagraphStyle(
+        'Normal',
+        parent=styles['Normal'],
+        fontName='Times-Roman',
+        fontSize=12,
+        leading=22,
+        alignment=TA_JUSTIFY,
+    )
+    style_data = ParagraphStyle(
+        'Data',
+        parent=styles['Normal'],
+        fontName='Times-Roman',
+        fontSize=12,
+        leading=22,
+        alignment=0,
+        spaceBefore=20,
+    )
+    style_assinatura = ParagraphStyle(
+        'Assinatura',
+        parent=styles['Normal'],
+        fontName='Times-Roman',
+        fontSize=12,
+        leading=22,
+        alignment=TA_CENTER,
+        spaceBefore=40,
+    )
+
+    data_atual = datetime.now().strftime('%d/%m/%Y')
+
+    # Texto principal
+    texto = (
+        f"Eu, <strong>{associado.user.get_full_name()}</strong>, inscrito(a) no CPF nº {associado.cpf}, "
+        f"<strong>DECLARO</strong>, para os devidos fins e sob as penas da lei (art. 299 do Código Penal e Lei nº 7.115/1983), que "
+        f"Resido no endereço informado: {associado.logradouro}, nº {associado.numero}, "
+        f"{associado.complemento or ''}, {associado.bairro}, {associado.municipio} - {associado.uf}, "
+        f"CEP {associado.cep}; que "
+        f"estou diretamente envolvido(a) e/ou vinculado(a) às atividades da pesca, conforme declarado à "
+        f"APAPESC – Associação de Pescadores e Agricultores de Santa Catarina;"
+        f"<br/><br/>"
+        f"Reconheço que todas as informações prestadas à APAPESC são verdadeiras e de minha inteira responsabilidade, "
+        f"comprometendo-me a responder civil, administrativa e criminalmente por qualquer declaração falsa ou omissão "
+        f"que possa vir a causar prejuízos;"
+        f"<br/><br/>"
+        f"Estou ciente de que a presente declaração servirá como base para registros, cadastros, requerimentos e demais "
+        f"atos praticados pela APAPESC em meu nome, relacionados à atividade pesqueira."
+        f"<br/><br/>"
+        f"Por ser expressão da verdade, firmo a presente declaração."
+    )
+
+    local_data = f"FLORIANÓPOLIS, {data_atual}."
+
+    assinatura = (
+        "_______________________________________________<br/>"
+        f"{associado.user.get_full_name()} - CPF: {associado.cpf}"
+    )
+
+    elements = [
+        Paragraph("DECLARAÇÃO DE VERACIDADE", style_title),
+        Spacer(1, 20),
+        Paragraph(texto, style_normal),
+        Spacer(1, 20),
+        Paragraph(local_data, style_data),
+        Spacer(1, 40),
+        Paragraph(assinatura, style_assinatura),
+    ]
+
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=85,
+        leftMargin=85,
+        topMargin=120,
+        bottomMargin=40,
+    )
+    doc.build(elements)
+
+    buffer.seek(0)
+    overlay_pdf = PdfReader(buffer)
+    overlay_page = overlay_pdf.pages[0]
+
+    PageMerge(template_page).add(overlay_page).render()
+
+    pdf_name = f"declaracao_veracidade_{slugify(associado.user.get_full_name())}.pdf"
+    pdf_path = os.path.join(settings.MEDIA_ROOT, 'documentos', pdf_name)
+    os.makedirs(os.path.dirname(pdf_path), exist_ok=True)
+    PdfWriter(pdf_path, trailer=template_pdf).write()
+
+    pdf_url = f"{settings.MEDIA_URL}documentos/{pdf_name}"
+    query_string = urlencode({'pdf_url': pdf_url})
+    redirect_url = f"{reverse('app_automacoes:pagina_acoes', kwargs={'associado_id': associado.id})}?{query_string}"
+    return redirect(redirect_url)
+
+# =======================================================================================================
 

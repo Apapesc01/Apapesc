@@ -517,6 +517,12 @@
                 </a>
             </div>   
             <div>
+                <h2>Declaração de Veracidade</h2>
+                <a href="{% url 'app_automacoes:gerar_declaracao_veracidade' associado.id %}">
+                    Gerar Documento
+                </a>
+            </div>            
+            <div>
                 <h2>Procuração Jurídica (Ad Judicia)</h2>
                 <a href="{% url 'app_automacoes:gerar_procuracao_juridica' associado.id %}">
                     Gerar Documento
@@ -563,13 +569,7 @@
                 <a href="{% url 'app_automacoes:gerar_carteirinha_apapesc' associado.id %}">
                     Gerar Documento
                 </a>
-            </div> 
-            <div>
-                <h2>Aguardando...</h2>
-                <a href="">
-                    Gerar Documento
-                </a>
-            </div> 
+            </div>  
             <div>
                 <h2>Aguardando...</h2>
                 <a href="">

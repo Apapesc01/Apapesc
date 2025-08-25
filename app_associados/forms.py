@@ -113,6 +113,35 @@ class EditAssociadoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user_initial = kwargs.pop('user_initial', None)
         super().__init__(*args, **kwargs)
+        
+        # Evitar autofill do navegador nos campos dos pais
+        if 'nome_mae' in self.fields:
+            self.fields['nome_mae'].widget.attrs.update({
+                'autocomplete': 'section-parent additional-name',
+                'autocapitalize': 'words',
+                'inputmode': 'text',
+            })
+        if 'nome_pai' in self.fields:
+            self.fields['nome_pai'].widget.attrs.update({
+                'autocomplete': 'section-parent additional-name',
+                'autocapitalize': 'words',
+                'inputmode': 'text',
+            })
+
+        # Dar tokens corretos ao bloco de endereço (ajuda o navegador a não confundir)
+        for campo in ['logradouro', 'numero', 'bairro', 'cep', 'municipio_circunscricao']:
+            if campo in self.fields:
+                token = {
+                    'logradouro': 'address-line1',
+                    'numero': 'address-line2',
+                    'bairro': 'address-level4',
+                    'cep': 'postal-code',
+                    'municipio_circunscricao': 'address-level2',  # cidade
+                }.get(campo, 'off')
+                self.fields[campo].widget.attrs.update({
+                    'autocomplete': f'section-endereco {token}',
+                })        
+        
         # Drive
         self.fields['drive_folder_id'].widget.attrs['readonly'] = True
 
@@ -157,7 +186,6 @@ class EditAssociadoForm(forms.ModelForm):
         if user_initial:
             self.fields['user'].initial = user_initial
             self.fields['user'].disabled = True
-    
     
 
 

@@ -56,6 +56,7 @@
             {% endwith %}
         {% endfor %}
     </div>
+
     <!--Tabs-->
     <div class="tabs">
         <button class="tab-link active" data-tab="servico_single">Serviço Singular</button>
@@ -130,6 +131,25 @@
 
         <div class="two-cols">
             <div class="form-group">
+                <form id="notas-form" method="post">
+                    {% csrf_token %}
+
+                    <div class="form-group" style="padding: 1rem; margin-bottom: 1.2rem; background: #f9f9f9; border-radius: 6px;">
+                        <h2>Anotações</h2>
+                        <textarea
+                            name="content"
+                            id="content-textarea"
+                            rows="10"
+                            style="width:100%; min-height:160px; resize:vertical; padding:10px; font-size:14px; font-family: inherit; background:white;"
+                            oninput="autoGrow(this)"
+                        >{{ servico.content|safe }}</textarea>
+                        <button type="submit" id="btn-salvar-anotacao" class="btn btn-primary" style="margin-top:8px;">Salvar Alterações</button>
+                        <span id="notas-msg" style="margin-left:15px;color:green;display:none;"></span>                
+                    </div>            
+                </form>
+            </div>  
+
+            <div class="form-group" style="padding: 1rem; margin-bottom: 1.2rem; background: #f9f9f9; border-radius: 6px;">
                 {% if servico.entrada_servico %}
                     <div class="entrada-section">
                         <h2>Entrada Financeira</h2>
@@ -182,24 +202,7 @@
                     </div>
                 {% endif %}
             </div> 
-            <div class="form-group">
-                <form id="notas-form" method="post">
-                    {% csrf_token %}
 
-                    <div class="form-group">
-                        <h2>Anotações</h2>
-                        <textarea
-                            name="content"
-                            id="content-textarea"
-                            rows="10"
-                            style="width:100%; min-height:160px; resize:vertical; padding:10px; font-size:14px; font-family: inherit; background:white;"
-                            oninput="autoGrow(this)"
-                        >{{ servico.content|safe }}</textarea>
-                        <button type="submit" id="btn-salvar-anotacao" class="btn btn-primary" style="margin-top:8px;">Salvar Alterações</button>
-                        <span id="notas-msg" style="margin-left:15px;color:green;display:none;"></span>                
-                    </div>            
-                </form>
-            </div>                    
         </div>
     </div>
     <div class="tab-content" id="tab-instrucoes">

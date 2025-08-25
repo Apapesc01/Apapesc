@@ -17,6 +17,7 @@ from app_automacoes.models import (
     DeclaracaoDesfiliacaoModel,
     DireitosDeveres,
     RetiradaDocumentos,
+    DeclaracaoDeVeracidade,
     )
 
 from app_associados.models import AssociadoModel
