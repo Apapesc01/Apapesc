@@ -192,6 +192,14 @@ class ServicoSingleView(DetailView):
         context['associado'] = self.object.associado 
         return context
         
+class ServicoListView(ListView):
+    model = ServicoModel
+    template_name = 'servicos/list_servicos.html'
+    context_object_name = 'servicos'
+
+    
+
+
 
 # ENTRADAS
 class EntradaCreateView(CreateView):

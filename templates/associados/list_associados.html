@@ -64,8 +64,7 @@
                 <th>Apelido</th>
                 <th>CPF</th>
                 <th>Gov</th>
-                <th>Cel</th>
-                <th>Email</th>                
+                <th>Cel</th>         
                 <th>Ações</th>
             </tr>
         </thead>
@@ -96,7 +95,7 @@
                     </div>
                 </td>
                 <td>{{associado.celular}}</td>
-                <td>{{associado.email}}</td>
+
                 <td>
                     <a href="{% url 'app_associados:single_associado' associado.pk %}" title="Ver"><span class="material-icons icon-view">visibility</span></a>
                     <a href="{% url 'app_associados:edit_associado' associado.pk %}" title="Editar"><span class="material-icons icon-edit">edit</span></a>
