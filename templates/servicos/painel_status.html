@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load dict_filters %} {# Seu filtro customizado para dict_get #}
+
+{% block title %}Painel Kanban - Serviços{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/kamban.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+{% for natureza_key, data in painel_map.items %}
+    <div class="kanban-container">
+        <h2 class="kanban-title">Painel Kanban - {{ data.titulo }}</h2>
+
+        <div class="kanban-board">
+            {% for status, label in data.status_choices %}
+                {% if forloop.first or forloop.counter0|divisibleby:4 %}
+                    <div class="kanban-row">
+                {% endif %}
+
+                <div class="kanban-column">
+                    <h4 class="kanban-column-title">{{ label }}</h4>
+
+                    {% for s in data.colunas|dict_get:status %}
+                        <div class="kanban-card">
+                            <a href="{% url 'app_servicos:edit_servico' s.pk %}" class="kanban-card-title">
+                                {{ s.associado.user.get_full_name }}
+                            </a>
+                            <div class="kanban-card-details">
+                                {{ s.data_inicio|date:"d/m/Y H:i" }}<br>
+                                Tipo: {{ s.get_tipo_servico_display }}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="kanban-empty">Nenhum</div>
+                    {% endfor %}
+
+                </div>
+
+                {% if forloop.counter|divisibleby:4 or forloop.last %}
+                    </div> {# fecha linha #}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}
+{% endblock %}

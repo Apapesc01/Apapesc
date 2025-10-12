@@ -69,7 +69,7 @@
                 <tr>
                     <td>{{ servico.associado.user.get_full_name }}</td>
                     <td>{{ servico.get_tipo_servico_display }}</td>
-                    <td>{{ servico.get_status_servico_display }}</td>
+                    <td>{{ servico.get_status_servico_real_display }}</td>
                     <td>R$ {{ servico.entrada_servico.valor|floatformat:2 }}</td>
                     <td>{{ servico.data_inicio|date:"d/m/Y" }}</td>
                     <td>

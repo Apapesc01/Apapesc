@@ -62,9 +62,8 @@
             <div class="dropdown">
                 <a href="#">Serviços ▾</a>
                 <div class="dropdown-menu">
-                    <a href="{% url 'app_servicos:list_servicos' %}">Lista Serviço</a>
-                    <a href="#">Serviço 2</a>
-                    <a href="#">Serviço 3</a>
+                    <a href="{% url 'app_servicos:list_servicos' %}">Lista Serviços</a>
+                    <a href="{% url 'app_servicos:painel_status_servico' %}">Painel Kanban</a>
                 </div>
             </div>
             {% if user.is_authenticated %}

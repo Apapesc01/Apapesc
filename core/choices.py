@@ -324,6 +324,7 @@ TIPO_SERVICO = [
 ]
 
 
+
 STATUS_EMISSAO_DOC = [
     ('pendente', 'Pendente'),
     ('protocolado_analise', 'Protocolado, em Análise'),

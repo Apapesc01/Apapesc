@@ -2,6 +2,7 @@
 from django.db import models
 from decimal import Decimal
 from django.core.validators import RegexValidator
+from core import choices
 from django.contrib.auth.models import User
 from simple_history.models import HistoricalRecords
 from django.utils import timezone
@@ -108,6 +109,25 @@ class ServicoModel(models.Model):
          
     def __str__(self):
         return f"{self.associado} - {self.natureza_servico}"            
+    
+
+    def get_status_servico_real_display(self):
+        natureza = self.natureza_servico or ''
+        status = self.status_servico or ''
+
+        status_choices_map = {
+            'assessoria': choices.STATUS_ASSESSORIA_PROCESSO,
+            'emissao_documento': choices.STATUS_EMISSAO_DOC,
+            'consultoria': choices.STATUS_CONSULTORIA,
+        }
+
+        lista = status_choices_map.get(natureza, [])
+
+        for value, label in lista:
+            if value == status:
+                return label
+
+        return status or '—'
 
 
 class EntradaFinanceiraModel(models.Model):

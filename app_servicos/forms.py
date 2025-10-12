@@ -5,9 +5,20 @@ from django.core.exceptions import ValidationError
 from decimal import Decimal
 from django.db.models import Sum
 from core.choices import TIPO_SERVICO, STATUS_ASSESSORIA_PROCESSO, STATUS_EMISSAO_DOC, STATUS_CONSULTORIA  # ou apenas os que você precisa
+from core import choices as core_choices
 
+
+from django import forms
+from core import choices as core_choices
 
 class ServicoForm(forms.ModelForm):
+    status_servico = forms.ChoiceField(
+        label="Status do Serviço",
+        required=False,
+        choices=[],  # vamos preencher no __init__
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
     class Meta:
         model = ServicoModel
         fields = [
@@ -17,18 +28,24 @@ class ServicoForm(forms.ModelForm):
         widgets = {
             'content': forms.Textarea(attrs={'rows': 10, 'cols': 50, 'class': 'form-control'}),
         }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['associacao'].required = True
-        self.fields['reparticao'].required = True
 
-        self.fields['natureza_servico'].widget.attrs.update({'class': 'js-natureza-servico'})
-        self.fields['tipo_servico'].widget.attrs.update({'class': 'js-tipo-servico'})
-        self.fields['tipo_servico'].widget.attrs.update({'class': 'js-tipo-servico'})
-        self.fields['status_servico'].widget.attrs.update({'class': 'js-status-servico'})
+        natureza = (
+            self.data.get('natureza_servico') or
+            getattr(self.instance, 'natureza_servico', None)
+        )
 
-                    
-                
+        status_choices_map = {
+            'assessoria': core_choices.STATUS_ASSESSORIA_PROCESSO,
+            'emissao_documento': core_choices.STATUS_EMISSAO_DOC,
+            'consultoria': core_choices.STATUS_CONSULTORIA,
+        }
+
+        self.fields['status_servico'].choices = [('', '---')] + status_choices_map.get(natureza, [])
+
+        
 class EntradaFinanceiraForm(forms.ModelForm):
     class Meta:
         model = EntradaFinanceiraModel

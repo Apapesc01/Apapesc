@@ -96,11 +96,11 @@ class ServicoUpdateView(UpdateView):
         context['associado'] = self.servico.associado 
         context['associacao'] = self.servico.associacao
         context['reparticao'] = self.servico.reparticao
+        
         return context
     
     def get_success_url(self):
         return reverse('app_servicos:single_servico', kwargs={'pk': self.object.pk})
-
 
 
 
@@ -223,9 +223,48 @@ class ServicoListView(ListView):
         return context
 
     
+# Painel KANBAN
 
+class PainelStatusServicoView(View):
+    template_name = 'servicos/painel_status.html'
 
+    def get(self, request):
+        servicos = ServicoModel.objects.select_related('associado__user')
 
+        # Cria a estrutura base
+        natureza_map = {
+            'assessoria': {
+                'titulo': 'Assessoria',
+                'status_choices': STATUS_ASSESSORIA_PROCESSO,
+                'colunas': {status: [] for status, _ in STATUS_ASSESSORIA_PROCESSO},
+            },
+            'emissao_documento': {
+                'titulo': 'Emissão de Documentos',
+                'status_choices': STATUS_EMISSAO_DOC,
+                'colunas': {status: [] for status, _ in STATUS_EMISSAO_DOC},
+            },
+            'consultoria': {
+                'titulo': 'Consultoria',
+                'status_choices': STATUS_CONSULTORIA,
+                'colunas': {status: [] for status, _ in STATUS_CONSULTORIA},
+            },
+        }
+
+        # Distribui os serviços nas colunas certas
+        for s in servicos:
+            natureza = s.natureza_servico
+            status = s.status_servico
+            if natureza in natureza_map:
+                natureza_data = natureza_map[natureza]
+                natureza_data['colunas'].setdefault(status, []).append(s)
+
+        context = {
+            'painel_map': natureza_map
+        }
+        return render(request, self.template_name, context)
+    
+    
+    
 # ENTRADAS
 class EntradaCreateView(CreateView):
     model = EntradaFinanceiraModel
