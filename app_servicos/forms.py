@@ -4,6 +4,7 @@ from django.forms import DateInput
 from django.core.exceptions import ValidationError
 from decimal import Decimal
 from django.db.models import Sum
+from core.choices import TIPO_SERVICO, STATUS_ASSESSORIA_PROCESSO, STATUS_EMISSAO_DOC, STATUS_CONSULTORIA  # ou apenas os que você precisa
 
 
 class ServicoForm(forms.ModelForm):
@@ -95,3 +96,21 @@ class PagamentoEntradaForm(forms.ModelForm):
             raise ValidationError(f'O valor máximo permitido é R$ {valor_restante:.2f}.')
 
         return valor_pago
+    
+
+
+class ServicoSearchForm(forms.Form):
+    associado_nome = forms.CharField(label='Associado', required=False)
+    tipo_servico = forms.ChoiceField(
+        label='Tipo de Serviço',
+        choices=[('', '---')] + TIPO_SERVICO,
+        required=False
+    )
+    status_servico = forms.ChoiceField(
+        label='Status',
+        choices=[('', '---')] 
+                 + STATUS_ASSESSORIA_PROCESSO 
+                 + STATUS_EMISSAO_DOC 
+                 + STATUS_CONSULTORIA,
+        required=False
+    )

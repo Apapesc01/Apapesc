@@ -46,6 +46,11 @@
                 <h1>Bem-vindo ao Dashboard do Superusuário</h1>
                 <p>Este é o painel de controle visível apenas para superusuários.</p>
             </div>
+            <br>
+            <div>
+                <h3>Métricas da Apapesc</h3>
+                <p>Aqui estarão métricas e atalhos do sistema</p>
+            </div>            
 
         </div>        
 
@@ -192,11 +197,13 @@
         <div class="tab-content" id="tab-automacoes">
             <h1>Automações</h1>
             <div class="dashboard-links">
-            <a href="{% url 'app_automacoes:lista_automacoes' %}" class="dashboard-link">Lista Automações - Bases</a>
-            <br><a href="#" class="dashboard-link"> Automações em Massa</a>
-            <br><a href="#" class="dashboard-link"> Automações de Procução</a>
+                <h3>Bases</h3>
+                <a href="{% url 'app_automacoes:lista_automacoes' %}" class="dashboard-link">Lista Automações - Bases PDF's</a>
+                <h3>Automações em Massa</h3>
+                <a href="#" class="dashboard-link"> Automações em Massa</a>
+                <br><h3>Métricas da Apapesc</h3>
+                <a href="#" class="dashboard-link">Outras automações</a><br>
             
-
             </div><br>
         </div>
     </div>

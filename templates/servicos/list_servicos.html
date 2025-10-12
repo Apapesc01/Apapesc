@@ -1,1 +1,100 @@
-Lista de Serviços
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista de Serviços{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="lista-container">
+    <h1>Lista de Serviços</h1>
+
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <div class="lista-container" style="margin-bottom: 24px;">
+        <form method="get" autocomplete="off">
+            <div class="form-grid grid-4-cols">
+                <div class="form-group">
+                    {{ search_form.associado_nome.label_tag }}
+                    {{ search_form.associado_nome }}
+                </div>
+                <div class="form-group">
+                    {{ search_form.tipo_servico.label_tag }}
+                    {{ search_form.tipo_servico }}
+                </div>
+                <div class="form-group">
+                    {{ search_form.status_servico.label_tag }}
+                    {{ search_form.status_servico }}
+                </div>
+            </div>
+            <div class="text-right">
+                <button type="submit">Buscar</button>
+                <a href="{% url 'app_servicos:list_servicos' %}" class="btn btn-secondary">Limpar</a>
+            </div>
+        </form>
+    </div>
+
+    <table class="table-list">
+        <thead>
+            <tr>
+                <th>Associado</th>
+                <th>Tipo</th>
+                <th>Status</th>
+                <th>Valor</th>
+                <th>Início</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for servico in servicos %}
+                <tr>
+                    <td>{{ servico.associado.user.get_full_name }}</td>
+                    <td>{{ servico.get_tipo_servico_display }}</td>
+                    <td>{{ servico.get_status_servico_display }}</td>
+                    <td>R$ {{ servico.entrada_servico.valor|floatformat:2 }}</td>
+                    <td>{{ servico.data_inicio|date:"d/m/Y" }}</td>
+                    <td>
+                        <a href="{% url 'app_servicos:single_servico' servico.pk %}" title="Ver">
+                            <span class="material-icons icon-view">visibility</span>
+                        </a>
+                        <a href="{% url 'app_servicos:edit_servico' servico.pk %}" title="Editar">
+                            <span class="material-icons icon-edit">edit</span>
+                        </a>
+                        <a href="#" title="Excluir">
+                            <span class="material-icons icon-delete">delete</span>
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">Nenhum serviço encontrado.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% block extra_js %}
+    <script src="{% static 'js/copy_to_clipboard.js' %}"></script>
+{% endblock %}
+
+{% endblock %}

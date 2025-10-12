@@ -192,10 +192,35 @@ class ServicoSingleView(DetailView):
         context['associado'] = self.object.associado 
         return context
         
+        
 class ServicoListView(ListView):
     model = ServicoModel
     template_name = 'servicos/list_servicos.html'
     context_object_name = 'servicos'
+    paginate_by = 20
+
+    def get_queryset(self):
+        queryset = super().get_queryset().select_related(
+            'associado__user', 'associacao', 'reparticao', 'entrada_servico'
+        ).order_by('-data_inicio')
+
+        form = ServicoSearchForm(self.request.GET or None)
+        if form.is_valid():
+            if form.cleaned_data.get('tipo_servico'):
+                queryset = queryset.filter(tipo_servico=form.cleaned_data['tipo_servico'])
+            if form.cleaned_data.get('status_servico'):
+                queryset = queryset.filter(status_servico=form.cleaned_data['status_servico'])
+            if form.cleaned_data.get('associado_nome'):
+                queryset = queryset.filter(
+                    associado__user__first_name__icontains=form.cleaned_data['associado_nome']
+                )
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_form'] = ServicoSearchForm(self.request.GET or None)
+        return context
 
     
 
