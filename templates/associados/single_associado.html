@@ -59,6 +59,7 @@
         <button class="tab-link" data-tab="declaracoes">Declarações</button>
         <button class="tab-link" data-tab="inss">INSS</button>
         <button class="tab-link" data-tab="defeso">Defeso</button>
+        <button class="tab-link" data-tab="embarcacoes">Embarcações</button>
         <button class="tab-link" data-tab="anotacoes">Anotações</button>        
     </div>
     <!--Vínculos PRINCIPAL-->
@@ -733,6 +734,59 @@
         {% endif %}
 
     </div>
+
+    <div class="tab-content" id="tab-embarcacoes">
+        <div class="detail-section full-width">
+            <h3>Embarcações</h3>
+
+            <a href="{% url 'app_embarcacoes:create_embarcacao' associado.id %}" class="btn btn-primary">
+                + Adicionar Embarcação
+            </a>
+
+            {% if embarcacoes %}
+            <div class="lista-container">
+                <table class="table-list-small">
+                    <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Inscrição</th>
+                        <th>Tipo</th>
+                        <th>Validade TIE</th>
+                        <th>Ano de Construção</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for emb in embarcacoes %}
+                        <tr>
+                            <td>{{ emb.nome_embarcacao }}</td>
+                            <td>{{ emb.inscricao_embarcacao }}</td>
+                            <td>{{ emb.get_tipo_embarcacao_display }}</td>
+                            <td>{{ emb.validade_tie|date:"d/m/Y" }}</td>
+                            <td>{{ emb.ano_construcao }}</td>
+                            <td>
+                                <a href="{% url 'app_embarcacoes:single_embarcacao' emb.pk %}" title="Ver Detalhes">
+                                    <span class="material-icons icon-view">visibility</span>
+                                </a>
+                                <a href="{% url 'app_embarcacoes:edit_embarcacao' emb.pk %}" title="Editar">
+                                    <span class="material-icons icon-edit">edit</span>
+                                </a>
+                                <a href="#" class="btn-icon" title="Excluir Embarcação"
+                                onclick="openDeleteModal('{{ emb.pk }}')">
+                                    <span class="material-icons icon-delete">delete</span>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p>Nenhuma embarcação cadastrada ainda.</p>
+            {% endif %}
+        </div>
+    </div>
+ 
 
     <div class="tab-content" id="tab-anotacoes">
         <div class="detail-section full-width">

@@ -1,0 +1,3 @@
+from app_associados.models import AssociadoModel
+from app_embarcacoes.models import EmbarcacoesModel
+from app_embarcacoes.forms import EmbarcacaoForm

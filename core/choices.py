@@ -375,3 +375,55 @@ STATUS_PAGAMENTO_CHOICES = [
     ('pago', 'Pago'),
 ]
 STATUS_COBRANCA = ["extra_associado", "cliente_especial", "desassociado"]
+
+# Embarcações
+TIPO_EMBARCACAO = [
+    ('canoa', 'Canoa'),  
+    ('bote', 'Bote'),  
+    ('traineira', 'Traineira'),  
+    ('atuaneiro', 'Atuaneiro'), 
+    ('Outro', 'Outro'),     
+                      
+]
+PROPULSAO = [
+    ('motor', 'Motor'),
+    ('vela', 'Vela'),    
+    ('remo', 'Remo'),
+    ('outro', 'Outro'),    
+
+]
+COMBUSTIVEL_CHOICES = [
+    ('alcool', 'Álcool'),        
+    ('bateria', 'Bateria'),  
+    ('diesel', 'Diesel'),              
+    ('gasolina', 'Gasolina'),
+    ('gas', 'Gás'),
+    ('nao usa','Não Usa')
+]
+
+ALIENACAO_CHOICES = [
+    ('sim', 'Sim'),
+    ('nao', 'Não'),
+]
+
+PORTE_EMBARCACAO = [
+    ('miuda', 'Miuda'),
+    ('maior porte', 'Maior Porte')        
+]
+
+SEGURO_DPEM_CHOICES = [
+    ('sim', 'Sim'),
+    ('nao', 'Não'),
+]
+
+NOME_LICENCA_CHOICES = [
+    ('registro_licenca_embarcacao', 'Certificado de Registro e Autorização de Embarcação Pesqueira'),
+    # adicione mais
+]
+ORGAO_EMISSOR_LICENCA = [
+    ('MAPA', 'Ministério da Agricultura, Pecuária e Abastecimento'),
+    ('IBAMA', 'IBAMA'),
+    ('MMA', 'Ministério do Meio Ambiente'),
+    ('SPU', 'Secretaria do Patrimônio da União'),
+    # adicione mais se necessário
+]

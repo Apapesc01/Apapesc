@@ -35,6 +35,7 @@ urlpatterns = [
     path('reap/', include('app_reap.urls', namespace='app_reap')),
     path('servicos/', include('app_servicos.urls', namespace='app_servicos')),
     path('automacoes/', include('app_automacoes.urls', namespace='app_automacoes')),
+    path('embarcacoes/', include('app_embarcacoes.urls', namespace='app_embarcacoes')),
 ]
 
 if settings.DEBUG:

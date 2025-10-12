@@ -122,6 +122,67 @@
   cursor: pointer;
   color: inherit;
 }
+.embarcacao-img.destaque {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.embarcacao-img.destaque img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.embarcacao-img-row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.embarcacao-img.half {
+    flex: 1 1 48%;
+    text-align: center;
+}
+
+.embarcacao-img.half img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+@media (max-width: 768px) {
+    .embarcacao-img-row {
+        flex-direction: column;
+    }
+
+    .embarcacao-img.half {
+        flex: 1 1 100%;
+    }
+}
+
+.detail-grid.grid-2-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 32px;
+}
+
+@media (max-width: 768px) {
+    .detail-grid.grid-2-cols {
+        grid-template-columns: 1fr;
+    }
+}
+.preview-img {
+    width: 190px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
 /* Ajustes responsivos para telas menores */
 @media (max-width: 768px) {
     .name-photo-container {

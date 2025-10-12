@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Detalhes da Embarcação{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/detail_view.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="detail-container">
+    <h1>Embarcação: {{ embarcacao.nome_embarcacao }}</h1>
+    <p>
+        <strong>Proprietário(a):</strong>
+        <a href="{% url 'app_associados:single_associado' embarcacao.proprietario.pk %}">
+            {{ embarcacao.proprietario.user.get_full_name }}
+        </a>
+    </p>
+
+    <div class="detail-section full-width">
+        <h3>Imagens da Embarcação</h3>
+
+        {% if embarcacao.destaque_embarcacao_img %}
+        <div class="embarcacao-img destaque">
+            <strong>Imagem de Destaque</strong><br>
+            <img src="{{ embarcacao.destaque_embarcacao_img.url }}" alt="Imagem destaque">
+        </div>
+        {% endif %}
+    </div>
+
+
+    <div class="detail-section full-width">
+        <h3>Informações Básicas</h3>
+        <div class="detail-grid grid-2-cols">
+            <div><strong>Proprietário:</strong> {{ embarcacao.proprietario.user.get_full_name }}</div>
+            <div><strong>Inscrição:</strong> {{ embarcacao.inscricao_embarcacao }}</div>
+            <div><strong>Tipo:</strong> {{ embarcacao.get_tipo_embarcacao_display }}</div>
+            <div><strong>Propulsão:</strong> {{ embarcacao.get_tipo_propulsao_display }}</div>
+            <div><strong>Combustível:</strong> {{ embarcacao.get_combustivel_display }}</div>
+            <div><strong>Porte:</strong> {{ embarcacao.get_porte_display }}</div>
+        </div>
+    </div>
+
+    <div class="detail-section full-width">
+        <h3>Dimensões e Capacidade</h3>
+        <div class="detail-grid grid-2-cols">
+            <div><strong>Cumprimento:</strong> {{ embarcacao.cumprimento }} m</div>
+            <div><strong>Boca:</strong> {{ embarcacao.boca }} m</div>
+            <div><strong>AB/GT:</strong> {{ embarcacao.ab_gt }}</div>
+            <div><strong>Ano Construção:</strong> {{ embarcacao.ano_construcao }}</div>
+        </div>
+    </div>
+
+    <div class="detail-section full-width">
+        <h3>Motor e Propulsão</h3>
+        <div class="detail-grid grid-2-cols">
+            <div><strong>Motor 1:</strong> {{ embarcacao.motor_1 }} ({{ embarcacao.potencia_hp1 }} HP)</div>
+            <div><strong>Motor 2:</strong> {{ embarcacao.motor_2 }} ({{ embarcacao.potencia_hp2 }} HP)</div>
+            <div><strong>Motor 3:</strong> {{ embarcacao.motor_3 }} ({{ embarcacao.potencia_hp3 }} HP)</div>
+        </div>
+    </div>
+
+    <div class="detail-section full-width">
+        <h3>Documentação</h3>
+        <div class="detail-grid grid-2-cols">
+            <div><strong>Validade TIE:</strong> {{ embarcacao.validade_tie|date:"d/m/Y" }}</div>
+            <div><strong>Data Emissão:</strong> {{ embarcacao.data_emissao|date:"d/m/Y" }}</div>
+            <div><strong>Município Emissão:</strong> {{ embarcacao.municipio_emissao }}</div>
+        </div>
+    </div>
+
+    {% if embarcacao.seguro_dpem == 'sim' %}
+    <div class="detail-section full-width">
+        <h3>Seguro DPEM</h3>
+        <div class="detail-grid grid-2-cols">
+            <div><strong>Número:</strong> {{ embarcacao.seguro_dpem_numero }}</div>
+            <div><strong>Vencimento:</strong> {{ embarcacao.seguro_dpem_data_vencimento|date:"d/m/Y" }}</div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="detail-section full-width">
+        <h3>Observações</h3>
+        <p>{{ embarcacao.content|linebreaks }}</p>
+    </div>
+
+    <div class="detail-section full-width">
+        <h3>Registros Imagens</h3>
+
+        <div class="embarcacao-img-row">
+            {% if embarcacao.traves_img %}
+            <div class="embarcacao-img half">
+                <strong>Traves (Bordo)</strong><br>
+                <img src="{{ embarcacao.traves_img.url }}" alt="Imagem da trave">
+            </div>
+            {% endif %}
+            {% if embarcacao.popa_img %}
+            <div class="embarcacao-img half">
+                <strong>Popa</strong><br>
+                <img src="{{ embarcacao.popa_img.url }}" alt="Imagem da popa">
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="detail-actions">
+        <a href="#" class="btn btn-primary">Editar</a>
+        <a href="{% url 'app_associados:single_associado' embarcacao.proprietario.pk %}" class="btn btn-secondary">Voltar</a>
+    </div>
+
+</div>
+{% endblock %}

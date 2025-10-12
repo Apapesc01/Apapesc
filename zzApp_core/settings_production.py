@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'app_reap',
     'app_servicos',
     'app_automacoes',
+    'app_embarcacoes',
 ]
 
 MIDDLEWARE = [

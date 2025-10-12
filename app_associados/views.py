@@ -2,6 +2,7 @@
 from core.views.base_imports import *
 from core.views.app_associados_imports import *
 
+
 # CREATES ==================================================================
 class AssociadoCreateView(LoginRequiredMixin, CreateView):
     model = AssociadoModel
@@ -276,7 +277,9 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
         context['guias_inss'] = INSSGuiaDoMes.objects.filter(associado=associado).order_by('-ano', '-mes', '-rodada')
         context['STATUS_EMISSAO_INSS'] = STATUS_EMISSAO_INSS
         context['ACESSO_CHOICES'] = ACESSO_CHOICES
-        
+        # Adiciona embarcações
+        context['embarcacoes'] = EmbarcacoesModel.objects.filter(proprietario=associado)
+
         return context
 
     def post(self, request, *args, **kwargs):

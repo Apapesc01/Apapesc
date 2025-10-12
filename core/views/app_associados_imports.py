@@ -14,7 +14,7 @@ from app_associacao.models import (
     AssociacaoModel,
     ReparticoesModel,
 )
-
+from app_embarcacoes.models import EmbarcacoesModel
 from app_uploads.models import UploadsDocs
 from app_associados.drive_service import upload_file_to_drive, get_drive_service
 

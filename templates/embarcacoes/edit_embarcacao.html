@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editar Embarcação{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+<link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+<link rel="stylesheet" href="{% static 'css/detail_view.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+    <div class="form-container">
+    <h1>{{ form.instance.pk|yesno:"Editar Embarcação,Nova Embarcação" }}</h1>
+
+    <div id="toast-container">
+        {% for message in messages %}
+        {% with message.tags as tag %}
+            <div class="toast {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error{% elif 'info' in tag %}toast-info{% elif 'warning' in tag %}toast-warning{% else %}toast-info{% endif %}">
+            <span>{{ message }}</span>
+            <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+            </div>
+        {% endwith %}
+        {% endfor %}
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        {% if form.errors %}
+        <div class="errorlist">{{ form.errors }}</div>
+        {% endif %}
+
+    <div class="form-grid grid-2-cols">
+        <div class="form-group">
+            {{ form.destaque_embarcacao_img.label_tag }}
+            {{ form.destaque_embarcacao_img }}
+        </div>
+
+        {% if embarcacao.destaque_embarcacao_img %}
+        <div class="form-group">
+            <label>Imagem atual:</label><br>
+            <img src="{{ embarcacao.destaque_embarcacao_img.url }}" alt="Imagem atual" class="preview-img">
+        </div>
+        {% endif %}
+    </div>
+
+        <!-- Vínculo -->
+        <div class="form-grid grid-3-cols">
+        <div class="form-group">
+            {{ form.proprietario.label_tag }} {{ form.proprietario }}
+        </div>
+
+        <div class="form-group">
+            {{ form.nome_embarcacao.label_tag }} {{ form.nome_embarcacao }}
+        </div>
+
+        </div>
+
+        <!-- Características principais -->
+        <div class="form-grid grid-5-cols">
+        <div class="form-group">
+            {{ form.inscricao_embarcacao.label_tag }} {{ form.inscricao_embarcacao }}
+        </div>            
+        <div class="form-group">
+            {{ form.tipo_embarcacao.label_tag }} {{ form.tipo_embarcacao }}
+        </div>
+        <div class="form-group">
+            {{ form.tipo_propulsao.label_tag }} {{ form.tipo_propulsao }}
+        </div>
+        <div class="form-group">
+            {{ form.combustivel.label_tag }} {{ form.combustivel }}
+        </div>
+        <div class="form-group">
+            {{ form.porte.label_tag }} {{ form.porte }}
+        </div>
+        </div>
+
+        <div class="form-grid grid-3-cols">
+            <div class="form-group">
+                {{ form.validade_tie.label_tag }} {{ form.validade_tie }}
+            </div>
+            <div class="form-group">
+                {{ form.documento_tie.label_tag }}
+                {{ form.documento_tie }}
+            </div>  
+            <div class="form-group">
+                {{ form.data_emissao.label_tag }} {{ form.data_emissao }}
+            </div>                  
+            <div class="form-group">
+                {{ form.atividade.label_tag }} {{ form.atividade }}
+            </div>
+            <div class="form-group">
+                {{ form.area_navegacao.label_tag }} {{ form.area_navegacao }}
+            </div>
+            <div class="form-group">
+                {{ form.alienacao.label_tag }} {{ form.alienacao }}
+            </div>            
+        </div>
+
+        <!-- Dimensões e capacidade -->
+        <div class="form-grid grid-4-cols">
+        <div class="form-group">
+            {{ form.cumprimento.label_tag }} {{ form.cumprimento }}
+        </div>
+        <div class="form-group">
+            {{ form.boca.label_tag }} {{ form.boca }}
+        </div>
+        <div class="form-group">
+            {{ form.ab_gt.label_tag }} {{ form.ab_gt }}
+        </div>
+        <div class="form-group">
+            {{ form.ano_construcao.label_tag }} {{ form.ano_construcao }}
+        </div>
+        </div>
+
+        <div class="form-grid grid-4-cols">
+        <div class="form-group">
+            {{ form.numero_tripulantes.label_tag }} {{ form.numero_tripulantes }}
+        </div>
+        <div class="form-group">
+            {{ form.numero_passageiros.label_tag }} {{ form.numero_passageiros }}
+        </div>
+        <div class="form-group">
+            {{ form.construtor_nome.label_tag }} {{ form.construtor_nome }}
+        </div>
+        <div class="form-group">
+            {{ form.material_construcao.label_tag }} {{ form.material_construcao }}
+        </div>
+        </div>
+
+        <!-- Propriedade / Alienação -->
+        <div class="form-grid grid-2-cols">
+
+        <div class="form-group">
+            {{ form.co_proprietario_nome.label_tag }} {{ form.co_proprietario_nome }}
+        </div>
+        <div class="form-group">
+            {{ form.municipio_emissao.label_tag }} {{ form.municipio_emissao }}
+        </div>
+        </div>
+
+        <!-- Motores -->
+        <fieldset class="fieldset">
+        <legend>Motores</legend>
+        <div class="form-grid grid-3-cols">
+            <div class="form-group">{{ form.motor_1.label_tag }} {{ form.motor_1 }}</div>
+            <div class="form-group">{{ form.numero_serie_1.label_tag }} {{ form.numero_serie_1 }}</div>
+            <div class="form-group">{{ form.potencia_hp1.label_tag }} {{ form.potencia_hp1 }}</div>
+        </div>
+        <div class="form-grid grid-3-cols">
+            <div class="form-group">{{ form.motor_2.label_tag }} {{ form.motor_2 }}</div>
+            <div class="form-group">{{ form.numero_serie_2.label_tag }} {{ form.numero_serie_2 }}</div>
+            <div class="form-group">{{ form.potencia_hp2.label_tag }} {{ form.potencia_hp2 }}</div>
+        </div>
+        <div class="form-grid grid-3-cols">
+            <div class="form-group">{{ form.motor_3.label_tag }} {{ form.motor_3 }}</div>
+            <div class="form-group">{{ form.numero_serie_3.label_tag }} {{ form.numero_serie_3 }}</div>
+            <div class="form-group">{{ form.potencia_hp3.label_tag }} {{ form.potencia_hp3 }}</div>
+        </div>
+        <div class="form-grid grid-3-cols">
+            <div class="form-group">{{ form.motor_4.label_tag }} {{ form.motor_4 }}</div>
+            <div class="form-group">{{ form.numero_serie_4.label_tag }} {{ form.numero_serie_4 }}</div>
+            <div class="form-group">{{ form.potencia_hp4.label_tag }} {{ form.potencia_hp4 }}</div>
+        </div>
+        </fieldset>
+
+        <!-- Imagens -->
+        <div class="form-grid grid-2-cols">
+            <div class="form-group">
+                {{ form.traves_img.label_tag }} {{ form.traves_img }}
+            </div>
+            <div class="form-group">
+                {{ form.popa_img.label_tag }} {{ form.popa_img }}
+            </div>
+        </div>
+
+        <!-- DPEM -->
+        <fieldset class="fieldset">
+            <legend>Seguro DPEM</legend>
+            <div class="form-grid grid-3-cols">
+                <div class="form-group">{{ form.seguro_dpem.label_tag }} {{ form.seguro_dpem }}</div>
+                <div class="form-group">{{ form.seguro_dpem_numero.label_tag }} {{ form.seguro_dpem_numero }}</div>
+                <div class="form-group">{{ form.seguro_dpem_data_vencimento.label_tag }} {{ form.seguro_dpem_data_vencimento }}</div>
+            </div>
+        </fieldset>
+
+        <br>
+        <!--Licença-->
+        <fieldset class="fieldset">
+
+            <div class="form-group">
+                {{ form.licenca_nome.label_tag }}
+                {{ form.licenca_nome }}
+            </div>
+
+            <div class="form-grid grid-2-cols">
+                <div class="form-group">
+                    {{ form.documento_licenca.label_tag }}
+                    {{ form.documento_licenca }}
+                </div>
+                <div class="form-group">
+                    {{ form.codigo_frota.label_tag }} {{ form.codigo_frota }}
+                </div>
+                <div class="form-group">
+                    {{ form.inscricao_aut_naval.label_tag }} {{ form.inscricao_aut_naval }}
+                </div>
+                <div class="form-group">
+                    {{ form.orgao_emissor_nome.label_tag }} {{ form.orgao_emissor_nome }}
+                </div>
+                <div class="form-group">
+                    {{ form.validade_licenca_inicial.label_tag }} {{ form.validade_licenca_inicial }}
+                </div>
+                <div class="form-group">
+                    {{ form.validade_licenca_final.label_tag }} {{ form.validade_licenca_final }}
+                </div>                                            
+            </div>
+        </fieldset>
+
+
+        <!-- Observações -->
+        <div class="form-group">
+        {{ form.content.label_tag }} {{ form.content }}
+        </div>
+
+        <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a href="{% url 'app_embarcacoes:single_embarcacao' embarcacao.pk %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+    </div>
+{% endblock %}
