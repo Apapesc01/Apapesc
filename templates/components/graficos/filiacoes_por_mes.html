@@ -1,0 +1,46 @@
+<div class="card">
+    <h3>📈 Filiação de Associados por Ano e Mês</h3>
+    <canvas id="filiacoesChart" style="width:100%; max-height: 400px;"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const labels = {{ filiacoes_labels_json|safe }};
+    const data = {{ filiacoes_valores_json|safe }};
+
+    const ctx = document.getElementById('filiacoesChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Número de Associados',
+                data: data,
+                fill: false,
+                borderColor: '#2196F3',
+                tension: 0.3,
+                pointBackgroundColor: '#2196F3',
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Ano-Mês'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Número de Associados'
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>

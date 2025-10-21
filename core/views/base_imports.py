@@ -72,3 +72,6 @@ from reportlab.lib.colors import Color
 from app_accounts.mixins import GroupRequiredMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User, Group
+from django.db.models.functions import TruncMonth
+from django.db.models import Count
+import json

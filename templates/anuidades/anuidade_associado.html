@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% load status_tags %}
 {% block title %}Anuidades do Associado{% endblock title%}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+        <link rel="stylesheet" href="{% static 'css/associado.css' %}">
     <link rel="stylesheet" href="{% static 'css/listas.css' %}">
     <link rel="stylesheet" href="{% static 'css/anuidades_associado.css' %}">
     <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
@@ -41,6 +42,14 @@
                 <span><strong>Repartição:</strong> {{ associado.reparticao.nome_reparticao }}</span>
                 <span><strong>Celular:</strong> {{ associado.celular }}</span>
                 <span><strong>Filiação:</strong> {{ associado.data_filiacao }}</span>
+                <span>
+                <p>
+                    <strong>Status:</strong>
+                    <span class="status-badge {{ associado.status|status_badge_class }}">
+                        {{ associado.get_status_display }}
+                    </span>
+                </p>
+                </span>
             </div>
         </div>
 

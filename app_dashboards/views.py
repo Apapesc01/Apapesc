@@ -52,7 +52,12 @@ class SuperDashboardView(LoginRequiredMixin, GroupRequiredMixin, View):
         # 3. TOTAL ARRECADADO
         from app_anuidades.models import Pagamento, DescontoAnuidade, AnuidadeAssociado
         total_arrecadado = Pagamento.objects.aggregate(total=Sum('valor'))['total'] or 0
-
+        
+        # 3.1 VALOR ANUIDADES PAGAS
+        valor_anuidades_pagas = Pagamento.objects.filter(
+            anuidade_associado__pago=True
+        ).aggregate(total=Sum('valor'))['total'] or Decimal('0.00')
+        
         # 4. TOTAL DE DESCONTOS
         total_descontos_concedidos = DescontoAnuidade.objects.aggregate(total=Sum('valor_desconto'))['total'] or 0
 
@@ -61,6 +66,21 @@ class SuperDashboardView(LoginRequiredMixin, GroupRequiredMixin, View):
         # 6. TOTAL DE ANUIDADES NÃO PAGAS
         total_anuidades_nao_pagas = AnuidadeAssociado.objects.filter(pago=False).count()
 
+        # 7 GRÁFICO FILIAÇÕES POR MÊS
+        # Dados para o gráfico de filiações por mês
+        filiacoes_por_mes = (
+            AssociadoModel.objects
+            .annotate(mes=TruncMonth('data_filiacao'))  # Ajuste o nome do campo se for diferente
+            .values('mes')
+            .annotate(total=Count('id'))
+            .order_by('mes')
+        )
+
+        # Prepara dados para o gráfico
+        labels = [item['mes'].strftime('%Y-%m') for item in filiacoes_por_mes]
+        valores = [item['total'] for item in filiacoes_por_mes]
+        
+
         context = {
             # Anuidades
             'qtd_anos_lancados': qtd_anos_lancados,
@@ -68,7 +88,7 @@ class SuperDashboardView(LoginRequiredMixin, GroupRequiredMixin, View):
             'total_anuidades_aplicadas': total_anuidades_aplicadas,
             'total_valor_aplicado': total_valor_aplicado,
             'valor_anuidades_aberto': valor_anuidades_aberto,
-
+            'valor_anuidades_pagas': valor_anuidades_pagas,
             # Associados
             'total_cadastrados': total_cadastrados,
             'associados_ativos': associados_ativos,
@@ -80,6 +100,9 @@ class SuperDashboardView(LoginRequiredMixin, GroupRequiredMixin, View):
             'total_descontos_concedidos': total_descontos_concedidos,
             'total_anuidades_pagas': total_anuidades_pagas,
             'total_anuidades_nao_pagas': total_anuidades_nao_pagas,
+            # Gráficos
+            'filiacoes_labels_json': json.dumps(labels),
+            'filiacoes_valores_json': json.dumps(valores),            
         }
         return render(request, self.template_name, context)
     
