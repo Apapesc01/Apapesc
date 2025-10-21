@@ -72,3 +72,55 @@ def criar_usuario_fake(request):
 
     # Redireciona para lista ou edição
     return redirect('app_associacao:list_users')  
+
+
+
+class InsertUserGroupView(LoginRequiredMixin, GroupRequiredMixin, View):
+    template_name = 'accounts/insert_user_group.html'
+    group_required = [
+    'Superuser',
+    ]   
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "Você não tem permissão para acessar esta página.")
+        return redirect('app_home:home')  # ajuste conforme sua home
+
+    
+    def get(self, request):
+        search_query = request.GET.get('q', '').strip()
+
+        users = User.objects.all().order_by('username')
+        if search_query:
+            users = users.filter(
+                Q(username__icontains=search_query) |
+                Q(email__icontains=search_query) |
+                Q(first_name__icontains=search_query) |
+                Q(last_name__icontains=search_query)
+            )
+
+        groups = Group.objects.all().order_by('name')
+        return render(request, self.template_name, {
+            'users': users,
+            'groups': groups,
+            'search_query': search_query,
+        })
+
+
+    def post(self, request):
+        user_id = request.POST.get('user_id')
+        group_name = request.POST.get('group_name')
+
+        user = User.objects.filter(id=user_id).first()
+        group = Group.objects.filter(name=group_name).first()
+
+        if not user or not group:
+            messages.error(request, "Usuário ou grupo inválido.")
+        else:
+            user.groups.clear()
+            user.groups.add(group)
+            messages.success(request, f"Grupo atualizado para {user.get_full_name() or user.username}.")
+
+        return redirect('app_accounts:insert_user_group')

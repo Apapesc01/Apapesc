@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gerenciar Grupos{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+<div class="lista-container">
+    <h1>Gerenciar Grupos de Usuários</h1>
+
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+            <div class="toast 
+                {% if 'success' in tag %}toast-success
+                {% elif 'error' in tag or 'danger' in tag %}toast-error
+                {% elif 'info' in tag %}toast-info
+                {% elif 'warning' in tag %}toast-warning
+                {% else %}toast-info{% endif %}">
+                <span>{{ message }}</span>
+                <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+            </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <form method="get" style="margin-bottom: 1em;">
+        <input type="text" name="q" placeholder="Buscar por nome, username ou e-mail" value="{{ search_query }}" class="form-control" style="width: 300px; display: inline-block;">
+        <button type="submit" class="btn btn-primary">🔍 Buscar</button>
+    </form>
+
+
+    <table class="table-list">
+        <thead>
+            <tr>
+                <th>Nome Completo</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Grupo Atual</th>
+                <th>Novo Grupo</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.get_full_name|default:"(sem nome)" }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+                {% if user.groups.all %}
+                    {{ user.groups.first.name }}
+                {% else %}
+                    Nenhum
+                {% endif %}
+            </td>
+
+            <td>
+                <form method="post" style="display: flex; gap: 8px;">
+                    {% csrf_token %}
+                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                    <select name="group_name" required>
+                        {% if not user.groups.first %}
+                            <option value="" selected>--- Selecione ---</option>
+                        {% endif %}
+                        {% for group in groups %}
+                            <option value="{{ group.name }}"
+                                {% if user.groups.first and group.name == user.groups.first.name %}selected{% endif %}>
+                                {{ group.name|title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+            </td>
+            <td>
+                    <button type="submit" class="btn-action">Salvar</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">Nenhum usuário encontrado.</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

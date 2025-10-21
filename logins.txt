@@ -1,5 +1,17 @@
 admin_associacao1@example.com
 12345678Aa4
+Sasá Administradora dos Santos
+Sasa_Admin_ass
+
+auxiliar_associacao1@example.com
+12345678Aa4
+Marileuza Auxiliar Associação da Silva
+Mari_Aux_ass
+
+auxiliar_associacao2@example.com
+12345678Aa4
+Pedrinho Auxiliar Associação da Rocha
+Pedrinho_Aux_ass
 
 diretor1@example.com
 12345678Aa4
@@ -37,8 +49,7 @@ financeiro1@example.com
 recursos_humanos1@example.com
 12345678Aa4
 
-auxiliar_associacao1@example.com
-12345678Aa4
+
 
 auxiliar_reparticao1@example.com
 12345678Aa4

@@ -2,9 +2,13 @@ from core.views.base_imports import *
 from core.views.app_dashboards_imports import *
 
 
-class SuperDashboardView(View):
+class SuperDashboardView(LoginRequiredMixin, GroupRequiredMixin, View):
     template_name = 'dashboards/dashboard_superuser.html'
-
+    group_required = [
+        'Superuser',
+    ]   
+    login_url = '/accounts/login/'
+    
     def get(self, request, *args, **kwargs):
         # ANUIDADES
         anuidades = AnuidadeModel.objects.all().order_by('-ano')
@@ -78,3 +82,11 @@ class SuperDashboardView(View):
             'total_anuidades_nao_pagas': total_anuidades_nao_pagas,
         }
         return render(request, self.template_name, context)
+    
+class AdminAssociacaoDasboardView(LoginRequiredMixin, GroupRequiredMixin, View):
+    template_name = 'dashboards/dashboard_admin.html'
+    group_required = [
+        'Superuser',
+        'admin_associacao'
+    ]   
+    login_url = '/accounts/login/'

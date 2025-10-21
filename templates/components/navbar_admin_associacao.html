@@ -1,0 +1,85 @@
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+{% endblock %}
+
+<nav class="navbar">
+    <div class="navbar-container">
+        <a href="#" class="navbar-logo" style="display: flex; align-items: center; justify-content: center;">
+            <img src="{% static 'img/Logo_Apapesc_2025.png' %}" alt="Logo Apapesc" style="width: 40px; height: 40px; border-radius: 6px; object-fit: cover;">
+        </a>
+        
+        <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
+
+        <div class="navbar-links" id="navbar-menu">
+
+            <div class="dropdown">
+                <a href="#" class="menu-navbar">Dashs ▾</a>
+                <div class="dropdown-menu">
+                    <a href="{% url 'app_accounts:admin_geral' %}">AdminDash</a>
+                    <a href="#">Finances</a>
+                    <a href="#">Outros</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <a href="#">Associação ▾</a>
+                <div class="dropdown-menu">
+                    <a href="{% url 'app_associacao:create_associacao' %}">Nova Associação</a>
+                    <a href="{% url 'app_associacao:create_reparticao' %}">Nova Repartição</a>
+                    <a href="{% url 'app_associacao:list_users' %}">Novo Integrante</a>
+                    <a href="{% url 'app_associacao:create_municipio' %}">Novo Município</a>                    
+                    <a href="{% url 'app_associacao:create_profissao' %}">Nova Profissão</a>                    
+                    <a href="{% url 'app_associacao:create_cargo' %}">Novo Cargo (Int)</a>
+                    <hr>
+                    <a href="{% url 'app_associacao:list_associacoes' %}">Lista Associações</a>
+                    <a href="{% url 'app_associacao:list_reparticoes' %}">Lista Repartições</a>
+                    <a href="{% url 'app_associacao:list_integrantes' %}">Lista Integrantes</a>
+                    <a href="{% url 'app_associacao:list_municipios' %}">Lista Municipios</a>
+                    <a href="{% url 'app_associacao:list_profissoes' %}">Lista Profissões</a>
+                    <a href="{% url 'app_associacao:list_cargos' %}">Lista Cargos</a>
+                    <a href="{% url 'app_associacao:list_users' %}">Lista Usuários</a>                                        
+                </div>
+            </div>
+            <div class="dropdown">
+                <a href="#">Associados ▾</a>
+                <div class="dropdown-menu">
+                    <a href="{% url 'app_associados:list_associados' %}">LG Associados</a>
+                    <a href="{% url 'app_associacao:list_users' %}">Novo Associado</a> 
+                </div>
+            </div>
+            <div class="dropdown">
+                <a href="#">Produção ▾</a>
+                <div class="dropdown-menu">
+                    <a href="{% url 'app_inss:lancamentos_inss' %}">Lançamentos INSS</a>
+                    <hr>
+                    <a href="{% url 'app_reap:lancamentos_reap' %}">Lançamentos REAP</a>
+                    <hr>
+                    <a href="{% url 'app_defeso:lancamento_defeso' %}">Lançamentos DEFESO</a>
+                    <a href="{% url 'app_defeso:painel_status_defeso' %}">Painel Kanban DEFESO</a>                    
+                </div>
+            </div>                                                            
+            <div class="dropdown">
+                <a href="#">Serviços ▾</a>
+                <div class="dropdown-menu">
+                    <a href="{% url 'app_servicos:list_servicos' %}">Lista Serviços</a>
+                    <a href="{% url 'app_servicos:painel_status_servico' %}">Painel Kanban</a>
+                </div>
+            </div>
+            {% if user.is_authenticated %}
+            <a href="{% url 'account_logout' %}">Logout</a>
+            {% else %}
+            <a href="{% url 'account_login' %}">Login</a>
+            <a href="{% url 'account_signup' %}">Cadastro</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+{% block extra_js %}
+<script>
+function toggleMenu() {
+    document.getElementById('navbar-menu').classList.toggle('open');
+}
+</script>
+{% endblock %}

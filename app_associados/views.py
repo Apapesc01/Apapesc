@@ -4,17 +4,21 @@ from core.views.app_associados_imports import *
 
 
 # CREATES ==================================================================
-class AssociadoCreateView(LoginRequiredMixin, CreateView):
+class AssociadoCreateView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
     model = AssociadoModel
     form_class = AssociadoForm
     template_name = 'associados/create_associado.html'
-
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]       
     def dispatch(self, request, *args, **kwargs):
         # Verifica se o usuário tem permissão para criar um associado
-        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
-            messages.error(self.request, "Você não tem permissão para criar um associado.")
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'auxiliar_associacao' or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para Editar um associado.")
             return redirect('app_accounts:unauthorized')
-        return super().dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)    
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -479,10 +483,22 @@ class AssociadoSingleView(LoginRequiredMixin, DetailView):
 
 # EDITS ================================================================
 
-class AssociadoUpdateView(LoginRequiredMixin, UpdateView):
+class AssociadoUpdateView(LoginRequiredMixin, GroupRequiredMixin, UpdateView):
     model = AssociadoModel
     form_class = EditAssociadoForm
     template_name = 'associados/edit_associado.html'
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]       
+
+    def dispatch(self, request, *args, **kwargs):
+        # Verifica se o usuário tem permissão para criar um associado
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'auxiliar_associacao' or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para Editar um associado.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)    
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -548,13 +564,25 @@ class AssociadoUpdateView(LoginRequiredMixin, UpdateView):
 # ---------------------------------------------------------------------------------    
 
 # LISTS ==========================================================================
-class AssociadoListView(LoginRequiredMixin, ListView):
+class AssociadoListView(LoginRequiredMixin, GroupRequiredMixin, ListView):
     model = AssociadoModel
     template_name = 'associados/list_associados.html'
     context_object_name = 'associados'
     ordering = ['user__first_name', 'user__last_name']
+    group_required = [
+        'Superuser',
+        'auxiliar_associacao',
+        
+    ]       
     paginate_by = 25  # Opcional, se quiser paginação
 
+    def dispatch(self, request, *args, **kwargs):
+        # Verifica se o usuário tem permissão para criar um associado
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'auxiliar_associacao')):
+            messages.error(self.request, "Você não tem permissão para criar um associado.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
     def get_queryset(self):
         queryset = super().get_queryset()
         form = AssociadoSearchForm(self.request.GET)

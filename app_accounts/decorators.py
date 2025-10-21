@@ -1,4 +1,4 @@
-# app_accounts
+# app_accounts/decorators.py
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import UserPassesTestMixin

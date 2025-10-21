@@ -69,3 +69,6 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
 from reportlab.lib.colors import Color
+from app_accounts.mixins import GroupRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User, Group
