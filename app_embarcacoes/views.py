@@ -73,3 +73,10 @@ class EditEmbarcacaoView(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = "Editar Embarcação"
         return context
+    
+    
+class ListEmbarcacoes(LoginRequiredMixin, ListView):
+    model = EmbarcacoesModel
+    template_name = 'embarcacoes/list_embarcacoes.html'
+    context_object_name = 'embarcacoes'
+    ordering = ['nome_embarcacao'] 

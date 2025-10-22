@@ -86,13 +86,14 @@
             </table>
 
             <div style="flex: 1 1 45%;">
-                <ul>
+            <h3>Pagamentos: {{ info.aa.anuidade.ano }}</h3>
+                <ul class="pagamento-lista">
                     {% for p in info.pagamentos %}
                     <li class="pagamento-item">
                         <div class="pagamento-info">
                         {{ p.data_pagamento|date:"d/m/Y" }}: R$ {{ p.valor|floatformat:2 }}
                         {% if p.comprovante_up %}
-                            (<a href="{{ p.comprovante_up.url }}" target="_blank" rel="noopener">Comprovante</a>)
+                            - (<a href="{{ p.comprovante_up.url }}" target="_blank" rel="noopener" style="color:#d4ffa9;">Comprovante do pagamento</a>)
                         {% endif %}
                         </div>
 
@@ -117,11 +118,9 @@
                     </li>
                     <hr>
                     {% empty %}
-                    <li>Nenhum pagamento registrado.</li>
+                    <li style="color:white;">Nenhum pagamento registrado.</li>
                     {% endfor %}
                 </ul>
-                
-                <h3>Pagamentos: {{ info.aa.anuidade.ano }}</h3>
             
                 {% if info.status_anuidade == "PAGA" %}
                     <div style="margin-top:20px; text-align:center;">
@@ -152,11 +151,11 @@
             <!-- BLOCO DE DESCONTOS -->
             <div style="flex: 1 1 45%;">
                 <h3>Descontos: {{ info.aa.anuidade.ano }}</h3>
-                <ul>
+                <ul class="pagamento-lista">
                     {% for d in info.descontos %}
-                        <li>{{ d.data_concessao }}: R$ {{ d.valor_desconto|floatformat:2 }} ({{ d.motivo }})</li>
+                        <li style="color:white;">{{ d.data_concessao }}: R$ {{ d.valor_desconto|floatformat:2 }} ({{ d.motivo }})</li>
                     {% empty %}
-                        <li>Nenhum desconto registrado.</li>
+                        <li style="color:white;">Nenhum desconto registrado.</li>
                     {% endfor %}
                 </ul>              
 

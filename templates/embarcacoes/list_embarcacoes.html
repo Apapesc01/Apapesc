@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista de Embarcações{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/listas.css' %}">
+<link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+    <div id="toast-container">
+        {% for message in messages %}
+        {% with message.tags as tag %}
+            <div class="toast {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error{% elif 'info' in tag %}toast-info{% elif 'warning' in tag %}toast-warning{% else %}toast-info{% endif %}">
+            <span>{{ message }}</span>
+            <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+            </div>
+        {% endwith %}
+        {% endfor %}
+    </div>
+
+
+<section class="lista-container">
+    <h1>🚤 Embarcações Cadastradas</h1>
+
+    <table class="table-list">
+        <thead>
+            <tr>
+                <th>Nome da Embarcação</th>
+                <th>Proprietário</th>
+                <th>Validade do TIE</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for embarcacao in embarcacoes %}
+            <tr>
+                <td>{{ embarcacao.nome_embarcacao }}</td>
+                <td>{{ embarcacao.proprietario.get_full_name|default:embarcacao.proprietario }}</td>
+                <td>{{ embarcacao.validade_tie|date:"d/m/Y" }}</td>
+                <td>
+                    <a href="{% url 'app_embarcacoes:single_embarcacao' embarcacao.pk %}" title="Visualizar">
+                        <span class="material-icons icon-view">visibility</span>
+                    </a>
+                    <a href="{% url 'app_embarcacoes:edit_embarcacao' embarcacao.pk %}" title="Editar">
+                        <span class="material-icons icon-edit">edit</span>
+                    </a>
+                    <a href="#" title="Deletar" onclick="return confirm('Tem certeza que deseja excluir esta embarcação?');">
+                        <span class="material-icons icon-delete">delete</span>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">Nenhuma embarcação cadastrada.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{% endblock %}

@@ -27,6 +27,8 @@ def validate_and_format_celular(value):
         return f"({ddd}){numero[:5]}-{numero[5:]}"
     else:
         return f"({ddd}){numero[:4]}-{numero[4:]}"
+    
+
 
 def validate_and_format_cep(value):
     if not value:

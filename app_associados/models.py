@@ -87,7 +87,6 @@ class AssociadoModel(models.Model):
     )   
     celular_correspondencia = models.CharField(
         max_length=15,
-        default="",
         validators=[
             RegexValidator(
                 r'^\(\d{2}\)\d{5}-\d{4}$',  # Garante que o número seja no formato (XX)XXXXX-XXXX

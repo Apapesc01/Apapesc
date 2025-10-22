@@ -85,6 +85,10 @@ class AssociadoForm(forms.ModelForm):
         celular = self.cleaned_data.get('celular', '')
         return validate_and_format_celular(celular)
 
+    def clean_celular_correspondencia(self):
+        celular_correspondencia = self.cleaned_data.get('celular_correspondencia', '')
+        return validate_and_format_celular(celular_correspondencia) 
+
     def clean_cep(self):
         cep = self.cleaned_data.get('cep', '')
         return validate_and_format_cep(cep)
@@ -195,7 +199,8 @@ class EditAssociadoForm(forms.ModelForm):
     def clean_celular(self):
         celular = self.cleaned_data.get('celular', '')
         return validate_and_format_celular(celular)
-
+   
+    
     def clean_cep(self):
         cep = self.cleaned_data.get('cep', '')
         return validate_and_format_cep(cep)    

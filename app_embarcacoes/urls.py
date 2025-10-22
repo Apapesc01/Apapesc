@@ -8,4 +8,5 @@ urlpatterns = [
     path('nova/<int:associado_id>/', views.CreateEmbarcacaoView.as_view(), name='create_embarcacao'),
     path('embarcacao/<int:pk>/', views.SingleEmbarcacaoView.as_view(), name='single_embarcacao'),
     path('edit-embarcacao/<int:pk>/', views.EditEmbarcacaoView.as_view(), name='edit_embarcacao'),
+    path('listar/', views.ListEmbarcacoes.as_view(), name='list_embarcacoes'),
 ]
