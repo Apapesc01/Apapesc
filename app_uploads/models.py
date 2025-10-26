@@ -56,15 +56,21 @@ class TipoDocumentoUp(models.Model):
     def __str__(self):
         return self.nome
 
-
+def validate_file_extension(value):
+    valid_mime = ['application/pdf', 'image/jpeg', 'image/png']
+    if value.file.content_type not in valid_mime:
+        raise ValidationError("Tipo de arquivo não permitido.")
+    
 class UploadsDocs(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     
     tipo = models.ForeignKey(TipoDocumentoUp, on_delete=models.SET_NULL, null=True, blank=True)
     tipo_custom = models.CharField("Classificação Livre", max_length=100, blank=True)
 
-    arquivo = models.FileField(upload_to=upload_to_path)
-
+    arquivo = models.FileField(
+        upload_to=upload_to_path,
+        validators=[validate_file_extension]
+    )
     data_envio = models.DateTimeField(auto_now_add=True)
     enviado_por = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -132,3 +138,8 @@ class UploadsDocs(models.Model):
         verbose_name = "Documento Enviado"
         verbose_name_plural = "Uploads de Documentos"
         ordering = ['-data_envio']
+        
+                        
+    @property
+    def ext(self):
+        return os.path.splitext(self.arquivo.name)[-1].lower().replace('.', '')

@@ -399,16 +399,11 @@
 
 
                                     {% if ext|is_in:"jpg jpeg png" %}
-                                        <a href="{% url 'converter_para_pdf' doc.pk %}" title="Converter imagem em PDF">
+                                        <a href="{% url 'app_uploads:converter_para_pdf' doc.pk %}" title="Converter imagem em PDF">
                                             <span class="material-icons icon-convert">picture_as_pdf</span>
                                         </a>
                                     {% endif %}
 
-                                    {% if ext != "pdf" %}
-                                        <a href="{% url 'app_uploads:converter_para_pdf' doc.pk %}" title="Converter para PDF">
-                                            <span class="material-icons icon-convert">picture_as_pdf</span>
-                                        </a>
-                                    {% endif %}
                                 {% endwith %}
 
                                 <a href="{{ doc.arquivo.url }}" target="_blank" title="Visualizar">

@@ -31,7 +31,12 @@ class UploadsDocsCreateView(CreateView):
         for idx, arquivo in enumerate(arquivos):
             if not arquivo:
                 continue
-            tipo = TipoDocumentoUp.objects.filter(pk=tipos[idx]).first() if idx < len(tipos) and tipos[idx] else None
+            try:
+                tipo_id = int(tipos[idx])
+                tipo = TipoDocumentoUp.objects.get(pk=tipo_id)
+            except (ValueError, IndexError, TipoDocumentoUp.DoesNotExist):
+                tipo = None
+
             tipo_custom = tipos_custom[idx] if idx < len(tipos_custom) else ''
 
             inst = UploadsDocs(
@@ -135,6 +140,7 @@ class TipoDocumentoDeleteView(DeleteView):
     
 
 # FUNÇÕES ----------------------------------------------------------------------
+
 @login_required
 def converter_para_pdf(request, pk):
     doc = get_object_or_404(UploadsDocs, pk=pk)
@@ -144,28 +150,40 @@ def converter_para_pdf(request, pk):
     if ext not in img_exts:
         raise Http404("Apenas imagens podem ser convertidas")
 
-    # Geração do PDF
+    # Geração do PDF em memória
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
     c.translate(0, height)
+
     img = Image.open(doc.arquivo)
     img_width, img_height = img.size
-    ratio = min((width-72)/img_width, (height-72)/img_height)
-    img_w, img_h = img_width*ratio, img_height*ratio
+    ratio = min((width - 72) / img_width, (height - 72) / img_height)
+    img_w, img_h = img_width * ratio, img_height * ratio
     x = (width - img_w) / 2
     y = -((height - img_h) / 2 + img_h)
+
     c.drawImage(doc.arquivo.path, x, y, img_w, img_h)
     c.showPage()
     c.save()
 
     buffer.seek(0)
-    pdf_name = os.path.splitext(doc.arquivo.name)[0] + ".pdf"
-    doc.arquivo.save(pdf_name, ContentFile(buffer.read()), save=False)
-    doc.ext = "pdf"
-    doc.save()
 
-    messages.success(request, "Documento convertido com sucesso para PDF.")
+    # Novo nome do PDF baseado no original
+    nome_base = os.path.splitext(os.path.basename(doc.arquivo.name))[0]
+    pdf_filename = f"{nome_base}.pdf"
+
+    # Criação do novo UploadsDocs para o PDF
+    novo_doc = UploadsDocs(
+        tipo=doc.tipo,
+        tipo_custom=doc.tipo_custom + " (PDF)" if doc.tipo_custom else "PDF Gerado",
+        enviado_por=request.user,
+        proprietario_content_type=doc.proprietario_content_type,
+        proprietario_object_id=doc.proprietario_object_id,
+    )
+    novo_doc.arquivo.save(pdf_filename, ContentFile(buffer.read()), save=True)
+
+    messages.success(request, "📄 Imagem convertida para PDF com sucesso!")
     return redirect(f"{request.META.get('HTTP_REFERER', '/')}#tab-uploads")
 
 
