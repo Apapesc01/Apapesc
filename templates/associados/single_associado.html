@@ -363,7 +363,38 @@
             </a>
              -- <a href="{% url 'app_uploads:list_tipo_docs' %}" class="upload-link">
                 📊 Lista Tipos de Documentos
-            </a>            
+            </a>
+            
+            <!-- Só aparece em dispositivos móveis -->
+            <button class="btn btn-primary camera-upload-mobile" onclick="abrirCamera()">📷 Tirar Foto / Enviar</button>
+            <a class="upload-link camera-upload-mobile" onclick="abrirCamera()">📷 Enviar Foto</a>
+
+
+            <!-- Form escondido para upload via câmera -->
+            <form id="uploadCameraForm" class="camera-upload-mobile" method="post" enctype="multipart/form-data" action="{% url 'app_uploads:create_upload' %}?type=associado&id={{ associado.pk }}">
+                {% csrf_token %}
+                
+                <select name="tipo" required>
+                    <option value="">Selecione o tipo</option>
+                    {% for t in form.fields.tipo.queryset %}
+                        <option value="{{ t.pk }}">{{ t }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- input de câmera -->
+                <input 
+                    type="file"
+                    name="arquivo"
+                    accept="image/*"
+                    capture="environment"
+                    onchange="document.getElementById('uploadCameraForm').submit();"
+                    required
+                >
+
+                <!-- opcional: campo custom -->
+                <input type="hidden" name="tipo_custom" value="">
+            </form>
+
         </div>
 
         <div class="detail-section full-width">
@@ -821,6 +852,7 @@
 {% block extra_js %}
     <script src="{% static 'js/tabs.js' %}"></script>
     <script src="{% static 'js/multiples_uploads.js' %}"></script>
+    <script src="{% static 'js/openCamera.js' %}"></script>
     <script src="{% static 'js/delete_upload.js' %}"></script>
     <script src="{% static 'js/copy_to_clipboard.js' %}"></script>
     <script src="{% static 'js/copy_senhas.js' %}"></script>
