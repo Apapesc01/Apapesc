@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{% static 'css/listas.css' %}">
     <link rel="stylesheet" href="{% static 'css/forms.css' %}">
     <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive_patch.css' %}">    
 {% endblock %}
 
 {% block content %}
@@ -30,7 +31,9 @@
         {% endfor %}
     </div>
 
-    <div class="lista-container" style="margin-bottom: 24px;">
+    
+    <div class="filtro-container" style="margin-bottom: 24px;">
+
         <form method="get" autocomplete="off">
             <div class="form-grid grid-4-cols">
                 <div class="form-group">
@@ -71,14 +74,14 @@
         <tbody>
             {% for associado in associados %}
             <tr>
-                <td>
+                <td data-label="Associado">
                     <a href="{% url 'app_associados:single_associado' associado.pk %}">
                         {{associado.user.get_full_name}}
                     </a>
                     
                 </td>
-                <td>{{associado.apelido}}</td>
-                <td>
+                <td data-label="Apelido">{{associado.apelido}}</td>
+                <td data-label="CPF">
                     <div class="copy-wrapper" style="display: flex; align-items: center;">
                         <span id="cpf-{{ associado.pk }}">{{ associado.cpf }}</span>
                         <button type="button" onclick="copyToClipboard('cpf-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CPF" style="margin-left:5px;">
@@ -86,7 +89,7 @@
                         </button>
                     </div>
                 </td>
-                <td>
+                <td data-label="Gov">
                     <div class="copy-wrapper" style="display: flex; align-items: center;">
                         <span id="senha_gov-{{ associado.pk }}">{{ associado.senha_gov }}</span>
                         <button type="button" onclick="copySenhas('senha_gov-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov" style="margin-left:5px;">

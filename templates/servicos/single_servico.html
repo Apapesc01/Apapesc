@@ -264,18 +264,12 @@
 
                                 {% with doc.ext|lower as ext %}
 
-
                                     {% if ext|is_in:"jpg jpeg png" %}
-                                        <a href="{% url 'converter_para_pdf' doc.pk %}" title="Converter imagem em PDF">
+                                        <a href="{% url 'app_uploads:converter_para_pdf' doc.pk %}" title="Converter imagem em PDF">
                                             <span class="material-icons icon-convert">picture_as_pdf</span>
                                         </a>
                                     {% endif %}
 
-                                    {% if ext != "pdf" %}
-                                        <a href="{% url 'app_uploads:converter_para_pdf' doc.pk %}" title="Converter para PDF">
-                                            <span class="material-icons icon-convert">picture_as_pdf</span>
-                                        </a>
-                                    {% endif %}
                                 {% endwith %}
 
                                 <a href="{{ doc.arquivo.url }}" target="_blank" title="Visualizar">
@@ -294,7 +288,6 @@
                                     onclick="openDeleteModal('{{ doc.pk }}')">
                                     <span class="material-icons icon-delete">delete</span>
                                 </a>
-
                             </td>
                             </tr>
                         {% endfor %}
@@ -305,20 +298,18 @@
             <p>Nenhum documento enviado ainda.</p>
             {% endif %}
         </div>         
-    </div>  
-    
-    
+    </div>    
 </div>
 
 {% block extra_js %}
     <!-- Seu JS com as máscaras -->
-     <script src="{% static 'js/tabs.js' %}"></script>
+    <script src="{% static 'js/tabs.js' %}"></script>
     <script src="{% static 'js/copy_senhas.js' %}"></script>
     <script src="{% static 'js/content_associados.js' %}"></script>
     <script src="{% static 'js/config_content_associados.js' %}"></script>
     <script src="{% static 'js/content_associados.js' %}"></script>
     <script src="{% static 'js/copy_to_clipboard.js' %}"></script>
-
++
 {% endblock %}
 
 {% endblock %}
