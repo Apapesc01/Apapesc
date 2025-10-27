@@ -45,13 +45,13 @@
         <tbody>
             {% for associacao in associacoes %}
             <tr>
-                <td>{{ associacao.nome_fantasia }}</td>
-                <td>{{ associacao.cnpj }}</td>
-                <td>{{ associacao.email }}</td>
-                <td>{{ associacao.presidente }}</td>
-                <td>{{ associacao.municipio }}</td>
-                <td>{{ associacao.data_abertura|date:"d/m/Y" }}</td>
-                <td>
+                <td data-label="Associação">{{ associacao.nome_fantasia }}</td>
+                <td data-label="CNPJ">{{ associacao.cnpj }}</td>
+                <td data-label="E-mail">{{ associacao.email }}</td>
+                <td data-label="Presidente">{{ associacao.presidente }}</td>
+                <td data-label="Município">{{ associacao.municipio }}</td>
+                <td data-label="Abertura">{{ associacao.data_abertura|date:"d/m/Y" }}</td>
+                <td data-label="Links">
                     <a href="{% url 'app_associacao:single_associacao' associacao.pk %}" title="Ver"><span class="material-icons icon-view">visibility</span></a>
                     <a href="{% url 'app_associacao:edit_associacao' associacao.pk %}" title="Editar"><span class="material-icons icon-edit">edit</span></a>
                     <a href="#" title="Excluir"><span class="material-icons icon-delete">delete</span></a>

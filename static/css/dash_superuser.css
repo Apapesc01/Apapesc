@@ -213,3 +213,56 @@
     }
 }
 
+@media (max-width: 540px) {
+  .dashboard-container {
+    padding: 16px 12px;
+    margin: 24px auto;
+    border-radius: 10px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .header-widgets,
+  .section-content {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+
+  .widget,
+  .card {
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .card h3,
+  .widget h2 {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+
+  .card-value,
+  .widget-value {
+    font-size: 1.4rem;
+  }
+
+  .dashboard-links {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .dashboard-link {
+    text-align: center;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+  }
+}

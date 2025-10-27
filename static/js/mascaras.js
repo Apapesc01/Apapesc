@@ -17,7 +17,15 @@ if (celInput) {
         ]
     });
 }
-
+var celInput = document.querySelector('#id_celular_correspondencia');
+if (celInput) {
+    IMask(celInput, {
+        mask: [
+            { mask: '(00)00000-0000' },
+            { mask: '(00)0000-0000' }
+        ]
+    });
+}
 // Máscara CEP
 var cepInput = document.querySelector('#id_cep');
 if (cepInput) {

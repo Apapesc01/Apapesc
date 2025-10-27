@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/tabs.css' %}">
     <link rel="stylesheet" href="{% static 'css/listas.css' %}">
     <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
+    <link rel="stylesheet" href="{% static 'css/responsive_patch.css' %}">
 {% endblock %}
 
 <!--Bloco Página -->
@@ -48,10 +49,6 @@
                 <h4>Links Rápidos</h4>
                 <div class="section-content">
                     <div class="card">
-                        <h3>Inserir em Grupo</h3>
-                        <a href="{% url 'app_accounts:insert_user_group' %}" class="btn-action">Inserir</a>
-                    </div>
-                    <div class="card">
                         <h3>Lista de Associados</h3>
                         <a href="{% url 'app_associados:list_associados' %}" class="btn-action">Ver Lista</a>
                     </div>
@@ -71,6 +68,10 @@
                         <h3>Lançamentos DEFESO</h3>
                         <a href="{% url 'app_defeso:lancamento_defeso' %}" class="btn-action">Acessar</a>
                     </div>
+                    <div class="card">
+                        <h3>Inserir em Grupo</h3>
+                        <a href="{% url 'app_accounts:insert_user_group' %}" class="btn-action">Inserir</a>
+                    </div>                    
                 </div>
             </div>
               

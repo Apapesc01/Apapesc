@@ -6,12 +6,14 @@
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive_patch.css' %}">
     <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
 {% endblock %}
 
 <!--Bloco Página -->
 {% block content %}
 {% include 'components/navbar_home.html' %}
+
 
     <div id="toast-container">
         {% for message in messages %}
@@ -27,31 +29,34 @@
             {% endwith %}
         {% endfor %}
     </div>
-    
+    <body style="background-color:#b7dbff; margin:0;">
 
-    {% for obj in ApapescHome %}
-        <div class="hero-section">
-            <div class="hero-content">
-                <h1>{{ obj.titulo }}</h1>
-                <p>{{ obj.descricao }}</p>
-                <a href="#" class="hero-button">Ver detalhes</a>
+        <div class="hero-wrapper">
+            {% for obj in ApapescHome %}
+                <div class="hero-section">
+                    <div class="hero-content">
+                        <h1>{{ obj.titulo }}</h1>
+                        <p>{{ obj.descricao }}</p>
+                        <a href="#" class="hero-button">Ver detalhes</a>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="hero-apapesc">
+                    <h1 class="fade-in">Sistema APAPESC</h1>
+                    <p class="fade-in delay-1">Gestão de Associados e Embarcações</p>
+                    <p class="fade-in delay-2">Seja bem-vindo(a), {{ user.username }}!</p>
+                    <a href="{% url 'app_accounts:dashboard_superuser' %}" class="btn-hero fade-in delay-3">📊 Acessar Dashboard</a>
+                </div>
+            {% endfor %}
+
+            <div class="hero-links">
+                {% if user.is_authenticated %}
+                <p><a href="{% url 'app_accounts:dashboard_superuser' %}">Ir para o Dashboard</a></p>
+                <p><a href="{% url 'account_logout' %}">Logout</a></p>
+                {% else %}
+                <p><a href="{% url 'account_login' %}">Login</a> | <a href="{% url 'account_signup' %}">Cadastro</a></p>
+                {% endif %}
             </div>
         </div>
-    {% empty %}
-        <p>Hero Associação</p>
-    {% endfor %}
-
-    <div style="text-align: center; margin-top: 50px;">
-        <h1>Bem-vindo(a)!</h1>
-        <p>Esta é sua casa! Entre e fique a vontade!.</p>
-
-        {% if user.is_authenticated %}
-        <p>Olá, {{ user.username }}!</p>
-        <p><a href="{% url 'app_accounts:dashboard_superuser' %}">Ir para o Dashboard</a></p>
-        <p><a href="{% url 'account_logout' %}">Logout</a></p>
-        {% else %}
-        <p><a href="{% url 'account_login' %}">Login</a> | <a href="{% url 'account_signup' %}">Cadastro</a></p>
-        {% endif %}
-    </div>
-
+    </body>
 {% endblock %}

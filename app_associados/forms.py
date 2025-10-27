@@ -27,11 +27,13 @@ class AssociadoForm(forms.ModelForm):
         model = AssociadoModel
         fields = 'user', 'associacao', 'reparticao', 'municipio_circunscricao', 'celular', 'celular_correspondencia', 'email', 'cpf', 'senha_gov', 'data_filiacao', 'content'
         widgets = {
-            'data_filiacao': forms.DateInput(attrs={'type': 'date'}),
+            'data_filiacao': forms.DateInput(attrs={'type': 'date'}),            
             'data_nascimento': forms.DateInput(attrs={'type': 'date'}),            
             'data_desfiliacao': forms.DateInput(attrs={'type': 'date'}),
             'municipio_circunscricao': forms.Select(),
             'content': forms.Textarea(attrs={'rows': 10, 'cols': 50, 'class': 'form-control'}),
+            'celular': forms.TextInput(attrs={'id': 'id_celular'}),
+            'celular_correspondencia': forms.TextInput(attrs={'id': 'id_celular_correspondencia'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -112,6 +114,8 @@ class EditAssociadoForm(forms.ModelForm):
             'cnh_data_emissao': DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
             'municipio_circunscricao': forms.Select(),
             'petrechos_pesca': forms.CheckboxSelectMultiple,
+            'celular': forms.TextInput(attrs={'id': 'id_celular'}),
+            'celular_correspondencia': forms.TextInput(attrs={'id': 'id_celular_correspondencia'}),            
         }
 
     def __init__(self, *args, **kwargs):
@@ -192,7 +196,6 @@ class EditAssociadoForm(forms.ModelForm):
             self.fields['user'].disabled = True
     
 
-
     def clean_cpf(self):
         return validate_and_format_cpf(self.cleaned_data['cpf'])
     
@@ -200,7 +203,10 @@ class EditAssociadoForm(forms.ModelForm):
         celular = self.cleaned_data.get('celular', '')
         return validate_and_format_celular(celular)
    
-    
+    def clean_celular_correspondencia(self):
+        celular_correspondencia = self.cleaned_data.get('celular_correspondencia', '')
+        return validate_and_format_celular(celular_correspondencia) 
+        
     def clean_cep(self):
         cep = self.cleaned_data.get('cep', '')
         return validate_and_format_cep(cep)    

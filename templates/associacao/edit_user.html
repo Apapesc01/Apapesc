@@ -84,25 +84,26 @@
             </div>
         {% endfor %}
 
-        <!-- Botão para salvar normalmente -->
-        <button type="submit" name="action" value="save" class="btn-action">Salvar Alterações</button>
-
         <!-- Verificações condicionais -->
-        {% if not is_integrante %}
-            <button type="submit" name="action" value="save_and_integrante" class="btn-action btn-left">
-                Salvar e Tornar Integrante
-            </button>
-        {% else %}
-            <p class="info-message">✔️ Este usuário já é um integrante.</p>
-        {% endif %}
 
         {% if not is_associado %}
             <button type="submit" name="action" value="save_and_associado" class="btn-action btn-right">
-                Salvar e Tornar Associado
-            </button>
+                Salvar e Tornar ASSOCIADO
+            </button><br><br>
         {% else %}
             <p class="info-message">✔️ Este usuário já é um associado.</p>
         {% endif %}
+
+        {% if not is_integrante %}
+            <button type="submit" name="action" value="save_and_integrante" class="btn-action btn-left">
+                Salvar e Tornar INTEGRANTE / COLABORADOR
+            </button><br><br>
+        {% else %}
+            <p class="info-message">✔️ Este usuário já é um integrante.</p>
+        {% endif %}
+        
+        <!-- Botão para salvar normalmente -->
+        <button type="submit" name="action" value="save" class="btn-action">Salvar Alterações</button>
 
     </form>
 
