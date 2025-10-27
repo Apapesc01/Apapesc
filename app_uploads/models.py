@@ -85,10 +85,13 @@ class UploadsDocs(models.Model):
     proprietario_object = GenericForeignKey('proprietario_content_type', 'proprietario_object_id')
         
     def save(self, *args, **kwargs):
-        is_new = self._state.adding
-        super().save(*args, **kwargs)  # Salva primeiro
+        import shutil
+        from django.utils.text import slugify
+        from unidecode import unidecode
+        from django.utils import timezone
 
-        if is_new and self.arquivo and self.proprietario_object:
+        # Se for um novo arquivo
+        if not self.pk and self.arquivo:
             try:
                 ext = self.arquivo.name.split('.')[-1]
                 datahora = timezone.now().strftime('%Y%m%d_%H%M%S')
@@ -110,25 +113,28 @@ class UploadsDocs(models.Model):
 
                 nome_prop = slugify(unidecode(nome_prop))
 
-                # Novo caminho
+                # Novo nome antes de salvar
                 new_filename = f"{tipo_nome}_{nome_prop}_{datahora}.{ext}"
                 new_dir = os.path.join('uploads_associados', nome_prop)
                 new_path = os.path.join(new_dir, new_filename)
-                full_old_path = self.arquivo.path
-                full_new_path = os.path.join(settings.MEDIA_ROOT, new_path)
 
                 # Cria diretório se necessário
+                full_new_path = os.path.join(settings.MEDIA_ROOT, new_path)
                 os.makedirs(os.path.dirname(full_new_path), exist_ok=True)
 
-                # Move o arquivo
-                shutil.move(full_old_path, full_new_path)
+                # Move o arquivo manualmente
+                temp_path = self.arquivo.path
+                shutil.move(temp_path, full_new_path)
 
-                # Atualiza o path do model
+                # Atualiza o path do campo FileField
                 self.arquivo.name = new_path
-                super().save(update_fields=['arquivo'])
 
             except Exception as e:
-                print(f"❌ Erro ao renomear e mover arquivo: {e}")
+                print(f"❌ Erro ao preparar arquivo antes do save: {e}")
+
+        # Salva normalmente
+        super().save(*args, **kwargs)
+
                 
 
     def __str__(self):
