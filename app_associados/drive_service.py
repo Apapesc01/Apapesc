@@ -8,7 +8,7 @@ SCOPES = ['https://www.googleapis.com/auth/drive']
 SERVICE_ACCOUNT_FILE = os.path.join(os.path.dirname(__file__), 'credentials/service_account.json')
 
 # ID da pasta raiz onde serão criadas as pastas dos associados
-PARENT_FOLDER_ID = "1Lewapk2UstpxcwDAHiMqup8HdUfHeKlW?lfhs=2"  # Removido o sufixo ?lfhs=2
+PARENT_FOLDER_ID = "1Lewapk2UstpxcwDAHiMqup8HdUfHeKlW"  # Removido o sufixo ?lfhs=2
 
 # Autenticação com o Google Drive API
 def get_drive_service():
