@@ -1,7 +1,7 @@
 # app_associados/management/commands/create_profissoes.py
 
 from django.core.management.base import BaseCommand
-from app_associados.models import ProfissoesModel  # ajuste se o nome do model for diferente
+from app_associacao.models import ProfissoesModel  # ajuste se o nome do model for diferente
 
 PROFISSOES = [
     ("Advogada", "Profissional formada em Direito, atuante na advocacia."),
