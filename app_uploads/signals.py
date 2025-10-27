@@ -11,11 +11,13 @@ import os
 
 
 
+
+
 @receiver(post_save, sender=UploadsDocs)
 def processar_upload_e_enviar_drive(sender, instance, created, **kwargs):
     """
     Comprime o arquivo após upload e envia automaticamente
-    uma cópia para o Google Drive do associado.
+    uma cópia para o Google Drive do associado, preservando o nome original.
     """
     if not created:
         return
@@ -44,7 +46,10 @@ def processar_upload_e_enviar_drive(sender, instance, created, **kwargs):
         folder_id = getattr(proprietario, "drive_folder_id", None)
 
         if folder_id:
-            nome_arquivo = os.path.basename(path)
+            # Usa o nome do upload (sem caminho local)
+            nome_arquivo = instance.arquivo.name.split('/')[-1]
+
+            # Envia para o Google Drive com o mesmo nome
             upload_file_to_drive(path, nome_arquivo, folder_id)
             print(f"✅ Arquivo '{nome_arquivo}' enviado para o Drive do associado ({folder_id})")
         else:
