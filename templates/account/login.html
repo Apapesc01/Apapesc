@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}Entrar{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/login_css.css' %}">
+
+{% endblock %}
+
+{% block content %}
+
+<div class="auth-container">
+    <h1 class="auth-title">{% trans "Entrar" %}</h1>
+
+    <p>Se você ainda não criou uma conta, por favor, <a href="{% url 'account_signup' %}">cadastre-se</a>.</p>
+
+    <form method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">{% trans "Entrar" %}</button>
+        </div>
+    </form>
+
+    <p style="margin-top: 16px;">
+        <a href="{% url 'account_reset_password' %}">Esqueceu sua senhaa?</a>
+    </p>
+</div>
+{% endblock %}

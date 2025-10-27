@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}Sair{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/login_css.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h1 class="auth-title">{% trans "Sair" %}</h1>
+    
+    <p>Tem certeza de que deseja sair?</p>
+    
+    <form method="post" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-primary">{% trans "Confirmar Logout" %}</button>
+    </form>
+
+    <p style="margin-top: 20px;">
+        <a href="{% url 'app_home:home' %}">Cancelar e voltar para a Home</a>
+    </p>
+</div>
+{% endblock %}
