@@ -658,7 +658,7 @@ class EnviarParaDriveView(View):
             return redirect(request.META.get('HTTP_REFERER', '/'))
 
         try:
-            upload_file_to_drive(doc.arquivo.path, doc.arquivo.name, folder_id)
+            upload_file_to_drive(doc.arquivo.path, os.path.basename(doc.arquivo.name), folder_id)
             messages.success(request, "Arquivo enviado para o Google Drive com sucesso!")
         except Exception as e:
             messages.error(request, f"Erro ao enviar para o Drive: {e}")
