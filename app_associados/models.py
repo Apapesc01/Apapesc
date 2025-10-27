@@ -15,7 +15,7 @@ from .utils import format_celular_for_whatsapp
 import re
 from django.core.exceptions import ValidationError
 from simple_history.models import HistoricalRecords
-
+import traceback
 from app_associacao.models import(
     AssociacaoModel,
     ReparticoesModel,
@@ -575,6 +575,7 @@ class AssociadoModel(models.Model):
         null=True, 
         verbose_name="Anotações"
     )
+
     history = HistoricalRecords()
 
     def save(self, *args, **kwargs):
@@ -582,35 +583,32 @@ class AssociadoModel(models.Model):
         creating = not self.pk
         if creating and not self.drive_folder_id:
             try:
-                # Definindo o nome da pasta
                 folder_name = self.user.get_full_name() if self.user else "Novo_Associado"
                 parent_folder_id = '1Lewapk2UstpxcwDAHiMqup8HdUfHeKlW'
-                #parent_folder_id = '15Nby8u0aLy1hcjvfV8Ja6w_nSG0yFQ2w' '1Lewapk2UstpxcwDAHiMqup8HdUfHeKlW'
 
-                # Criar a pasta no Google Drive
+                print(f"Tentando criar pasta '{folder_name}' no Drive (pai: {parent_folder_id})...")
+
                 folder_id = create_associado_folder(folder_name, parent_folder_id)
                 if folder_id:
-                    # Adicionando o sufixo e atribuindo ao campo
-                    self.drive_folder_id = f"{folder_id}?lfhs=2"
-                    print(f"ID salvo no campo: {self.drive_folder_id}")
+                    self.drive_folder_id = folder_id
+                    print(f"✅ Pasta criada com sucesso! ID salvo: {self.drive_folder_id}")
                 else:
-                    print("Erro ao criar a pasta. Nenhum ID foi retornado.")
+                    print("⚠️ Nenhum ID retornado ao criar pasta no Drive.")
             except Exception as e:
-                print(f"Erro ao criar pasta no Drive: {e}")
+                print("❌ Erro ao criar pasta no Drive:")
+                traceback.print_exc()  # Mostra erro completo no log do container
 
-        # Salva
+        # Salva o registro normalmente
         super().save(*args, **kwargs)
-        
-            
+
     @property
     def drive_folder_link(self):
         if self.drive_folder_id:
             return f"https://drive.google.com/drive/folders/{self.drive_folder_id}"
         return None
-    
-    # Método auxiliar para o celular limpo
+
     def get_celular_clean(self):
         return self.celular.replace('-', '').replace(' ', '') if self.celular else ''
-    
+
     def __str__(self):
-        return f"Associado {self.user} (filiado em {self.data_filiacao})"    
+        return f"Associado {self.user} (filiado em {self.data_filiacao})"
