@@ -15,10 +15,12 @@ def processar_upload_e_enviar_drive(sender, instance, created, **kwargs):
     Comprime o arquivo e envia automaticamente para o Google Drive,
     garantindo que o nome final (renomeado pelo model) seja usado.
     """
-    if not created:
-        return
-
     def _processar():
+        # Ignora se não há arquivo
+        if not instance.arquivo:
+            print("⚠️ Nenhum arquivo encontrado no upload.")
+            return
+
         path = instance.arquivo.path
         ext = path.lower().split('.')[-1]
 
@@ -51,5 +53,6 @@ def processar_upload_e_enviar_drive(sender, instance, created, **kwargs):
         except Exception as e:
             print(f"❌ Erro ao enviar para o Drive: {e}")
 
-    # Executa somente após o commit final (quando o rename já ocorreu)
-    transaction.on_commit(_processar)
+    # 🔄 Só processa se for novo OU se o arquivo foi alterado (renomeado)
+    if created or kwargs.get("update_fields") == {"arquivo"}:
+        transaction.on_commit(_processar)
