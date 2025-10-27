@@ -11,22 +11,38 @@
 
 {% block content %}
 
-<div class="auth-container">
-    <h1 class="auth-title">{% trans "Entrar" %}</h1>
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
 
-    <p>Se você ainda não criou uma conta, por favor, <a href="{% url 'account_signup' %}">cadastre-se</a>.</p>
+    <div class="auth-container">
+        <h1 class="auth-title">{% trans "Entrar" %}</h1>
 
-    <form method="POST" action="{% url 'account_login' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
+        <p>Se você ainda não criou uma conta, por favor, <a href="{% url 'account_signup' %}">cadastre-se</a>.</p>
 
-        <div class="form-actions">
-            <button type="submit" class="btn-primary">{% trans "Entrar" %}</button>
-        </div>
-    </form>
+        <form method="POST" action="{% url 'account_login' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
 
-    <p style="margin-top: 16px;">
-        <a href="{% url 'account_reset_password' %}">Esqueceu sua senhaa?</a>
-    </p>
-</div>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">{% trans "Entrar" %}</button>
+            </div>
+        </form>
+
+        <p style="margin-top: 16px;">
+            <a href="{% url 'account_reset_password' %}">Esqueceu sua senhaa?</a>
+        </p>
+    </div>
+    
 {% endblock %}

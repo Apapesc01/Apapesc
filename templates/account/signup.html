@@ -8,20 +8,35 @@
 {% endblock %}
 
 {% block content %}
-<div class="auth-container">
-    <h1 class="auth-title">{% trans "Cadastrar-se" %}</h1>
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+        
+    <div class="auth-container">
+        <h1 class="auth-title">{% trans "Cadastrar-se" %}</h1>
 
-    <p>Já tem uma conta? Então, por favor, <a href="{% url 'account_login' %}">entre</a>.</p>
+        <p>Já tem uma conta? Então, por favor, <a href="{% url 'account_login' %}">entre</a>.</p>
 
-    <form method="post" action="{% url 'account_signup' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
+        <form method="post" action="{% url 'account_signup' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
 
-        {% if redirect_field_value %}
-            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-        {% endif %}
+            {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
 
-        <button type="submit" class="btn-primary">{% trans "Cadastrar-se" %}</button>
-    </form>
-</div>
+            <button type="submit" class="btn-primary">{% trans "Cadastrar-se" %}</button>
+        </form>
+    </div>
 {% endblock %}

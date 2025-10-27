@@ -8,18 +8,33 @@
 {% endblock %}
 
 {% block content %}
-<div class="auth-container">
-    <h1 class="auth-title">{% trans "Sair" %}</h1>
-    
-    <p>Tem certeza de que deseja sair?</p>
-    
-    <form method="post" action="{% url 'account_logout' %}">
-        {% csrf_token %}
-        <button type="submit" class="btn-primary">{% trans "Confirmar Logout" %}</button>
-    </form>
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+        
+    <div class="auth-container">
+        <h1 class="auth-title">{% trans "Sair" %}</h1>
+        
+        <p>Tem certeza de que deseja sair?</p>
+        
+        <form method="post" action="{% url 'account_logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-primary">{% trans "Confirmar Logout" %}</button>
+        </form>
 
-    <p style="margin-top: 20px;">
-        <a href="{% url 'app_home:home' %}">Cancelar e voltar para a Home</a>
-    </p>
-</div>
+        <p style="margin-top: 20px;">
+            <a href="{% url 'app_home:home' %}">Cancelar e voltar para a Home</a>
+        </p>
+    </div>
 {% endblock %}

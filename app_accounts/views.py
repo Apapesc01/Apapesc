@@ -29,7 +29,7 @@ def dashboard(request):
     return render(request, f'dashboards/{template}')
 
 class AcessoNegadoView(TemplateView):
-    template_name = 'accounts/acesso_negado.html'
+    template_name = 'account/acesso_negado.html'
 
 
 User = get_user_model()
@@ -76,7 +76,7 @@ def criar_usuario_fake(request):
 
 
 class InsertUserGroupView(LoginRequiredMixin, GroupRequiredMixin, View):
-    template_name = 'accounts/insert_user_group.html'
+    template_name = 'account/insert_user_group.html'
     group_required = [
     'Superuser',
     ]   
