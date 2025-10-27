@@ -584,7 +584,8 @@ class AssociadoModel(models.Model):
             try:
                 # Definindo o nome da pasta
                 folder_name = self.user.get_full_name() if self.user else "Novo_Associado"
-                parent_folder_id = '15Nby8u0aLy1hcjvfV8Ja6w_nSG0yFQ2w'
+                parent_folder_id = '1Lewapk2UstpxcwDAHiMqup8HdUfHeKlW'
+                #parent_folder_id = '15Nby8u0aLy1hcjvfV8Ja6w_nSG0yFQ2w' '1Lewapk2UstpxcwDAHiMqup8HdUfHeKlW'
 
                 # Criar a pasta no Google Drive
                 folder_id = create_associado_folder(folder_name, parent_folder_id)
