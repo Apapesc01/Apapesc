@@ -145,3 +145,11 @@
     width: 100%;
   }
 }
+.status-ativo {
+    color: green;
+    font-weight: bold;
+}
+.status-desativado {
+    color: red;
+    font-weight: bold;
+}

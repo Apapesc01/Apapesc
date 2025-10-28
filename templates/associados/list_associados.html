@@ -30,44 +30,39 @@
             {% endwith %}
         {% endfor %}
     </div>
-
-    
-    <div class="filtro-container" style="margin-bottom: 24px;">
-
-        <form method="get" autocomplete="off">
-            <div class="form-grid grid-4-cols">
-                <div class="form-group">
-                    {{ search_form.nome.label_tag }}
-                    {{ search_form.nome }}
-                </div>
-                <div class="form-group">
-                    {{ search_form.associacao.label_tag }}
-                    {{ search_form.associacao }}
-                </div>
-                <div class="form-group">
-                    {{ search_form.reparticao.label_tag }}
-                    {{ search_form.reparticao }}
-                </div>
-                <div class="form-group">
-                    {{ search_form.status.label_tag }}
-                    {{ search_form.status }}
-                </div>
+    <form method="get" autocomplete="off">
+        <div class="form-grid grid-4-cols">
+            <div class="form-group">
+                {{ search_form.nome.label_tag }}
+                {{ search_form.nome }}
             </div>
-            <div class="text-right">
-                <button type="submit">Buscar</button>
-                <a href="{% url 'app_associados:list_associados' %}" class="btn btn-secondary">Limpar</a>
+            <div class="form-group">
+                {{ search_form.associacao.label_tag }}
+                {{ search_form.associacao }}
             </div>
-        </form>
-    </div>
+            <div class="form-group">
+                {{ search_form.reparticao.label_tag }}
+                {{ search_form.reparticao }}
+            </div>
+            <div class="form-group">
+                {{ search_form.status.label_tag }}
+                {{ search_form.status }}
+            </div>
+        </div>
+        <div class="text-right">
+            <button type="submit">Buscar</button>
+            <a href="{% url 'app_associados:list_associados' %}" class="btn btn-secondary">Limpar</a>
+        </div>
+    </form><br>
 
     <table class="table-list">
         <thead>
             <tr>
                 <th>Nome</th>
-                <th>Apelido</th>
                 <th>CPF</th>
                 <th>Gov</th>
-                <th>Cel</th>         
+                <th>Cel</th>
+                <th>Circunscrição</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -75,12 +70,12 @@
             {% for associado in associados %}
             <tr>
                 <td data-label="Associado">
-                    <a href="{% url 'app_associados:single_associado' associado.pk %}">
+                    <a href="{% url 'app_associados:single_associado' associado.pk %}" class="link-associado-list">
                         {{associado.user.get_full_name}}
                     </a>
                     
                 </td>
-                <td data-label="Apelido">{{associado.apelido}}</td>
+
                 <td data-label="CPF">
                     <div class="copy-wrapper" style="display: flex; align-items: center;">
                         <span id="cpf-{{ associado.pk }}">{{ associado.cpf }}</span>
@@ -97,8 +92,15 @@
                         </button>
                     </div>
                 </td>
-                <td>{{associado.celular}}</td>
-
+                <td data-label="Celular">
+                    <div class="copy-wrapper" style="display: flex; align-items: center;">
+                        <span id="celular-{{ associado.pk }}">{{ associado.celular }}</span>
+                        <button type="button" onclick="copySenhas('celular-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov" style="margin-left:5px;">
+                            <i class="material-icons" style="font-size:14px;">content_copy</i>
+                        </button>
+                    </div>
+                </td>                
+                <td>{{associado.municipio_circunscricao}}</td>
                 <td>
                     <a href="{% url 'app_associados:single_associado' associado.pk %}" title="Ver"><span class="material-icons icon-view">visibility</span></a>
                     <a href="{% url 'app_associados:edit_associado' associado.pk %}" title="Editar"><span class="material-icons icon-edit">edit</span></a>

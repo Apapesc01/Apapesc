@@ -76,8 +76,8 @@ button {
 .copy-wrapper {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 8px;
+  gap: 1px;
+
 }
 
 .copy-btn {
@@ -97,4 +97,22 @@ button {
 .copy-btn .material-icons {
   font-size: 16px;
   vertical-align: middle;
+}
+.status-ativo {
+    color: green;
+    font-weight: bold;
+}
+.status-desativado {
+    color: red;
+    font-weight: bold;
+}
+.status-associado {
+    font-weight: bold;
+    color: #3a3a3a;
+    background-color: #f0f0f0;
+    padding: 4px 8px;
+    border-radius: 5px;
+    display: inline-block;
+    text-transform: capitalize;
+    font-size: 0.7rem;
 }
