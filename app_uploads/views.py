@@ -1,5 +1,4 @@
 # app_uploads/views.py
-
 from core.views.base_imports import *
 from core.views.app_uploads_imports import *
 from core.choices import TIPO_MODELOS_MAP
