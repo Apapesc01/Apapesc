@@ -36,6 +36,11 @@ urlpatterns = [
     path('servicos/', include('app_servicos.urls', namespace='app_servicos')),
     path('automacoes/', include('app_automacoes.urls', namespace='app_automacoes')),
     path('embarcacoes/', include('app_embarcacoes.urls', namespace='app_embarcacoes')),
+    path('despesas/', include('app_despesas.urls', namespace='app_despesas')),
+    path('graficos/', include('app_graficos.urls', namespace='app_graficos')),
+
+
+    
 ]
 
 if settings.DEBUG:

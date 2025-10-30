@@ -1,2 +1,4 @@
 from app_associados.models import AssociadoModel
 from app_anuidades.models import AnuidadeModel
+from app_associacao.models import AssociacaoModel, ReparticoesModel
+from app_despesas.models import DespesaAssociacaoModel

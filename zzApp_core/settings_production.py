@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'app_servicos',
     'app_automacoes',
     'app_embarcacoes',
+    'app_despesas',
+    'app_graficos',
 ]
 
 MIDDLEWARE = [

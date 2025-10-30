@@ -427,3 +427,19 @@ ORGAO_EMISSOR_LICENCA = [
     ('SPU', 'Secretaria do Patrimônio da União'),
     # adicione mais se necessário
 ]
+
+# App Despesas
+TIPO_DESPESA_CHOICES = [
+    ('aluguel', 'Aluguel'),
+    ('internet', 'Internet'),
+    ('tranposrte', 'Transporte'),
+    ('uber', 'Uber'),
+    ('gcp_hospedagem', 'GCP/Hospedagem'),
+    ('matuntencao', 'Manutenção'),
+    ('pagamento_honorarios', 'Pagamento/Honorários'),
+    ('credito_celular', 'Crédito Celular'),
+    ('prestacao_servicos', 'Prestação de Serviços'),
+    ('papelaria', 'Papelaria'),
+    ('outros', 'Outros'),
+    
+]

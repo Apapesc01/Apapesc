@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista de Despesas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/listas.css' %}">
+<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+<link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+<link rel="stylesheet" href="{% static 'css/responsive_patch.css' %}">
+{% endblock %}
+
+{% block content %}
+
+{% if request.user.is_superuser %}
+    {% include "components/navbar_superuser.html" %}
+{% elif request.user.user_type == "admin_associacao" %}
+    {% include "components/navbar_admin_associacao.html" %}
+{% elif request.user.user_type == "auxiliar_associacao" %}
+    {% include "components/navbar_aux_associacao.html" %}
+{% else %}
+    {% include "components/navbar_home.html" %}
+{% endif %}
+
+<div class="lista-container">
+    <h1>Despesas Registradas</h1>
+
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <form method="get" class="form-filtros">
+        <div class="form-grid grid-4-cols">
+            <div class="form-group">
+                {{ filtro_form.associacao.label_tag }}
+                {{ filtro_form.associacao }}
+            </div>
+            <div class="form-group">
+                {{ filtro_form.reparticao.label_tag }}
+                {{ filtro_form.reparticao }}
+            </div>
+            <div class="form-group">
+                {{ filtro_form.pago.label_tag }}
+                {{ filtro_form.pago }}
+            </div>
+            <div class="form-group">
+                <small>Filtro</small>
+            <button type="submit">Filtrar</button>
+            </div>
+        </div>
+
+    <div class="form-group botoes-inss-container">
+        <div class="btn-left">
+            <a href="{% url 'app_despesas:list_despesas' %}">Limpar Filtro</a>
+            -- <a href="{% url 'app_despesas:create_despesa' %}">Lançar Nova Despesa</a>
+        </div>
+    </div>
+    </form><br>
+
+
+    <div class="table-responsive">
+        <table class="table-list">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Associação</th>
+                    <th>Repartição</th>
+                    <th>Valor</th>
+                    <th>Vencimento</th>
+                    <th>Status</th>
+                    <th>Comprovante</th>
+                    <th>Editar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for despesa in despesas %}
+                    <tr>
+                        <td data-label="Tipo">{{ despesa.get_tipo_despesa_display }}</td>
+                        <td data-label="Associação">{{ despesa.associacao.nome_fantasia }}</td>
+                        <td>
+                            {% if despesa.reparticao %}
+                                {{ despesa.reparticao.nome_reparticao }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td data-label="Valor">R$ {{ despesa.valor }}</td>
+                        <td data-label="Vencimento">{{ despesa.data_vencimento|date:"d/m/Y" }}</td>
+                        <td data-label="Status">
+                            {% if despesa.pago %}
+                                <span class="status-ativo">Pago</span>
+                            {% else %}
+                                <span class="status-desativado">Em Aberto</span>
+                            {% endif %}
+                        </td>
+                        <td data-label="Comprovante">
+                            {% if despesa.comprovante_nota %}
+                                <a href="{{ despesa.comprovante_nota.url }}" target="_blank" class="icon-view" title="Visualizar Comprovante">📄</a>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td data-label="Editar">
+                            <a href="{% url 'app_despesas:edit_despesa' despesa.id %}" class="icon-edit" title="Editar Despesa">✏️</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="8">Nenhuma despesa cadastrada ainda.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% block extra_js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.2/imask.min.js"></script>
+    <script src="{% static 'js/filtrar_reparticoes.js' %}"></script>
+{% endblock %}
+{% endblock %}

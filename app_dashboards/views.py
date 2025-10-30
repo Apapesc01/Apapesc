@@ -8,6 +8,7 @@ class SuperDashboardView(LoginRequiredMixin, GroupRequiredMixin, View):
         'Superuser',
     ]   
     login_url = '/accounts/login/'
+
     
     def get(self, request, *args, **kwargs):
         # ANUIDADES
@@ -79,7 +80,6 @@ class SuperDashboardView(LoginRequiredMixin, GroupRequiredMixin, View):
         # Prepara dados para o gráfico
         labels = [item['mes'].strftime('%Y-%m') for item in filiacoes_por_mes]
         valores = [item['total'] for item in filiacoes_por_mes]
-        
 
         context = {
             # Anuidades
@@ -104,7 +104,14 @@ class SuperDashboardView(LoginRequiredMixin, GroupRequiredMixin, View):
             'filiacoes_labels_json': json.dumps(labels),
             'filiacoes_valores_json': json.dumps(valores),            
         }
+        # Passa as despesas
+        context['despesas'] = DespesaAssociacaoModel.objects.select_related(
+            'associacao', 'reparticao'
+        ).order_by('-data_vencimento')[:10]          
+        
         return render(request, self.template_name, context)
+
+
     
 class AdminAssociacaoDasboardView(LoginRequiredMixin, GroupRequiredMixin, View):
     template_name = 'dashboards/dashboard_admin.html'

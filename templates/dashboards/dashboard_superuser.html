@@ -36,9 +36,9 @@
         <div class="tabs">
             <button class="tab-link active" data-tab="superdash">SuperDash</button>
             <button class="tab-link" data-tab="anuidades">Anuidades</button>
-            <button class="tab-link" data-tab="defesos">Defesos</button>
             <button class="tab-link" data-tab="automacoes">Automações</button>
-
+            <button class="tab-link" data-tab="defesos">Defesos</button>
+            <button class="tab-link" data-tab="despesas">Despesas</button>
 
         </div>
         <!--SuperDash-->
@@ -182,6 +182,42 @@
                 </table>
             </section>
         </div>
+        <div class="tab-content" id="tab-automacoes">
+            <h1>Automações</h1>
+
+            <section class="dashboard-section highlight-section">
+                <h2>📂 Bases</h2>
+                <div class="section-content">
+                    <div class="card info">
+                        <h3>🗂️ Lista Automações</h3>
+                        <p>Visualize os registros extraídos dos PDFs base</p>
+                        <a href="{% url 'app_automacoes:lista_automacoes' %}" class="btn-action">Acessar</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section highlight-section">
+                <h2>⚙️ Automações em Massa</h2>
+                <div class="section-content">
+                    <div class="card warning">
+                        <h3>📊 Processos em Massa</h3>
+                        <p>Executar operações em lote</p>
+                        <a href="#" class="btn-action">Em breve</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section highlight-section">
+                <h2>🏢 Apapesc</h2>
+                <div class="section-content">
+                    <div class="card">
+                        <h3>🧠 Outras automações</h3>
+                        <p>Scripts e integrações diversas da Apapesc</p>
+                        <a href="#" class="btn-action">Ver</a>
+                    </div>
+                </div>
+            </section>
+        </div>
         <div class="tab-content" id="tab-defesos">
             <div class="detail-section three-cols">
                 <div class="links-fasts">
@@ -222,44 +258,23 @@
 
                 </div> 
             </div>
-        </div>  
-        
-        <div class="tab-content" id="tab-automacoes">
-            <h1>Automações</h1>
+        </div>
+
+        <div class="tab-content" id="tab-despesas">
+            <h1>Despesas</h1>
 
             <section class="dashboard-section highlight-section">
-                <h2>📂 Bases</h2>
-                <div class="section-content">
-                    <div class="card info">
-                        <h3>🗂️ Lista Automações</h3>
-                        <p>Visualize os registros extraídos dos PDFs base</p>
-                        <a href="{% url 'app_automacoes:lista_automacoes' %}" class="btn-action">Acessar</a>
-                    </div>
-                </div>
+                <h2>Links</h2>
+                <a href="{% url 'app_despesas:list_despesas' %}" class="btn-action">Lista Despesas</a>
+                <a href="{% url 'app_despesas:create_despesa' %}" class="btn-action">Nova Despesa</a>
             </section>
 
-            <section class="dashboard-section highlight-section">
-                <h2>⚙️ Automações em Massa</h2>
-                <div class="section-content">
-                    <div class="card warning">
-                        <h3>📊 Processos em Massa</h3>
-                        <p>Executar operações em lote</p>
-                        <a href="#" class="btn-action">Em breve</a>
-                    </div>
-                </div>
-            </section>
-
-            <section class="dashboard-section highlight-section">
-                <h2>🏢 Apapesc</h2>
-                <div class="section-content">
-                    <div class="card">
-                        <h3>🧠 Outras automações</h3>
-                        <p>Scripts e integrações diversas da Apapesc</p>
-                        <a href="#" class="btn-action">Ver</a>
-                    </div>
-                </div>
+            <section class="dashboard-section">
+                <h2>📂 Lista</h2>
+                {% include 'components/despesas/lista_despesas_component.html' %}
             </section>
         </div>
+       
 
     </div>
 

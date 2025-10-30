@@ -18,8 +18,7 @@
                 <a href="#" class="menu-navbar">Dashs ▾</a>
                 <div class="dropdown-menu">
                     <a href="{% url 'app_dashboards:super_dashboard' %}">SuperDash</a>
-                    <a href="#">Finances</a>
-                    <a href="#">Outros</a>
+                    <a href="{% url 'app_graficos:supergraficos' %}">Gráficos</a>
                 </div>
             </div>
             <div class="dropdown">
@@ -44,8 +43,8 @@
             <div class="dropdown">
                 <a href="#">Associados ▾</a>
                 <div class="dropdown-menu">
-                    <a href="{% url 'app_associados:list_associados' %}">LG Associados</a>
-                    <a href="{% url 'app_associacao:list_users' %}">Novo Associado</a> 
+                    <a href="{% url 'app_associados:list_associados' %}">👥 Lista Associados</a>
+                    <a href="{% url 'app_associacao:list_users' %}">😊 Novo Associado</a> 
                     <hr>
                     <a href="{% url 'app_embarcacoes:list_embarcacoes' %}">Embarcações</a>
 
@@ -69,6 +68,7 @@
                     <a href="{% url 'app_servicos:painel_status_servico' %}">Painel Kanban</a>
                 </div>
             </div>
+        
             {% if user.is_authenticated %}
             <a href="{% url 'account_logout' %}">Logout</a>
             {% else %}

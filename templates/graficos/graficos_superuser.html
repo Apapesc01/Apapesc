@@ -1,0 +1,121 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Graficos Super {% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/associado.css' %}"> <!-- Cards-->
+    <link rel="stylesheet" href="{% static 'css/dash_superuser.css' %}"> 
+    <link rel="stylesheet" href="{% static 'css/tabs.css' %}">
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
+    <link rel="stylesheet" href="{% static 'css/responsive_patch.css' %}">
+{% endblock %}
+
+<!--Bloco Página -->
+{% block content %}
+{% include 'components/navbar_superuser.html' %}
+
+    <div class="dashboard-container">
+        <div id="toast-container">
+            {% for message in messages %}
+                {% with message.tags as tag %}
+                    <div class="toast 
+                        {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                        {% elif 'info' in tag %}toast-info
+                        {% elif 'warning' in tag %}toast-warning
+                        {% else %}toast-info{% endif %}">
+                        <span>{{ message }}</span>
+                        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                    </div>
+                {% endwith %}
+            {% endfor %}
+        </div>
+
+        <!--Tabs-->
+        <div class="tabs">
+            <button class="tab-link active" data-tab="graficosdash">GraficosDash</button>
+            <button class="tab-link" data-tab="anuidadesgraficosdash">Anuidades</button>
+            <button class="tab-link" data-tab="automacoesgraficosdash">Automações</button>
+            <button class="tab-link" data-tab="defesosgraficosdash">Defesos</button>
+            <button class="tab-link" data-tab="despesasgraficosdash">Despesas</button>
+
+        </div>
+        <!--SuperDash-->
+        <div class="tab-content active" id="tab-graficosdash">
+
+            <div class="dashboard-section">
+                <h1>Inicio</h1>
+            </div>    
+
+        </div>        
+
+        <!--Anuidades-->
+        <div class="tab-content" id="tab-anuidadesgraficosdash">
+            <header class="dashboard-header highlight-section">
+                <h1>Anuidades</h1>
+
+            </header>
+            <section class="dashboard-section highlight-section">
+            
+
+            </section>
+
+            <section class="dashboard-section highlight-section">
+                
+            </section>
+
+            <section class="dashboard-section">
+                
+            </section>
+        </div>
+
+        <div class="tab-content" id="tab-automacoesgraficosdash">
+            <h1>Automações</h1>
+
+            <section class="dashboard-section highlight-section">
+                <h2>📂 Graficos</h2>
+                <div class="section-content">
+
+                </div>
+            </section>
+
+            <section class="dashboard-section highlight-section">
+                <h2>⚙️ Graficos</h2>
+                <div class="section-content">
+
+                </div>
+            </section>
+
+            <section class="dashboard-section highlight-section">
+                <h2>🏢 Apapesc</h2>
+                <div class="section-content">
+
+                </div>
+            </section>
+        </div>
+
+        <div class="tab-content" id="tab-defesosgraficosdash">
+            <div class="detail-section three-cols">
+                <h1>Defeso</h1>
+            </div>
+        </div>
+
+        <div class="tab-content" id="tab-despesasgraficosdash">
+            <h1>Despesas</h1>
+            <section class="dashboard-section highlight-section">
+
+            </section>
+
+        </div>            
+        </div>  
+        
+        
+
+    </div>
+
+{% block extra_js %}
+    <script src="{% static 'js/tabs.js' %}"></script>
+
+{% endblock %}
+{% endblock %}

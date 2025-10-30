@@ -1,0 +1,52 @@
+<div class="table-responsive">
+        <table class="table-list">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Associação</th>
+                    <th>Repartição</th>
+                    <th>Valor</th>
+                    <th>Vencimento</th>
+                    <th>Status</th>
+                    <th>Comprovante</th>
+                    <th>Editar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for despesa in despesas %}
+                    <tr>
+                        <td data-label="Tipo">{{ despesa.get_tipo_despesa_display }}</td>
+                        <td data-label="Associação">{{ despesa.associacao.nome_fantasia }}</td>
+                        <td>
+                            {% if despesa.reparticao %}
+                                {{ despesa.reparticao.nome_reparticao }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td data-label="Valor">R$ {{ despesa.valor }}</td>
+                        <td data-label="Vencimento">{{ despesa.data_vencimento|date:"d/m/Y" }}</td>
+                        <td data-label="Status">
+                            {% if despesa.pago %}
+                                <span class="status-ativo">Pago</span>
+                            {% else %}
+                                <span class="status-desativado">Em Aberto</span>
+                            {% endif %}
+                        </td>
+                        <td data-label="Comprovante">
+                            {% if despesa.comprovante_nota %}
+                                <a href="{{ despesa.comprovante_nota.url }}" target="_blank" class="icon-view" title="Visualizar Comprovante">📄</a>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td data-label="Editar">
+                            <a href="{% url 'app_despesas:edit_despesa' despesa.id %}" class="icon-edit" title="Editar Despesa">✏️</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="8">Nenhuma despesa cadastrada ainda.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>

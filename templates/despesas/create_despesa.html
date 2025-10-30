@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nova Despesa{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive_patch.css' %}">    
+{% endblock %}
+
+{% block content %}
+
+    {% if request.user.is_superuser %}
+        {% include "components/navbar_superuser.html" %}
+    {% elif request.user.user_type == "admin_associacao" %}
+        {% include "components/navbar_admin_associacao.html" %}
+    {% elif request.user.user_type == "auxiliar_associacao" %}
+        {% include "components/navbar_aux_associacao.html" %}
+    {% else %}    
+        {% include "components/navbar_home.html" %}
+    {% endif %}
+
+<div class="form-container">
+    <h1>Cadastro de Despesas</h1>
+
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% if form.errors %}
+            <div class="errorlist">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+
+        <!-- Vínculos -->
+        <div class="form-grid grid-3-cols">
+
+            <div class="form-group">
+                {{ form.associacao.label_tag }}
+                {{ form.associacao }}
+            </div>
+
+            <div class="form-group">
+                {{ form.reparticao.label_tag }}
+                {{ form.reparticao }}
+                {% if form.reparticao.errors %}
+                    <div class="field-error">
+                        {% for error in form.reparticao.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.tipo_despesa.label_tag }}
+                {{ form.tipo_despesa.as_widget }}
+                {% if form.tipo_despesa.errors %}
+                    <div class="field-error">
+                        {% for error in form.tipo_despesa.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+
+              
+        </div> 
+
+        <!-- Contatos -->
+        <div class="form-grid grid-2-cols">
+            <div class="form-group">
+                {{ form.valor.label_tag }}
+                {{ form.valor }}
+                {% if form.valor.errors %}
+                    <div class="field-error">
+                        {% for error in form.valor.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+            <div class="form-group">
+                {{ form.numero_nota_fiscal.label_tag }}
+                {{ form.numero_nota_fiscal }}
+                {% if form.numero_nota_fiscal.errors %}
+                    <div class="field-error">
+                        {% for error in form.numero_nota_fiscal.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>
+        </div>
+
+        <div class="form-grid grid-3-cols">
+
+            <div class="form-group">
+                {{ form.data_vencimento.label_tag }}
+                {{ form.data_vencimento }}
+                {% if form.data_vencimento.errors %}
+                    <div class="field-error">
+                        {% for error in form.data_vencimento.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>  
+            <div class="form-group">
+                {{ form.data_lancamento.label_tag }}
+                {{ form.data_lancamento }}
+                {% if form.data_lancamento.errors %}
+                    <div class="field-error">
+                        {% for error in form.data_lancamento.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div> 
+   
+            <div class="form-group">
+                {{ form.comprovante_nota.label_tag }}
+                {{ form.comprovante_nota }}
+                {% if form.comprovante_nota.errors %}
+                    <div class="field-error">
+                        {% for error in form.comprovante_nota.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}                 
+            </div>             
+        </div>               
+        <div class="form-group">
+            {{ form.descricao.label_tag }}
+            {{ form.descricao }}
+            {% if form.descricao.errors %}
+                <div class="field-error">
+                    {% for error in form.descricao.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}                 
+        </div>
+        <div class="form-group">
+            <label for="{{ form.pago.id_for_label }}" class="switch-label">Pago?</label>
+            <label class="switch">
+                {{ form.pago }}
+                <span class="slider round"></span>
+            </label>
+            {% if form.pago.errors %}
+                <div class="field-error">
+                    {% for error in form.pago.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+                                    
+         
+        <div class="form-buttons">
+            <button type="submit" name="action" value="save_and_continue" class="btn-action">
+                💾 Salvar e adicionar nova
+            </button>
+            <button type="submit" name="action" value="save_and_exit" class="btn-action">
+                ✔️ Salvar e sair
+            </button>
+        </div>
+
+    </form>
+</div>
+
+{% block extra_js %}
+    <!-- Seu JS com as máscaras -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.2/imask.min.js"></script>
+    <script src="{% static 'js/mascaras.js' %}"></script>
+    <script src="{% static 'js/filtrar_reparticoes.js' %}"></script>
+
+{% endblock %}
+{% endblock %}
