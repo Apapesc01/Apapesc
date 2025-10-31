@@ -1,0 +1,131 @@
+.dashboard-container {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #26425a;
+}
+
+.dashboard-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+
+.dashboard-header h1 {
+  font-size: 2rem;
+  margin-bottom: 16px;
+}
+
+.header-widgets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.widget {
+  background: #f9fafb;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.widget h2 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: #374151;
+}
+
+.widget-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.dashboard-section {
+  margin-bottom: 32px;
+}
+
+.dashboard-section h2 {
+  font-size: 1.3rem;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 4px;
+}
+
+.section-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #fafafa;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+  text-align: center;
+}
+
+.card h3 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: #374151;
+}
+
+.card-value {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.table-dashboard {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.table-dashboard thead {
+  background: #f1f5f9;
+}
+
+.table-dashboard th,
+.table-dashboard td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table-dashboard tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* Formulários Links*/
+.links-fasts h2 {
+  font-size: 1.3em;
+  margin-bottom: 12px;
+  color: #2a2a3a;
+}
+
+.links-fasts p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 6px 0;
+  background: #fdfdfd;
+  padding: 2px 2px;
+  font-size: 14px;
+}
+
+.btn-action {
+  padding: 4px 10px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 13px;
+}
+

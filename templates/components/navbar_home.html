@@ -9,7 +9,15 @@
         <a href="#" class="navbar-logo" style="display: flex; align-items: center; justify-content: center;">
             <img src="{% static 'img/Logo_Apapesc_2025.png' %}" alt="Logo Apapesc" style="width: 40px; height: 40px; border-radius: 6px; object-fit: cover;">
         </a>
-        
+        {% if user.is_authenticated %}
+            <div class="user-info">
+                👤<span class="nav-user-info"> {{ user.first_name|default:user.username }}</span>
+                <a href="{% url 'account_logout' %}">Logout</a>
+            </div>
+        {% else %}
+            <a href="{% url 'account_login' %}">Login</a>
+            <a href="{% url 'account_signup' %}">Cadastro</a>
+        {% endif %}        
         <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
     </div>
 </nav>

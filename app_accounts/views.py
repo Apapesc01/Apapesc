@@ -33,8 +33,9 @@ class AcessoNegadoView(TemplateView):
 
 
 User = get_user_model()
+
 @login_required
-@user_passes_test(lambda u: u.is_superuser or u.user_type == 'admin_associacao')
+@user_passes_test(lambda u: u.is_superuser or u.user_type == 'admin_associacao' or u.user_type == 'auxiliar_associacao')
 def criar_usuario_fake(request):
     prefix = "0000FAKE"
     base_username = "0000fake"
@@ -78,9 +79,16 @@ def criar_usuario_fake(request):
 class InsertUserGroupView(LoginRequiredMixin, GroupRequiredMixin, View):
     template_name = 'account/insert_user_group.html'
     group_required = [
-    'Superuser',
+    'Superuser', # Somente Superusuário tem permissão para inserir INTEGRANTE à um grupo. OBS, o type também deve corresponder ao super usuário.
     ]   
-
+    
+    def dispatch(self, request, *args, **kwargs):
+        # Verifica se o usuário tem permissão para criar um associado
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'auxiliar_associacao' or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para Editar um associado.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+    
     def test_func(self):
         return self.request.user.is_superuser
 

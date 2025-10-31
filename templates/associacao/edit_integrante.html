@@ -10,7 +10,13 @@
 {% endblock %}
 
 {% block content %}
-{% include 'components/navbar_superuser.html' %}
+    {% if request.user.is_superuser %}
+        {% include "components/navbar_superuser.html" %}
+    {% elif request.user.user_type == "admin_associacao" %}
+        {% include "components/navbar_admin_associacao.html" %}
+    {% else %}    
+        {% include "components/navbar_home.html" %}
+    {% endif %}
 
 <div class="form-container">
     <h1>Editar Integrante</h1>

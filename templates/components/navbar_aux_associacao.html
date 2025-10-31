@@ -15,11 +15,9 @@
         <div class="navbar-links" id="navbar-menu">
 
             <div class="dropdown">
-                <a href="#" class="menu-navbar">Dashs ▾</a>
+                <a href="#" class="menu-navbar">DashsAux ▾</a>
                 <div class="dropdown-menu">
                     <a href="{% url 'app_accounts:auxiliar_associacao' %}">AuxAss-Dash</a>
-                    <a href="#">Finances</a>
-                    <a href="#">Outros</a>
                 </div>
             </div>
             <div class="dropdown">
@@ -67,10 +65,13 @@
                 </div>
             </div>
             {% if user.is_authenticated %}
-            <a href="{% url 'account_logout' %}">Logout</a>
+                <div class="user-info">
+                    👤<span class="nav-user-info"> {{ user.first_name|default:user.username }}</span>
+                    <a href="{% url 'account_logout' %}">Logout</a>
+                </div>
             {% else %}
-            <a href="{% url 'account_login' %}">Login</a>
-            <a href="{% url 'account_signup' %}">Cadastro</a>
+                <a href="{% url 'account_login' %}">Login</a>
+                <a href="{% url 'account_signup' %}">Cadastro</a>
             {% endif %}
         </div>
     </div>
