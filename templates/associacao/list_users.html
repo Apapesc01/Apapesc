@@ -20,111 +20,121 @@
         {% include "components/navbar_home.html" %}
     {% endif %}
 
-<div class="lista-container">
-    <h1>Lista de Usuários</h1>
-    <a href="{% url 'app_accounts:criar_usuario_fake' %}" class="btn-action btn-right">
-       👤 Criar Usuário Fake
-    </a><br>
-    <div id="toast-container">
-        {% for message in messages %}
-            {% with message.tags as tag %}
-                <div class="toast 
-                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
-                    {% elif 'info' in tag %}toast-info
-                    {% elif 'warning' in tag %}toast-warning
-                    {% else %}toast-info{% endif %}">
-                    <span>{{ message }}</span>
-                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
-                </div>
-            {% endwith %}
-        {% endfor %}
-    </div>
-        
-    <table class="table-list">
-        <thead>
-            <tr>
-                <th>Nome Completo</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Data Cadastro</th>
-                <th>Vínculo Rep.</th>
-                <th>Cargo</th>
-                <th>Vínculo</th> 
-                <th>Status</th>
-                <th>Editar</th>                
-                <th>Ver</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-            <tr>
-                <td>{{ user.get_full_name }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.date_joined|date:"d/m/Y" }}</td>
-                <td>
-                    {% if user.integrante.reparticao %}
-                        {{ user.integrante.reparticao.nome_reparticao }}
-                    {% else %}
-                        Nenhuma
-                    {% endif %}
-                </td>
-                <td>
-                    {% if user.integrante.cargo %}
-                        {{ user.integrante.cargo.nome }}
-                    {% else %}
-                        Nenhum
-                    {% endif %}
-                </td>
-                <td>
-                    {% if user.associado and user.integrante %}
-                        Integ & Associado
-                    {% elif user.associado %}
-                        Associado
-                    {% elif user.integrante %}
-                        Integrante
-                    {% else %}
-                        ---
-                    {% endif %}
-                </td>                
-                <td>
-                    {% if user.associado %}
-                        <span class="status-associado">{{ user.associado.status|capfirst }}</span>
-                    {% elif user.integrante %}
-                        {% if user.integrante.data_saida %}
-                            <span class="status-desativado">Desativado</span>
-                        {% elif user.integrante.data_entrada %}
-                            <span class="status-ativo">Ativo</span>
-                        {% endif %}
-                    {% else %}
-                        <span class="text-muted">—</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <a class="btn-action" href="{% url 'app_associacao:edit_user' user.id %}">Editar</a>
-                </td>
-                <td>
-                    {% if user.associado %}
-                        <a href="{% url 'app_associados:single_associado' user.associado.id %}" title="Ver Associado">
-                            <span class="material-icons icon-view">visibility</span>
-                        </a>
-                    {% elif user.integrante %}
-                        <a href="{% url 'app_associacao:single_integrante' user.integrante.id %}" title="Ver Integrante">
-                            <span class="material-icons icon-view">visibility</span>
-                        </a>
-                    {% else %}
-                        <span class="material-icons icon-disabled" title="Sem vínculo">visibility_off</span>
-                    {% endif %}
-                </td>
-              
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="7">Nenhum usuário encontrado.</td>
-            </tr>
+    <div class="lista-container">
+        <h1>Lista de Usuários</h1>
+        <a href="{% url 'app_accounts:criar_usuario_fake' %}" class="btn-action btn-right">
+        👤 Criar Usuário Fake
+        </a><br>
+        <div id="toast-container">
+            {% for message in messages %}
+                {% with message.tags as tag %}
+                    <div class="toast 
+                        {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                        {% elif 'info' in tag %}toast-info
+                        {% elif 'warning' in tag %}toast-warning
+                        {% else %}toast-info{% endif %}">
+                        <span>{{ message }}</span>
+                        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                    </div>
+                {% endwith %}
             {% endfor %}
-        </tbody>
-    </table>
+        </div>
+            
+        <table class="table-list">
+            <thead>
+                <tr>
+                    <th>Nome Completo</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Data Cadastro</th>
+                    <th>Vínculo Rep.</th>
+                    <th>Cargo</th>
+                    <th>Vínculo</th> 
+                    <th>Status</th>
+                    <th>Refiliar</th>
+                    <th>Editar</th>                
+                    <th>Ver</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.get_full_name }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.date_joined|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if user.integrante.reparticao %}
+                            {{ user.integrante.reparticao.nome_reparticao }}
+                        {% else %}
+                            Nenhuma
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user.integrante.cargo %}
+                            {{ user.integrante.cargo.nome }}
+                        {% else %}
+                            Nenhum
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user.associado and user.integrante %}
+                            Integ & Associado
+                        {% elif user.associado %}
+                            Associado
+                        {% elif user.integrante %}
+                            Integrante
+                        {% else %}
+                            ---
+                        {% endif %}
+                    </td>                
+                    <td>
+                        {% if user.associado %}
+                            <span class="status-associado">{{ user.associado.status|capfirst }}</span>
+                        {% elif user.integrante %}
+                            {% if user.integrante.data_saida %}
+                                <span class="status-desativado">Desativado</span>
+                            {% elif user.integrante.data_entrada %}
+                                <span class="status-ativo">Ativo</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user.associado and user.associado.status == 'desassociado' %}
+                            <a class="btn-refiliar" href="{% url 'app_associados:refiliar_associado' user.id %}" title="Refiliar este associado">
+                                <span class="material-icons icon-convert">autorenew</span>
+                            </a>
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                    </td>
 
-</div>
+                    <td>
+                        <a class="btn-action" href="{% url 'app_associacao:edit_user' user.id %}">Editar</a>
+                    </td>
+                    <td>
+                        {% if user.associado %}
+                            <a href="{% url 'app_associados:single_associado' user.associado.id %}" title="Ver Associado">
+                                <span class="material-icons icon-view">visibility</span>
+                            </a>
+                        {% elif user.integrante %}
+                            <a href="{% url 'app_associacao:single_integrante' user.integrante.id %}" title="Ver Integrante">
+                                <span class="material-icons icon-view">visibility</span>
+                            </a>
+                        {% else %}
+                            <span class="material-icons icon-disabled" title="Sem vínculo">visibility_off</span>
+                        {% endif %}
+                    </td>
+                
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7">Nenhum usuário encontrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

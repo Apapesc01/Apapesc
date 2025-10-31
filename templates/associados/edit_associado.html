@@ -317,7 +317,12 @@
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div>
-                {% endif %}                 
+                {% endif %} 
+                <div class="form-group" id="campo-data-desfiliacao" style="display: none;">
+                    <label for="id_data_desfiliacao">Data de Desfiliação:</label>
+                    {{ form.data_desfiliacao }}
+                </div>
+                
             </div>              
             <div class="form-group" style="background-color:#e2f6ff; border-radius:6px;">
                 {{ form.recolhe_inss.label_tag }}
@@ -954,5 +959,6 @@
     <script src="{% static 'js/cep_autocomplete.js' %}"></script>
     <script src="{% static 'js/mascaras.js' %}"></script>
     <script src="{% static 'js/filtros_reparticao_municipios.js' %}"></script>
+    <script src="{% static 'js/logica_desfiliacao_refiliacao.js' %}"></script>
 {% endblock %}
 {% endblock %}

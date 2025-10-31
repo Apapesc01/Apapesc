@@ -22,5 +22,8 @@ urlpatterns = [
     
     # Enviar Drive
     path('enviar-para-drive/<uuid:pk>/', views.EnviarParaDriveView.as_view(), name='enviar_para_drive'),
+    
+    path('refiliar/<int:user_id>/', views.refiliar_associado, name='refiliar_associado'),
+
 
 ]

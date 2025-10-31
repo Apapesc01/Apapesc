@@ -88,6 +88,26 @@
                         {{ associado.get_status_display }}
                     </span>
                 </p>
+                {% if associado.status == 'associado' %}
+                    <div class="alert alert-warning" style="
+                        background-color: #fff3cd; 
+                        color: #856404; 
+                        border: 1px solid #ffeeba; 
+                        padding: 12px; 
+                        margin-top: 10px; 
+                        border-radius: 6px;">
+                        ⚠️ O usuário <strong>{{ associado.user.get_full_name }}</strong> foi refiliado com sucesso.<br>
+                        <strong>Importante:</strong> o status atual está definido como <code>"associado"</code>. 
+                        Por favor, edite o status para refletir corretamente o vínculo atual 
+                        (Ex: "Associado Lista Aposentado", "Cliente Especial", etc).<br>
+                        <a href="{% url 'app_associados:edit_associado' associado.id %}" 
+                        class="btn btn-sm btn-outline-warning" 
+                        style="margin-top: 10px;">
+                        Editar status
+                        </a>
+                    </div>
+                {% endif %}
+
             </div>
             
             <div>

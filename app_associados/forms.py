@@ -79,7 +79,18 @@ class AssociadoForm(forms.ModelForm):
             self.fields['user'].disabled = True
             
    
+    def clean(self):
+        cleaned_data = super().clean()
+        status = cleaned_data.get("status")
+        data_desfiliacao = cleaned_data.get("data_desfiliacao")
 
+        if status == 'desassociado' and not data_desfiliacao:
+            raise forms.ValidationError("Por favor, preencha a data de desfiliação.")
+        elif status == 'associado':
+            cleaned_data['data_desfiliacao'] = None  # limpa
+
+        return cleaned_data
+    
     def clean_cpf(self):
         return validate_and_format_cpf(self.cleaned_data['cpf'])
     
@@ -195,7 +206,18 @@ class EditAssociadoForm(forms.ModelForm):
             self.fields['user'].initial = user_initial
             self.fields['user'].disabled = True
     
+    def clean(self):
+        cleaned_data = super().clean()
+        status = cleaned_data.get("status")
+        data_desfiliacao = cleaned_data.get("data_desfiliacao")
 
+        if status == 'desassociado' and not data_desfiliacao:
+            raise forms.ValidationError("Por favor, preencha a data de desfiliação.")
+        elif status == 'associado':
+            cleaned_data['data_desfiliacao'] = None  # limpa
+
+        return cleaned_data
+    
     def clean_cpf(self):
         return validate_and_format_cpf(self.cleaned_data['cpf'])
     

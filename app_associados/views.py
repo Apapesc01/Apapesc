@@ -310,6 +310,12 @@ class AssociadoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
         # Adiciona embarcações
         context['embarcacoes'] = EmbarcacoesModel.objects.filter(proprietario=associado)
 
+        alerta_user_id = self.request.session.pop('alerta_refiliado_user_id', None)
+        if alerta_user_id:
+            user_alerta = CustomUser.objects.filter(id=alerta_user_id).first()
+            if user_alerta:
+                context['alerta_refiliado_user'] = user_alerta
+                
         return context
 
     def post(self, request, *args, **kwargs):
@@ -562,28 +568,107 @@ class AssociadoUpdateView(LoginRequiredMixin, GroupRequiredMixin, UpdateView):
             context['user_obj'] = get_object_or_404(CustomUser, pk=user_id)
 
         context['user_obj'] = user
-
+                        
         return context
-        
+    
     def form_valid(self, form):
-        # Quando o formulário for validado, salva as alterações
+
+        # Captura o status antes da alteração
+        associado_antes = self.get_object()
+        status_antes = associado_antes.status
+
+        # Salva o formulário (altera status etc.)
         response = super().form_valid(form)
-        
+
+        # Se necessário, reatribui usuário
         user_id = self.request.GET.get('user_id')
         if user_id:
             user = get_object_or_404(CustomUser, pk=user_id)
-            form.instance.user = user  # Associa o usuário ao associado
+            form.instance.user = user
 
-        # 🧠 Agora processamos manualmente os ManyToMany
+        # Processa ManyToMany
         petrechos_ids = self.request.POST.getlist('petrechos_pesca')
         if petrechos_ids:
             self.object.petrechos_pesca.set(petrechos_ids)
         else:
             self.object.petrechos_pesca.clear()
 
-            
+        # 👇 Aplicações automáticas
+        STATUS_VALIDOS = ['associado_lista_ativo', 'associado_lista_aposentado']
+        status_depois = form.instance.status
+        associado = form.instance
+
+        # ✅ Só aplica benefícios se o status for elegível
+        if status_antes != status_depois and status_depois in STATUS_VALIDOS:
+            ano_atual = timezone.now().year
+            ano_filiacao = associado.data_filiacao.year if associado.data_filiacao else ano_atual
+
+            # 1️⃣ APLICAR ANUIDADES NÃO APLICADAS (somente a partir da nova refiliação)
+            anuidades = AnuidadeModel.objects.filter(ano__gte=ano_filiacao)
+            aplicadas = 0
+            for anuidade in anuidades:
+                if anuidade.ano >= ano_filiacao and not AnuidadeAssociado.objects.filter(anuidade=anuidade, associado=associado).exists():
+                    AnuidadeAssociado.objects.create(
+                        anuidade=anuidade,
+                        associado=associado,
+                        valor_pago=Decimal('0.00'),
+                        pago=False
+                    )
+                    aplicadas += 1
+
+            if aplicadas:
+                messages.success(self.request, f"{aplicadas} anuidade(s) aplicadas automaticamente a partir de {ano_filiacao}.")
+
+            # 2️⃣ APLICAR REAP (último ano e rodada, se existir)
+            ultimo_ano = REAPdoAno.objects.aggregate(Max('ano'))['ano__max']
+            if ultimo_ano:
+                reap_rodada = REAPdoAno.objects.filter(ano=ultimo_ano).aggregate(Max('rodada'))['rodada__max'] or 1
+                reap_existe = REAPdoAno.objects.filter(
+                    associado=associado,
+                    ano=ultimo_ano,
+                    rodada=reap_rodada
+                ).exists()
+                if not reap_existe:
+                    REAPdoAno.objects.create(
+                        associado=associado,
+                        ano=ultimo_ano,
+                        rodada=reap_rodada,
+                        status_resposta='pendente'
+                    )
+                    messages.success(self.request, f"REAP {ultimo_ano}/rodada {reap_rodada} aplicado automaticamente.")
+
+            # 3️⃣ VERIFICAR GUIAS INSS
+            guias_inss_existem = INSSGuiaDoMes.objects.filter(associado=associado).exists()
+            if not guias_inss_existem:
+                messages.warning(self.request, "⚠️ Nenhuma guia INSS foi aplicada ainda. Verifique a necessidade de gerar as guias.")
+
+            # 4️⃣ VERIFICAR E APLICAR BENEFÍCIO DEFESO
+            uf = associado.municipio_circunscricao.uf if associado.municipio_circunscricao else None
+            beneficio_defeso = SeguroDefesoBeneficioModel.objects.filter(
+                estado=uf
+            ).order_by('-ano_concessao', '-data_inicio').first()
+
+            if beneficio_defeso:
+                controle_existe = ControleBeneficioModel.objects.filter(
+                    associado=associado,
+                    beneficio=beneficio_defeso
+                ).exists()
+
+                if not controle_existe:
+                    ControleBeneficioModel.objects.create(
+                        associado=associado,
+                        beneficio=beneficio_defeso,
+                    )
+                    messages.success(self.request, f"Benefício Defeso de {beneficio_defeso.ano_concessao} aplicado com sucesso.")
+
+        # ✅ Caso contrário (status não elegível, ex: desassociado), nada é aplicado
+        else:
+            messages.info(self.request, "Status não elegível para aplicação automática de benefícios.")
+
+        # Mensagem final
         messages.success(self.request, 'Associado atualizado com sucesso!')
         return response
+        
 
     def form_invalid(self, form):
         # Em caso de erro, exibe uma mensagem
@@ -739,3 +824,45 @@ def upload_file_to_drive(filepath, filename, parent_folder_id):
 
     return uploaded_file.get('id')
 
+@login_required
+def refiliar_associado(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+
+    if not hasattr(user, 'associado'):
+        messages.error(request, "Usuário não possui associado vinculado.")
+        return redirect('app_associacao:list_users')
+
+    associado = user.associado
+
+    associado.status = 'associado'
+    associado.data_filiacao = timezone.now().date()
+    associado.data_desfiliacao = None
+    associado.save()
+
+    # ✅ Aplicar automaticamente as anuidades existentes se elegível
+    STATUS_VALIDOS = ['associado_lista_ativo', 'associado_lista_aposentado']
+    if associado.status in STATUS_VALIDOS:
+        ano_filiacao = associado.data_filiacao.year
+        ano_atual = timezone.now().year
+
+        anuidades = AnuidadeModel.objects.filter(ano__gte=ano_filiacao)
+
+        aplicadas = 0
+        for anuidade in anuidades:
+            if not AnuidadeAssociado.objects.filter(anuidade=anuidade, associado=associado).exists():
+                AnuidadeAssociado.objects.create(
+                    anuidade=anuidade,
+                    associado=associado,
+                    valor_pago=Decimal('0.00'),
+                    pago=False
+                )
+                aplicadas += 1
+
+        if aplicadas:
+            messages.info(request, f"{aplicadas} anuidade(s) aplicadas automaticamente.")
+
+    # ⚠️ Alerta permanente enquanto status for "associado"
+    request.session['alerta_refiliado_user_id'] = user.id
+
+    messages.success(request, "Usuário refiliado com sucesso.")
+    return redirect('app_associados:single_associado', pk=associado.pk)
