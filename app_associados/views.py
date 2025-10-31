@@ -14,11 +14,17 @@ class AssociadoCreateView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
         'auxiliar_associacao'
     ]       
     def dispatch(self, request, *args, **kwargs):
-        # Verifica se o usuário tem permissão para criar um associado
-        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'auxiliar_associacao' or request.user.user_type == 'admin_associacao')):
-            messages.error(self.request, "Você não tem permissão para Editar um associado.")
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
             return redirect('app_accounts:unauthorized')
-        return super().dispatch(request, *args, **kwargs)    
+        return super().dispatch(request, *args, **kwargs)  
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -81,11 +87,28 @@ class AssociadoCreateView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
 
 # -----------------------------------------------------------------------------------------
 # SINGLES =================================================================================
-class AssociadoSingleView(LoginRequiredMixin, DetailView):
+class AssociadoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
     model = AssociadoModel
     template_name = 'associados/single_associado.html'
     context_object_name = 'associado'
-
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]    
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+        
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -497,11 +520,17 @@ class AssociadoUpdateView(LoginRequiredMixin, GroupRequiredMixin, UpdateView):
     ]       
 
     def dispatch(self, request, *args, **kwargs):
-        # Verifica se o usuário tem permissão para criar um associado
-        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'auxiliar_associacao' or request.user.user_type == 'admin_associacao')):
-            messages.error(self.request, "Você não tem permissão para Editar um associado.")
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
             return redirect('app_accounts:unauthorized')
-        return super().dispatch(request, *args, **kwargs)    
+        return super().dispatch(request, *args, **kwargs)  
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -574,17 +603,23 @@ class AssociadoListView(LoginRequiredMixin, GroupRequiredMixin, ListView):
     ordering = ['user__first_name', 'user__last_name']
     group_required = [
         'Superuser',
-        'auxiliar_associacao',
-        
+        'admin_associacao',
+        'auxiliar_associacao'
     ]       
     paginate_by = 25  # Opcional, se quiser paginação
 
     def dispatch(self, request, *args, **kwargs):
-        # Verifica se o usuário tem permissão para criar um associado
-        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'auxiliar_associacao')):
-            messages.error(self.request, "Você não tem permissão para criar um associado.")
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
             return redirect('app_accounts:unauthorized')
-        return super().dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)  
     
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -615,11 +650,28 @@ class AssociadoListView(LoginRequiredMixin, GroupRequiredMixin, ListView):
         return context
 
 
-class AssociadoHistoricoView(DetailView):
+class AssociadoHistoricoView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
     model = AssociadoModel
     template_name = 'associados/historico_associado.html'
     context_object_name = 'associado'
-
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]    
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+        
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         associado = self.get_object()

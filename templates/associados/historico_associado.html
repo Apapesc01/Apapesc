@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
-
+    {% if request.user.is_superuser %}
+        {% include "components/navbar_superuser.html" %}
+    {% elif request.user.user_type == "admin_associacao" %}
+        {% include "components/navbar_admin_associacao.html" %}
+    {% elif request.user.user_type == "auxiliar_associacao" %}
+        {% include "components/navbar_aux_associacao.html" %}
+    {% else %}    
+        {% include "components/navbar_home.html" %}
+    {% endif %}
 <h2>📜 Histórico de Alterações: {{ associado.nome }}</h2>
 
 <table class="table-list">

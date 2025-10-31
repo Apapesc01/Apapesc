@@ -8,7 +8,15 @@
 {% endblock %}
 
 {% block content %}
-{% include 'components/navbar_superuser.html' %}
+    {% if request.user.is_superuser %}
+        {% include "components/navbar_superuser.html" %}
+    {% elif request.user.user_type == "admin_associacao" %}
+        {% include "components/navbar_admin_associacao.html" %}
+    {% elif request.user.user_type == "auxiliar_associacao" %}
+        {% include "components/navbar_aux_associacao.html" %}
+    {% else %}    
+        {% include "components/navbar_home.html" %}
+    {% endif %}
     <div id="toast-container">
         {% for message in messages %}
         {% with message.tags as tag %}
