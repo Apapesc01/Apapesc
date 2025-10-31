@@ -22,6 +22,14 @@
 
     <div class="lista-container">
         <h1>Lista de Usuários</h1>
+        <form method="get" class="form-busca">
+            <input type="text" name="q" placeholder="Buscar por nome, username ou email..." value="{{ request.GET.q }}">
+            <button type="submit">🔍 Buscar</button>
+            {% if request.GET.q %}
+                <a href="{% url 'app_associacao:list_users' %}" class="btn-limpar">Limpar</a>
+            {% endif %}
+        </form>
+
         <a href="{% url 'app_accounts:criar_usuario_fake' %}" class="btn-action btn-right">
         👤 Criar Usuário Fake
         </a><br>
@@ -104,7 +112,8 @@
                     <td>
                         {% if user.associado and user.associado.status == 'desassociado' %}
                             <a class="btn-refiliar" href="{% url 'app_associados:refiliar_associado' user.id %}" title="Refiliar este associado">
-                                <span class="material-icons icon-convert">autorenew</span>
+                                <span class="material-icons icon-convert" style="font-size: 24px; font-weight: bold; color: #f60d0dff;">autorenew</span>
+
                             </a>
                         {% else %}
                             <span class="text-muted">—</span>

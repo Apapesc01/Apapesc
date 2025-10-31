@@ -54,9 +54,16 @@
         <h1>{{associado.user.get_full_name}}</h1>
         </div>
         <div class="header-actions">
-        <a href="{% url 'app_associados:edit_associado' associado.pk %}" title="Editar"><span class="material-icons">edit</span></a>
-        <a href="{% url 'app_associados:list_associados' %}" title="Voltar à Lista"><span class="material-icons">list</span></a>
+            {% if associado.status != "desassociado" %}
+                <a href="{% url 'app_associados:edit_associado' associado.pk %}" title="Editar">
+                    <span class="material-icons">edit</span>
+                </a>
+            {% endif %}
+            <a href="{% url 'app_associados:list_associados' %}" title="Voltar à Lista">
+                <span class="material-icons">list</span>
+            </a>
         </div>
+
     </header>
     <!--Tabs-->
     <div class="tabs">

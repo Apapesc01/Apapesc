@@ -34,7 +34,17 @@ class UserListView(LoginRequiredMixin, GroupRequiredMixin, ListView):
             'integrante__reparticao',
             'integrante__cargo'
         ).prefetch_related('associado')
+
+        busca = self.request.GET.get('q')
+        if busca:
+            queryset = queryset.filter(
+                Q(first_name__icontains=busca) |
+                Q(last_name__icontains=busca) |
+                Q(username__icontains=busca) |
+                Q(email__icontains=busca)
+            )
         return queryset
+
 
         
 class UserUpdateView(LoginRequiredMixin, GroupRequiredMixin, UpdateView):
