@@ -2,9 +2,27 @@ from core.views.base_imports import *
 from core.views.app_defeso_imports import *
 
 
-class DefesosLancamentoView(View):
+class DefesosLancamentoView(LoginRequiredMixin, GroupRequiredMixin, View):
     template_name = 'defeso/defesos.html'
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
 
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
     def get(self, request):
         beneficio_id = request.GET.get('beneficio')
         beneficios = SeguroDefesoBeneficioModel.objects.all().order_by('-ano_concessao', '-data_inicio')
@@ -56,11 +74,29 @@ class DefesosLancamentoView(View):
 
         
 
-class ControleBeneficioEditView(UpdateView):
+class ControleBeneficioEditView(LoginRequiredMixin, GroupRequiredMixin, UpdateView):
     model = ControleBeneficioModel
     form_class = ControleBeneficioForm
     template_name = 'defeso/controle_beneficio_edit.html'
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
 
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -221,7 +257,25 @@ def resetar_rodada_processamento(request):
 
 class PainelDefesoStatusView(View):
     template_name = 'defeso/painel_status.html'
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
 
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
     def get(self, request):
         # Busca todos os status possíveis (ordem definida por STATUS_BENEFICIO_CHOICES)
         status_colunas = [choice[0] for choice in STATUS_BENEFICIO_CHOICES]
@@ -242,53 +296,175 @@ class PainelDefesoStatusView(View):
         return render(request, self.template_name, context)
 
 # Formulários
-class SeguroDefesoBeneficioCreateView(CreateView):
+class SeguroDefesoBeneficioCreateView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
     model = SeguroDefesoBeneficioModel
     form_class = SeguroDefesoBeneficioForm
     template_name = 'defeso/create_defeso.html'
     success_url = reverse_lazy('app_defeso:lancamento_defeso')
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
 
-class DecretoCreateView(CreateView):
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
+class DecretoCreateView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
     model = DecretosModel
     form_class = DecretosForm
     template_name = 'defeso/create_decreto.html'
     success_url = reverse_lazy('app_dashboards:super_dashboard')
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+        
     
-    
-class PeriodoCreateView(CreateView):
+class PeriodoCreateView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
     model = PeriodoDefesoOficial
     form_class = PeriodoDefesoOficialForm
     template_name = 'defeso/create_periodo.html'
     success_url = reverse_lazy('app_dashboards:super_dashboard')
-    
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
 
-class PortariasCreateView(CreateView):
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+        
+
+class PortariasCreateView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
     model = PortariasModel
     form_class = PortariasForm
     template_name = 'defeso/create_portaria.html'
     success_url = reverse_lazy('app_dashboards:super_dashboard')
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)    
     
-    
-class EspecieCreateView(CreateView):
+class EspecieCreateView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
     model = Especie
     form_class = EspeciesForm
     template_name = 'defeso/create_especie.html'
     success_url = reverse_lazy('app_dashboards:super_dashboard')
-    
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)    
 
 class LeiFederalCreateView(CreateView):
     model = LeiFederalPrevidenciaria
     form_class = LeiFederalPrevidenciariaForm
     template_name = 'defeso/create_lei_federal.html'
     success_url = reverse_lazy('app_dashboards:super_dashboard')
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)    
     
-    
-class InstrucoesNormativasCreateView(CreateView):
+class InstrucoesNormativasCreateView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
     model = InstrucoesNormativasModel
     form_class = InstrucoesNormativasForm
     template_name = 'defeso/create_inst_normativa.html'
     success_url = reverse_lazy('app_dashboards:super_dashboard')
-    
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)    
        
          
     

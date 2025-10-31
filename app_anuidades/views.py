@@ -4,13 +4,20 @@ from core.views.base_imports import *
 from core.views.app_anuidades_imports import *
 
 
-
-class CreateAnuidadeView(CreateView):
+class CreateAnuidadeView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
     model = AnuidadeModel
     form_class = AnuidadeForm
     template_name = 'anuidades/create_anuidade.html'
     success_url = reverse_lazy('app_anuidades:list_anuidades')  # Ajuste para sua URL real
-
+    group_required = [
+        'Superuser',
+    ]   
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and request.user.is_superuser):
+            messages.error(request, "Você não tem permissão para criar uma associação.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)    
+    
     def form_valid(self, form):
         # Salva a Anuidade primeiro
         anuidade = form.save(commit=False)
@@ -25,11 +32,19 @@ class CreateAnuidadeView(CreateView):
         return super().form_invalid(form)    
 
 
-class LancamentosAnuiadesListView(ListView)    :
+class LancamentosAnuiadesListView(LoginRequiredMixin, GroupRequiredMixin, ListView)    :
     model = AnuidadeModel
     template_name = 'anuidades/list_anuidades.html'
     context_object_name = 'anuidades'
-    
+    group_required = [
+        'Superuser',
+    ]   
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and request.user.is_superuser):
+            messages.error(request, "Você não tem permissão para criar uma associação.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)    
+        
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Total de anuidades
@@ -42,11 +57,29 @@ class LancamentosAnuiadesListView(ListView)    :
 
 
 
-class AnuidadeAssociadoSingleView(DetailView):
+class AnuidadeAssociadoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
     model = AssociadoModel
     template_name = 'anuidades/anuidade_associado.html'
     context_object_name = 'associado'
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
 
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
     def form_valid(self, form):
         messages.success(self.request, f"pagemento Registrado com sucesso!")
         return super().form_valid(form)
@@ -186,12 +219,23 @@ class AnuidadeAssociadoSingleView(DetailView):
 
 
 
-class AnuidadesListaBuscaView(ListView):
+class AnuidadesListaBuscaView(LoginRequiredMixin, GroupRequiredMixin, ListView):
     model = AnuidadeAssociado
     template_name = 'anuidades/anuidades_list_searchs.html'
     context_object_name = 'resultados'
     paginate_by = 30
+    group_required = [
+        'Superuser',
+        'admin_associacao',
 
+    ]    
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
+    
     def get_queryset(self):
         # Parâmetros de busca
         ano = self.request.GET.get('ano')

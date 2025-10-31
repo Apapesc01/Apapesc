@@ -2,12 +2,16 @@ from core.views.base_imports import *
 from core.views.app_servicos_imports import *
 
 
-class ServicoCreateView(CreateView):
+class ServicoCreateView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
     model = ServicoModel
     form_class = ServicoForm
     template_name = 'servicos/create_servico.html'
     success_url = reverse_lazy('app_servicos:single_servico')
-
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]       
     def dispatch(self, request, *args, **kwargs):
         self.associado = get_object_or_404(AssociadoModel, pk=kwargs['associado_id'])
         return super().dispatch(request, *args, **kwargs)
@@ -67,11 +71,15 @@ class ServicoCreateView(CreateView):
         return reverse('app_servicos:single_servico', kwargs={'pk': self.object.pk})
         
 
-class ServicoUpdateView(UpdateView):
+class ServicoUpdateView(LoginRequiredMixin, GroupRequiredMixin, UpdateView):
     model = ServicoModel
     form_class = ServicoForm
     template_name = 'servicos/edit_servico.html'
-
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]       
 
     def dispatch(self, request, *args, **kwargs):
         self.servico = get_object_or_404(ServicoModel, pk=kwargs['pk'])
@@ -104,11 +112,15 @@ class ServicoUpdateView(UpdateView):
 
 
 
-class ServicoSingleView(DetailView):
+class ServicoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
     model = ServicoModel
     template_name = 'servicos/single_servico.html'
     context_object_name = 'servico'
-    
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]           
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         content = request.POST.get('content', '').strip()
@@ -196,12 +208,16 @@ class ServicoSingleView(DetailView):
         return context
         
         
-class ServicoListView(ListView):
+class ServicoListView(LoginRequiredMixin, GroupRequiredMixin, ListView):
     model = ServicoModel
     template_name = 'servicos/list_servicos.html'
     context_object_name = 'servicos'
     paginate_by = 20
-
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]       
     def get_queryset(self):
         queryset = super().get_queryset().select_related(
             'associado__user', 'associacao', 'reparticao', 'entrada_servico'
@@ -228,9 +244,14 @@ class ServicoListView(ListView):
     
 # Painel KANBAN
 
-class PainelStatusServicoView(View):
+class PainelStatusServicoView(LoginRequiredMixin, GroupRequiredMixin, View):
     template_name = 'servicos/painel_status.html'
-
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]       
+    
     def get(self, request):
         servicos = ServicoModel.objects.select_related('associado__user')
 
@@ -269,11 +290,15 @@ class PainelStatusServicoView(View):
     
     
 # ENTRADAS
-class EntradaCreateView(CreateView):
+class EntradaCreateView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
     model = EntradaFinanceiraModel
     form_class = EntradaFinanceiraForm
     template_name = 'servicos/create_entrada.html'
-
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]       
     def dispatch(self, request, *args, **kwargs):
         self.servico = get_object_or_404(ServicoModel, pk=kwargs['servico_id'])
         # Bloqueia caso serviço não seja de status que precisa de entrada
@@ -313,11 +338,15 @@ class EntradaCreateView(CreateView):
         return reverse('app_servicos:single_servico', kwargs={'pk': self.servico.pk})
 
 
-class EditarEntradaView(UpdateView):
+class EditarEntradaView(LoginRequiredMixin, GroupRequiredMixin, UpdateView):
     model = EntradaFinanceiraModel
     form_class = EntradaFinanceiraForm
     template_name = 'servicos/edit_entrada.html'
-
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]       
     def dispatch(self, request, *args, **kwargs):
         self.entrada = get_object_or_404(EntradaFinanceiraModel, pk=kwargs['pk'])
         self.servico = self.entrada.servico
@@ -346,11 +375,15 @@ class EditarEntradaView(UpdateView):
         return reverse('app_servicos:single_servico', kwargs={'pk': self.servico.pk})
     
 
-class RegistrarPagamentoEntradaView(CreateView):
+class RegistrarPagamentoEntradaView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
     model = PagamentoEntrada
     form_class = PagamentoEntradaForm
     template_name = 'servicos/registrar_pagamento_entrada.html'
-
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]       
     def dispatch(self, request, *args, **kwargs):
         self.servico = get_object_or_404(ServicoModel, pk=kwargs['servico_id'])
         self.entrada = getattr(self.servico, 'entrada_servico', None)

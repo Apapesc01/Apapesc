@@ -5,12 +5,24 @@ from app_associacao.models import ReparticoesModel
 
 
 
-class CreateDespesaView(LoginRequiredMixin, CreateView):
+class CreateDespesaView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
     model = DespesaAssociacaoModel
     form_class = DespesaAssociacaoForm
     template_name = 'despesas/create_despesa.html'
     success_url = reverse_lazy('app_despesas:list_despesas')  # ajuste conforme suas rotas
-
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         
@@ -61,14 +73,24 @@ def carregar_reparticoes_por_associacao(request):
     return JsonResponse({'reparticoes': list(reparticoes)})
 
 
-
-
-class EditDespesasView(LoginRequiredMixin, UpdateView):
+class EditDespesasView(LoginRequiredMixin, GroupRequiredMixin, UpdateView):
     model = DespesaAssociacaoModel
     form_class = DespesaAssociacaoForm
     template_name = 'despesas/edit_despesa.html'
     success_url = reverse_lazy('app_despesas:list_despesas')
-
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
 
@@ -91,11 +113,23 @@ class EditDespesasView(LoginRequiredMixin, UpdateView):
         context['title'] = 'Editar Despesa'
         return context
     
-class ListDespesasView(LoginRequiredMixin, ListView):
+class ListDespesasView(LoginRequiredMixin, GroupRequiredMixin, ListView):
     model = DespesaAssociacaoModel
     template_name = 'despesas/list_despesas.html'
     context_object_name = 'despesas'
     paginate_by = 20
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         queryset = DespesaAssociacaoModel.objects.all()

@@ -1,12 +1,30 @@
 from core.views.base_imports import *
 from core.views.app_reap_imports import *
 
-class LancamentosREAPListView(ListView):
+class LancamentosREAPListView(LoginRequiredMixin, GroupRequiredMixin, ListView):
     model = REAPdoAno
     template_name = 'reap/lancamentos_reap.html'
     context_object_name = 'reaps'
     paginate_by = 30
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
 
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
     def get_queryset(self):
         ano = self.request.GET.get('ano') or timezone.now().year
         return REAPdoAno.objects.filter(ano=ano)
@@ -43,9 +61,27 @@ class LancamentosREAPListView(ListView):
     
     
 
-class ProcessamentoREAPdoAnoView(LoginRequiredMixin, View):
+class ProcessamentoREAPdoAnoView(LoginRequiredMixin, GroupRequiredMixin, View):
     template_name = 'reap/processamento_manual_reap.html'
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
 
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
     def get(self, request, pk=None):
         if pk:
             # Acessando um REAP individual

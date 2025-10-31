@@ -4,11 +4,28 @@ from core.views.app_uploads_imports import *
 from core.choices import TIPO_MODELOS_MAP
 
 
-class UploadsDocsCreateView(CreateView):
+class UploadsDocsCreateView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
     model = UploadsDocs
     form_class = UploadsDocsForm
     template_name = 'uploads/uploads.html'
-    
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)    
 
     def post(self, request, *args, **kwargs):
         tipos = request.POST.getlist('tipo')
@@ -76,12 +93,30 @@ class UploadsDocsCreateView(CreateView):
 
 
 
-class TipoDocumentoCreateView(CreateView):
+class TipoDocumentoCreateView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
     model = TipoDocumentoUp
     form_class = TipoDocumentoForm  # Ou remova esta linha e use fields = ['nome', 'descricao']
     template_name = 'uploads/create_tipo_doc.html'
     success_url = reverse_lazy('app_uploads:list_tipo_docs')    
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
 
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
     def form_valid(self, form):
         messages.success(self.request, 'Tipo Documento criado com sucesso!')
         return super().form_valid(form)
@@ -91,25 +126,61 @@ class TipoDocumentoCreateView(CreateView):
         return super().form_invalid(form)    
 
 
-class TipoDocumentoLstView(ListView):
+class TipoDocumentoLstView(LoginRequiredMixin, GroupRequiredMixin, ListView):
     model = TipoDocumentoUp
     form_class = TipoDocumentoForm
     template_name = 'uploads/list_tipo_docs.html'
     ordering = ['nome']
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
 
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['tipos'] = context['object_list']
         return context
 
 
-class TipoDocumentoEditView(UpdateView):
+class TipoDocumentoEditView(LoginRequiredMixin, GroupRequiredMixin, UpdateView):
     model = TipoDocumentoUp
     form_class = TipoDocumentoForm
     template_name = 'uploads/edit_tipo_doc.html'
     success_url = reverse_lazy('app_uploads:list_tipo_docs')
     context_object_name = 'tipo_doc'
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
 
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
     def form_valid(self, form):
         messages.success(self.request, 'Tipo Documento atualizado com sucesso!')
         return super().form_valid(form)
@@ -119,12 +190,30 @@ class TipoDocumentoEditView(UpdateView):
         return super().form_invalid(form)    
     
     
-class TipoDocumentoDeleteView(DeleteView):
+class TipoDocumentoDeleteView(LoginRequiredMixin, GroupRequiredMixin, DeleteView):
     model = TipoDocumentoUp
     template_name = 'uploads/delete_tipo_doc_modal.html'
     context_object_name = 'tipo_doc'
     success_url = reverse_lazy('app_uploads:list_tipo_docs') 
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
 
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Tipo de Documento excluído com sucesso!')
         return super().delete(request, *args, **kwargs) 

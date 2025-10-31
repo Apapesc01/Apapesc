@@ -9,6 +9,12 @@ class SuperDashboardView(LoginRequiredMixin, GroupRequiredMixin, View):
     ]   
     login_url = '/accounts/login/'
 
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and request.user.is_superuser):
+            messages.error(request, "Você não tem permissão para criar uma associação.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
     
     def get(self, request, *args, **kwargs):
         # ANUIDADES
@@ -120,3 +126,9 @@ class AdminAssociacaoDasboardView(LoginRequiredMixin, GroupRequiredMixin, View):
         'admin_associacao'
     ]   
     login_url = '/accounts/login/'
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)      

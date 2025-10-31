@@ -2,12 +2,30 @@ from core.views.app_inss_imports import *
 from core.views.base_imports import *
 
 
-class LancamentosINSSListView(ListView):
+class LancamentosINSSListView(LoginRequiredMixin, GroupRequiredMixin, ListView):
     model = INSSGuiaDoMes
     template_name = 'inss/lancamentos_inss.html'
     context_object_name = 'guias'
     paginate_by = 30
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
 
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
     def get_queryset(self):
         ano = self.request.GET.get('ano') or timezone.now().year
         mes = self.request.GET.get('mes') or timezone.now().strftime('%m')
@@ -51,9 +69,27 @@ class LancamentosINSSListView(ListView):
     
 
 
-class ProcessamentoINSSDoMesView(LoginRequiredMixin, View):
+class ProcessamentoINSSDoMesView(LoginRequiredMixin, GroupRequiredMixin, View):
     template_name = 'inss/processamento_manual_inss.html'
+    group_required = [
+        'Superuser',
+        'admin_associacao',
+        'auxiliar_associacao'
+    ]        
 
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated and 
+            (
+                request.user.is_superuser or 
+                request.user.user_type == 'admin_associacao' or 
+                request.user.user_type == 'auxiliar_associacao'
+            )
+        ):
+            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)
+    
     def get(self, request):
         # Força o usuário a escolher ANO/MÊS
         ano = request.GET.get('ano')

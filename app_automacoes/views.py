@@ -91,9 +91,19 @@ def delete_pdf(request, automacao, declaracao_id):
     return redirect('app_automacoes:lista_automacoes')
 
 
-class ListaTodosArquivosView(LoginRequiredMixin, TemplateView):
+class ListaTodosArquivosView(LoginRequiredMixin, GroupRequiredMixin,  TemplateView):
     template_name = 'automacoes/list_automacoes.html'
+    group_required = [
+        'Superuser',
+        'admin_associacao',
 
+    ]    
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'admin_associacao')):
+            messages.error(self.request, "Você não tem permissão para visualizar essa Página.")
+            return redirect('app_accounts:unauthorized')
+        return super().dispatch(request, *args, **kwargs)  
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
