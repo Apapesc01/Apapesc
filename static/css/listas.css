@@ -268,3 +268,18 @@
   color: #0087fd; /* Cinza ainda mais forte no hover (gray-800) */
   text-decoration: underline;
 }
+.mensagem-suave {
+  font-size: 0.75rem;
+  color: #555;
+  background-color: #f9fafb;
+  padding: 12px 16px;
+  border-left: 4px solid #60a5fa;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.descricao-secundaria {
+  font-size: 0.87rem;
+  color: #666;
+  margin-bottom: 10px;
+}

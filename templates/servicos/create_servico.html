@@ -82,13 +82,8 @@
                 {{ form.tipo_servico }}
             </div>
         </div>
-        <!--         <div class="form-group">
-            <select name="status_servico" class="js-status-servico" ...>
-            {{ form.status_servico.label_tag }}
-            </select>
-        </div>         -->
 
-        <!--  -->
+
         <div class="form-group">
             {{ form.content.label_tag }}
             {{ form.content }}
@@ -105,6 +100,8 @@
         </div>
     {% endif %}
     </div>
+
+    
 {% block extra_js %}
     <!-- Seu JS com as máscaras -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.2/imask.min.js"></script>

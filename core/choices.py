@@ -1,3 +1,4 @@
+
 UF_CHOICES = [
     ('AC', 'Acre'),
     ('AL', 'Alagoas'),

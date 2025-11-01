@@ -8,9 +8,6 @@ from core.choices import TIPO_SERVICO, STATUS_ASSESSORIA_PROCESSO, STATUS_EMISSA
 from core import choices as core_choices
 
 
-from django import forms
-from core import choices as core_choices
-
 class ServicoForm(forms.ModelForm):
     status_servico = forms.ChoiceField(
         label="Status do Serviço",
@@ -44,6 +41,11 @@ class ServicoForm(forms.ModelForm):
         }
 
         self.fields['status_servico'].choices = [('', '---')] + status_choices_map.get(natureza, [])
+
+        # 🔧 Adiciona classes para JS identificar
+        self.fields['natureza_servico'].widget.attrs.update({'class': 'form-control js-natureza-servico'})
+        self.fields['tipo_servico'].widget.attrs.update({'class': 'form-control js-tipo-servico'})
+
 
         
 class EntradaFinanceiraForm(forms.ModelForm):

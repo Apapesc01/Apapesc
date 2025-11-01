@@ -66,6 +66,33 @@ class LancamentosINSSListView(LoginRequiredMixin, GroupRequiredMixin, ListView):
         # Redireciona para manter GET params
         return redirect(f"{request.path}?ano={ano}&mes={mes}")
     
+# LISTA - Listagem de Lançamentos - Delete
+class ListagemINSSLancamentosView(LoginRequiredMixin, ListView):
+    template_name = 'inss/listagem_inss_lancamentos.html'
+    context_object_name = 'lancamentos'
+
+    def get_queryset(self):
+        return (
+            INSSGuiaDoMes.objects
+            .values('ano', 'mes', 'rodada')
+            .annotate(total=Count('id'))
+            .order_by('-ano', '-mes', 'rodada')
+        )
+class DeletarLancamentoINSSView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        ano = request.POST.get('ano')
+        mes = request.POST.get('mes')
+        rodada = request.POST.get('rodada')
+
+        if ano and mes and rodada:
+            guias = INSSGuiaDoMes.objects.filter(ano=ano, mes=mes, rodada=rodada)
+            total = guias.count()
+            guias.delete()
+            messages.success(request, f"{total} guias do lançamento {mes}/{ano} (rodada {rodada}) foram deletadas.")
+        else:
+            messages.error(request, "Dados incompletos para exclusão.")
+
+        return redirect('app_inss:listagem_inss_lancamentos')    
 
 
 class ProcessamentoINSSDoMesView(LoginRequiredMixin, GroupRequiredMixin, View):

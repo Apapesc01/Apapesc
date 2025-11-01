@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lançamentos INSS{% endblock title%}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
+{% endblock %}
+
+{% block content %}
+    {% if request.user.is_superuser %}
+        {% include "components/navbar_superuser.html" %}
+    {% elif request.user.user_type == "admin_associacao" %}
+        {% include "components/navbar_admin_associacao.html" %}
+    {% elif request.user.user_type == "auxiliar_associacao" %}
+        {% include "components/navbar_aux_associacao.html" %}
+    {% else %}    
+        {% include "components/navbar_home.html" %}
+    {% endif %}
+
+
+<div class="lista-container-small">
+    <h1>Lançamentos INSS</h1>
+    <p style="font-size: 0.92rem; color: #4b5563; margin-top: 8px;">
+        Esta listagem exibe os lançamentos de controle do INSS. Para manter o sistema organizado e o banco de dados otimizado, é recomendável <strong>remover os registros de anos anteriores</strong>, pois eles servem apenas como controle temporário e têm validade apenas para o ano corrente.
+    </p>
+    <div id="toast-container">
+        {% for message in messages %}
+            {% with message.tags as tag %}
+                <div class="toast 
+                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                    {% elif 'info' in tag %}toast-info
+                    {% elif 'warning' in tag %}toast-warning
+                    {% else %}toast-info{% endif %}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+
+    <table class="table-list">
+        <thead>
+            <tr>
+                <th>Ano</th>
+                <th>Mês</th>
+                <th>Rodada</th>
+                <th>Total de Guias</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lanc in lancamentos %}
+            <tr>
+                <td>{{ lanc.ano }}</td>
+                <td>{{ lanc.mes }}</td>
+                <td>{{ lanc.rodada }}</td>
+                <td>{{ lanc.total }}</td>
+                <td>
+                    <form method="post" action="{% url 'app_inss:deletar_lancamento_inss' %}" onsubmit="return confirm('Deseja realmente apagar este lançamento?');">
+                        {% csrf_token %}
+                        <input type="hidden" name="ano" value="{{ lanc.ano }}">
+                        <input type="hidden" name="mes" value="{{ lanc.mes }}">
+                        <input type="hidden" name="rodada" value="{{ lanc.rodada }}">
+                        <button type="submit">🗑️ Deletar</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">Nenhum lançamento encontrado.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

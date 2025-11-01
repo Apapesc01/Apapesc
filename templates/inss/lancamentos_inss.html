@@ -21,124 +21,133 @@
     {% endif %}
 
 
-<div class="lista-container-small">
-    <h1>Lançamentos INSS</h1>
+    <div class="lista-container-small">
+        <h1>Lançamentos INSS</h1>
+        <p class="mensagem-suave">
+            Nesta seção, você pode visualizar, gerar e gerenciar os lançamentos do INSS dos associados.  
+            Selecione o <strong>ano</strong> e o <strong>mês</strong> desejados e clique em <em>Filtrar/Selecionar</em> para carregar os registros correspondentes.  
+            Se não houver registros para o período que você filtrou/selacionou, você poderá fazer o lançamento utilizando o botão <em>Gerar Guias INSS</em> para criar as guias referentes ao período selecionado.  
+            Caso prefira, é possível também executar o processo manualmente — ao clicar em <em>Processar Manualmente</em>, o sistema percorrerá automaticamente todos os associados da lista correspondente.
+        </p>
 
-    <div id="toast-container">
-        {% for message in messages %}
-            {% with message.tags as tag %}
-                <div class="toast 
-                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
-                    {% elif 'info' in tag %}toast-info
-                    {% elif 'warning' in tag %}toast-warning
-                    {% else %}toast-info{% endif %}">
-                    <span>{{ message }}</span>
-                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
-                </div>
-            {% endwith %}
-        {% endfor %}
-    </div>
 
-    <div class="botoes-inss-container">
-        <div class="btn-left">
-            <form method="post" id="form-gerar-guias">
-                {% csrf_token %}
-                <input type="hidden" name="ano" value="{{ ano_selecionado }}">
-                <input type="hidden" name="mes" value="{{ mes_selecionado }}">
-                <p>Você pode gerar e distribuir as guias do INSS a partir do dia 1 de cada mês. Por padrão, os campos select virão com ano e mês atual.</p>
-                <button type="button" id="btn-gerar-guias"
-                    {% if not ano_selecionado or not mes_selecionado %}disabled{% endif %}>
-                    📄 Gerar Guias INSS do Mês
-                </button>
-            </form>
-            <!-- Modal dentro do btn-left, se quiser que fique relacionado ao botão esquerdo -->
-            <div id="modal_confirm" class="modal-overlay" style="display:none;">
-                <div class="modal">
-                    <h2 id="modal-confirm-title">Confirmação</h2>
-                    <p id="modal-confirm-message">Deseja realizar esta ação?</p>
-                    <div class="modal-actions">
-                        <button type="button" class="btn-sim" id="btn-modal-sim">Sim</button>
-                        <button type="button" class="btn-nao" id="btn-modal-nao">Não</button>
+        <div id="toast-container">
+            {% for message in messages %}
+                {% with message.tags as tag %}
+                    <div class="toast 
+                        {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                        {% elif 'info' in tag %}toast-info
+                        {% elif 'warning' in tag %}toast-warning
+                        {% else %}toast-info{% endif %}">
+                        <span>{{ message }}</span>
+                        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
                     </div>
-                </div>
+                {% endwith %}
+            {% endfor %}
+        </div>
+
+        <div class="botoes-inss-container" style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;">
+            <div style="flex: 1;">
+                <form method="post" id="form-gerar-guias">
+                    {% csrf_token %}
+                    <input type="hidden" name="ano" value="{{ ano_selecionado }}">
+                    <input type="hidden" name="mes" value="{{ mes_selecionado }}">
+                    <p class="descricao-secundaria">Selecione ano/mês e filtre, depois clique aqui para gerar guias.</p>
+                    <button type="button" id="btn-gerar-guias"
+                            class="btn btn-primary"
+                            {% if not ano_selecionado or not mes_selecionado %}disabled{% endif %}>
+                        📄 Gerar Guias INSS
+                    </button>
+                </form>
+                <!-- Modal dentro do btn-left, se quiser que fique relacionado ao botão esquerdo -->
+                <div id="modal_confirm" class="modal-overlay" style="display:none;">
+                    <div class="modal">
+                        <h2 id="modal-confirm-title">Confirmação</h2>
+                        <p id="modal-confirm-message">Deseja realizar esta ação?</p>
+                        <div class="modal-actions">
+                            <button type="button" class="btn-sim" id="btn-modal-sim">Sim</button>
+                            <button type="button" class="btn-nao" id="btn-modal-nao">Não</button>
+                        </div>
+                    </div>
+                </div>                
             </div>
-        </div>
-        <div class="btn-right">
-            <form method="get" action="{% url 'app_inss:processamento_inss_do_mes' %}">
-                <input type="hidden" name="ano" value="{{ ano_selecionado }}">
-                <input type="hidden" name="mes" value="{{ mes_selecionado }}">
-                <button type="submit" class="btn btn-primary">
-                    ⚙️ Iniciar Processamento Manual INSS
-                </button>
-            </form> 
-        </div>
-    </div>
 
-    {% if not tem_processamento %}
-        <div class="btn-right">
-            <form method="post" action="{% url 'app_inss:resetar_processamento' %}?ano={{ ano_selecionado }}&mes={{ mes_selecionado }}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">
-                🔁 Resetar Processamento
-                </button>
-            </form>
-        </div>
-    {% endif %}
+            <div style="flex: 1;">
+                <form method="get" action="{% url 'app_inss:processamento_inss_do_mes' %}">
+                    <input type="hidden" name="ano" value="{{ ano_selecionado }}">
+                    <input type="hidden" name="mes" value="{{ mes_selecionado }}">
+                    <button type="submit" class="btn btn-secondary">
+                        ⚙️ Processar Manualmente
+                    </button>
+                </form>
+            </div>
 
-    <div style="margin-bottom:24px;">
-        <form method="get" class="form-group" style="grid-column: span 4;">
-            <div class="form-grid grid-3-cols">
-                <div class="form-group">
-                    <label for="id_ano">Ano:
+            {% if not tem_processamento %}
+            <div style="flex: 1;">
+                <form method="post" action="{% url 'app_inss:resetar_processamento' %}?ano={{ ano_selecionado }}&mes={{ mes_selecionado }}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        🔁 Resetar Processamento
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="filtros-inss">
+            <form method="get" class="form-group">
+                <div class="form-grid grid-3-cols">
+                    <div class="form-group">
+                        <label for="id_ano">Ano:</label>
                         <select name="ano" id="id_ano" required>
                             {% for ano in anos %}
                                 <option value="{{ ano }}" {% if ano|stringformat:"s" == ano_selecionado|stringformat:"s" %}selected{% endif %}>{{ ano }}</option>
                             {% endfor %}
                         </select>
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label for="id_mes">Mês:
+                    </div>
+                    <div class="form-group">
+                        <label for="id_mes">Mês:</label>
                         <select name="mes" id="id_mes" required>
                             {% for m in meses %}
                                 <option value="{{ m.0 }}" {% if m.0|stringformat:"s" == mes_selecionado|stringformat:"s" %}selected{% endif %}>{{ m.1 }}</option>
                             {% endfor %}
                         </select>
-                    </label>
+                    </div>
+                    <div class="form-group" style="align-self: end;">
+                        <button type="submit" class="btn btn-primary">Filtrar/Selecionar</button>
+                    </div>
                 </div>
-                <div class="form-group" style="align-self: end;">
-                    <button type="submit">Filtrar</button>
-                </div>
-            </div>
-        </form>
-    </div>
-    <p><strong>Referência:</strong> Ano = {{ ano_selecionado }}, Mês = {{ mes_selecionado }}</p>
-    <p>Guias lançadas: {{ guias|length }}</p>
+            </form>
+        </div>
 
-    <!-- Lista de Guias Criadas -->
-    <table class="table-list-small">
-        <thead>
-            <tr>
-                <th>Associado</th>
-                <th>Mês/Ano</th>
-                <th>Emissão</th>
-                <th>Acesso</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for guia in guias %}
-            <tr>
-                <td>{{ guia.associado.user.get_full_name }}</td>
-                <td>{{ guia.get_mes_display }}/{{ guia.ano }}</td>
-                <td>{{ guia.get_status_emissao_display }}</td>
-                <td>{{ guia.get_status_acesso_display }}</td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="8">Nenhuma guia encontrada para este mês/ano.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+        <div style="margin-top: 16px; margin-bottom: 12px;">
+            <p><strong>Referência:</strong> {{ mes_selecionado }}/{{ ano_selecionado }}</p>
+            <p><strong>Guias lançadas:</strong> {{ guias|length }}</p>
+        </div>
+
+        <table class="table-list-small">
+            <thead>
+                <tr>
+                    <th>Associado</th>
+                    <th>Mês/Ano</th>
+                    <th>Emissão</th>
+                    <th>Acesso</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for guia in guias %}
+                <tr>
+                    <td>{{ guia.associado.user.get_full_name }}</td>
+                    <td>{{ guia.get_mes_display }}/{{ guia.ano }}</td>
+                    <td>{{ guia.get_status_emissao_display }}</td>
+                    <td>{{ guia.get_status_acesso_display }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">Nenhuma guia encontrada para este período.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
 {% block extra_js %}
     <script src="{% static 'js/modal_confirm_guias.js' %}"></script>

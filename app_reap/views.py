@@ -5,7 +5,6 @@ class LancamentosREAPListView(LoginRequiredMixin, GroupRequiredMixin, ListView):
     model = REAPdoAno
     template_name = 'reap/lancamentos_reap.html'
     context_object_name = 'reaps'
-    paginate_by = 30
     group_required = [
         'Superuser',
         'admin_associacao',
