@@ -470,3 +470,20 @@ class InstrucoesNormativasCreateView(LoginRequiredMixin, GroupRequiredMixin, Cre
     
         
     
+class NormativosDefesoResumoView(LoginRequiredMixin, GroupRequiredMixin, View):
+    template_name = 'defeso/listas_dados_defesos.html'
+    group_required = ['Superuser', 'admin_associacao', 'auxiliar_associacao']
+
+    def get(self, request):
+        context = {
+            'beneficios': SeguroDefesoBeneficioModel.objects.all().order_by('-ano_concessao'),
+            'leis': LeiFederalPrevidenciaria.objects.all().order_by('-data_publicacao'),
+            'decretos': DecretosModel.objects.all().order_by('-data_publicacao'),
+            'portarias': PortariasModel.objects.all().order_by('-data_publicacao'),
+            'especies': Especie.objects.all().order_by('nome_popular'),
+            'periodos': PeriodoDefesoOficial.objects.select_related('especie').all().order_by('-data_inicio_oficial'),
+            'instrucoes': InstrucoesNormativasModel.objects.all().order_by('-data_publicacao'),
+        }
+        return render(request, self.template_name, context)
+
+

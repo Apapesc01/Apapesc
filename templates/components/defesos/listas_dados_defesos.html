@@ -1,0 +1,303 @@
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/acordeons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive_patch.css' %}">
+{% endblock %}
+
+<div class="accordion">
+    <div class="accordion-item">
+        <h2>Benefícios</h2>
+        <div class="accordion-content">
+            <table class="table-list-small">
+                <thead>
+                    <tr>
+                        <th>Espécie</th>
+                        <th>Período</th>
+                        <th>Estado</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in beneficios %}
+                    <tr>
+                        <td>{{ b.especie_alvo }}</td>
+                        <td>{{ b.data_inicio|date:"d/m/Y" }} a {{ b.data_fim|date:"d/m/Y" }}</td>
+                        <td>{{ b.estado }}</td>
+                        <td>
+                            <a href="#" title="Editar">
+                                <span class="material-icons icon-edit">edit</span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">Nenhum benefício cadastrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <h2>Leis Federais</h2>
+        <div class="accordion-content">
+<table class="table-list-small">
+    <thead>
+        <tr>
+            <th>Nº da Lei</th>
+            <th>Publicação</th>
+            <th>Ementa</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lei in leis %}
+        <tr>
+            <td>
+                {% if lei.link_dou %}
+                    <a href="{{ lei.link_dou }}" target="_blank" class="link-associado-list">
+                        Lei nº {{ lei.numero }}
+                    </a>
+                {% else %}
+                    Lei nº {{ lei.numero }}
+                {% endif %}
+            </td>
+            <td>{{ lei.data_publicacao|date:"d/m/Y" }}</td>
+            <td>{{ lei.ementa|truncatechars:100 }}</td>
+            <td>
+                <a href="#" title="Editar">
+                    <span class="material-icons icon-edit">edit</span>
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Nenhuma lei cadastrada.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <h2>Decretos</h2>
+        <div class="accordion-content">
+            <table class="table-list-small">
+                <thead>
+                    <tr>
+                        <th>Nº do Decreto</th>
+                        <th>Publicação</th>
+                        <th>Ementa</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dec in decretos %}
+                    <tr>
+                        <td>
+                            {% if dec.link_dou %}
+                                <a href="{{ dec.link_dou }}" target="_blank" class="link-associado-list">
+                                    Decreto nº {{ dec.numero }}
+                                </a>
+                            {% else %}
+                                Decreto nº {{ dec.numero }}
+                            {% endif %}
+                        </td>
+                        <td>{{ dec.data_publicacao|date:"d/m/Y" }}</td>
+                        <td>{{ dec.ementa|truncatechars:100 }}</td>
+                        <td>
+                            <a href="#" title="Editar">
+                                <span class="material-icons icon-edit">edit</span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">Nenhum decreto cadastrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <h2>Portarias</h2>
+        <div class="accordion-content">
+            <table class="table-list-small">
+                <thead>
+                    <tr>
+                        <th>Portaria</th>
+                        <th>Órgão</th>
+                        <th>Publicação</th>
+                        <th>Ementa</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in portarias %}
+                    <tr>
+                        <td>
+                            {% if p.link_publicacao %}
+                                <a href="{{ p.link_publicacao }}" target="_blank" class="link-associado-list">
+                                    Portaria {{ p.numero }}/{{ p.ano }}
+                                </a>
+                            {% else %}
+                                Portaria {{ p.numero }}/{{ p.ano }}
+                            {% endif %}
+                        </td>
+                        <td>{{ p.orgao_emissor }}</td>
+                        <td>{{ p.data_publicacao|date:"d/m/Y" }}</td>
+                        <td>{{ p.ementa|truncatechars:100 }}</td>
+                        <td>
+                            <a href="#" title="Editar">
+                                <span class="material-icons icon-edit">edit</span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">Nenhuma portaria cadastrada.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>  
+
+    <div class="accordion-item">
+        <h2>Instruções Normativas</h2>
+        <div class="accordion-content">
+            <table class="table-list-small">
+                <thead>
+                    <tr>
+                        <th>IN</th>
+                        <th>Órgão</th>
+                        <th>Publicação</th>
+                        <th>Ementa</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inorm in instrucoes %}
+                    <tr>
+                        <td>
+                            {% if inorm.link_publicacao %}
+                                <a href="{{ inorm.link_publicacao }}" target="_blank" class="link-associado-list">
+                                    IN {{ inorm.numero }}
+                                </a>
+                            {% else %}
+                                IN {{ inorm.numero }}
+                            {% endif %}
+                        </td>
+                        <td>{{ inorm.orgao_emissor }}</td>
+                        <td>{{ inorm.data_publicacao|date:"d/m/Y" }}</td>
+                        <td>{{ inorm.ementa|truncatechars:100 }}</td>
+                        <td>
+                            <a href="#" title="Editar">
+                                <span class="material-icons icon-edit">edit</span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">Nenhuma IN cadastrada.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>    
+ 
+    <div class="accordion-item">
+        <h2>Períodos</h2>
+        <div class="accordion-content">
+            <table class="table-list-small">
+                <thead>
+                    <tr>
+                        <th>Espécie</th>
+                        <th>UF</th>
+                        <th>Período</th>
+                        <th>Órgão</th>
+                        <th>Observações</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for defeso in periodos %}
+                    <tr>
+                        <td>{{ defeso.especie.nome_popular }}</td>
+                        <td>{{ defeso.estado|default:"Nacional" }}</td>
+                        <td>{{ defeso.data_inicio_oficial|date:"d/m/Y" }} a {{ defeso.data_fim_oficial|date:"d/m/Y" }}</td>
+                        <td>{{ defeso.orgao_definidor }}</td>
+                        <td>{{ defeso.observacoes }} </td>
+                        <td>
+                            <a href="#" title="Editar">
+                                <span class="material-icons icon-edit">edit</span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">Nenhum período de defeso cadastrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>    
+
+
+    
+    <div class="accordion-item">
+        <h2>Espécies</h2>
+        <div class="accordion-content">
+            <table class="table-list-small">
+                <thead>
+                    <tr>
+                        <th>Nome Popular</th>
+                        <th>Nome Científico</th>
+                        <th>Descrição</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for especie in especies %}
+                    <tr>
+                        <td>{{ especie.nome_popular }}</td>
+                        <td><em>{{ especie.nome_cientifico }}</em></td>
+                        <td>{{ especie.descricao|truncatechars:100 }}</td>                    
+                        <td>
+                            <a href="#" title="Editar">
+                                <span class="material-icons icon-edit">edit</span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">Nenhuma espécie cadastrada.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>    
+            
+    <!-- repita para Portarias, Espécies, Períodos, Instruções Normativas -->
+</div>
+{% block extra_js %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll('.accordion-item h2').forEach(header => {
+        header.addEventListener('click', () => {
+          header.parentElement.classList.toggle('active');
+        });
+      });
+    });
+  </script>
+  {% endblock %}

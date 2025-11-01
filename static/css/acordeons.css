@@ -1,0 +1,90 @@
+.accordion {
+  width: 100%;
+  max-width: 100%;
+  margin: 24px auto;
+  padding: 12px;
+  border-radius: 12px;
+  background-color: #f9fafc;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+/* Cada item com margem entre si */
+.accordion-item {
+  margin-bottom: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #e8eeff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease;
+}
+
+.accordion-item:hover {
+  transform: translateY(-1px);
+}
+
+/* Cabeçalho */
+.accordion-item h2 {
+  margin: 0;
+  padding: 16px 20px;
+  cursor: pointer;
+  background-color: #e1e2e2;
+  color: #1e3a8a;
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #c7d2fe;
+}
+
+.accordion-item h2:hover {
+  background-color: #bfdbfe;
+}
+
+/* Conteúdo interno */
+.accordion-content {
+  display: none;
+  padding: 16px 20px;
+  background-color: #fff;
+  color: #374151;
+  animation: fadeIn 0.3s ease-in-out;
+  font-size: 0.95rem;
+}
+
+.accordion-item.active .accordion-content {
+  display: block;
+}
+
+.accordion-content p {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+/* Animação suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .accordion {
+    padding: 8px;
+  }
+
+  .accordion-item h2 {
+    font-size: 1rem;
+    padding: 14px 16px;
+  }
+
+  .accordion-content {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+  }
+}

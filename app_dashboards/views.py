@@ -106,9 +106,19 @@ class SuperDashboardView(LoginRequiredMixin, GroupRequiredMixin, View):
             'total_descontos_concedidos': total_descontos_concedidos,
             'total_anuidades_pagas': total_anuidades_pagas,
             'total_anuidades_nao_pagas': total_anuidades_nao_pagas,
+            
             # Gráficos
             'filiacoes_labels_json': json.dumps(labels),
-            'filiacoes_valores_json': json.dumps(valores),            
+            'filiacoes_valores_json': json.dumps(valores), 
+            
+            # Acordeons Dados Defesos
+            'beneficios': SeguroDefesoBeneficioModel.objects.all().order_by('-ano_concessao'),
+            'leis': LeiFederalPrevidenciaria.objects.all().order_by('-data_publicacao'),
+            'decretos': DecretosModel.objects.all().order_by('-data_publicacao'),
+            'portarias': PortariasModel.objects.all().order_by('-data_publicacao'),
+            'especies': Especie.objects.all().order_by('nome_popular'),
+            'periodos': PeriodoDefesoOficial.objects.select_related('especie').order_by('-data_inicio_oficial'),
+            'instrucoes': InstrucoesNormativasModel.objects.all().order_by('-data_publicacao'),                       
         }
         # Passa as despesas
         context['despesas'] = DespesaAssociacaoModel.objects.select_related(
