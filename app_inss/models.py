@@ -52,7 +52,6 @@ class INSSGuiaDoMes(models.Model):
     def nome_guia(self):
         return f"guia_mes_{self.get_mes_display().lower()}_{self.ano}"
 
-
 def criar_guias_inss_do_mes(ano, mes, rodada=1):
     ativos = AssociadoModel.objects.filter(
         status='associado_lista_ativo',

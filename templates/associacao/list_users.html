@@ -101,9 +101,9 @@
                             <span class="status-associado">{{ user.associado.status|capfirst }}</span>
                         {% elif user.integrante %}
                             {% if user.integrante.data_saida %}
-                                <span class="status-desativado">Desativado</span>
+                                <span class="status-desativado">Integrante Desativado</span>
                             {% elif user.integrante.data_entrada %}
-                                <span class="status-ativo">Ativo</span>
+                                <span class="status-ativo">Integrante Ativo</span>
                             {% endif %}
                         {% else %}
                             <span class="text-muted">—</span>

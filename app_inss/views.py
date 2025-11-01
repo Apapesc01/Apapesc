@@ -6,7 +6,6 @@ class LancamentosINSSListView(LoginRequiredMixin, GroupRequiredMixin, ListView):
     model = INSSGuiaDoMes
     template_name = 'inss/lancamentos_inss.html'
     context_object_name = 'guias'
-    paginate_by = 30
     group_required = [
         'Superuser',
         'admin_associacao',
