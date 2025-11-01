@@ -654,8 +654,8 @@ def gerar_declaracao_hipo(request, associado_id):
 
     # Texto da declaração
     texto = (
-        f"Eu, <strong>{associado.user.get_full_name()}</strong>, profissão {associado.profissao}, "
-        f"estado civil {associado.estado_civil}, inscrito(a) no CPF nº {associado.cpf}, e RG: nº{associado.rg_numero}, "
+        f"Eu, <strong>{associado.user.get_full_name()}</strong>, {associado.profissao}, "
+        f"{associado.estado_civil}, inscrito(a) no CPF nº {associado.cpf}, e RG: nº{associado.rg_numero}, "
         f"com domicílio e residência estabelecido à {associado.logradouro}, nº {associado.numero}, {associado.complemento}, {associado.bairro}, "
         f"{associado.municipio} - {associado.uf} {associado.cep}. <strong>DECLARO</strong>, para todos os fins de "
         f"direito e sob as penas da lei, que não tenho condições de arcar com as despesas inerentes ao presente "
@@ -1318,7 +1318,7 @@ def gerar_cobranca_anuidade(request, anuidade_assoc_id):
 
     Caso ainda não tenha efetuado os pagamentos, o valor a ser considerado é com base na anuidade vigente(atual) ({hoje.year}), que é no valor de <strong>R$ {valor_anuidade_atual:.2f}</strong> por ano em aberto.
 
-    Sendo assim, o valor total das anuidade(es) em aberto é de: <strong>R$ {valor_total_cobrado:.2f}</strong>.<br/><br/>
+    Sendo assim, o valor total das anuidade(es) em atraso é de: <strong>R$ {valor_total_cobrado:.2f}</strong>.<br/><br/>
     
     <strong>OBS:</strong> As anuidades computadas nesse documento são de anos <font color='red'><strong>anteriores</strong></font> ao ano vigente (atual).<br/><br/>
 
@@ -1492,7 +1492,7 @@ def gerar_cobrancas_em_lote(request):
 
         Caso ainda não tenha efetuado os pagamentos, o valor a ser considerado é com base na anuidade vigente(atual) ({ano_atual}), que é no valor de <strong>R$ {valor_anuidade_atual:.2f}</strong> por ano em aberto.
 
-        Sendo assim, o valor total das anuidade(es) em aberto é de: <strong>R$ {valor_total_cobrado:.2f}</strong>.<br/><br/>
+        Sendo assim, o valor total das anuidade(es) em atraso é de: <strong>R$ {valor_total_cobrado:.2f}</strong>.<br/><br/>
 
         <strong>OBS:</strong> As anuidades computadas nesse documento são de anos <font color='red'><strong>anteriores</strong></font> ao ano vigente (atual).<br/><br/>
 
@@ -1855,7 +1855,7 @@ def gerar_autorizacao_direitos_imagem(request, associado_id):
     # Texto da Autorização
     texto1 = (
         f"<strong>ATORIZAÇÂO</strong>: Eu, <strong>{associado.user.get_full_name()}</strong>, "
-        f"{associado.profissao}, estado civil, {associado.estado_civil}, CPF nº {associado.cpf}, "
+        f"{associado.profissao}, {associado.estado_civil}, CPF nº {associado.cpf}, "
         f"RG nº {associado.rg_numero}, com residência e domicílio estabelecido á {associado.logradouro}, "
         f"nº {associado.numero}, {associado.complemento}, {associado.bairro}, {associado.municipio} -"
         f" {associado.uf} {associado.cep}. "
@@ -1977,7 +1977,7 @@ def gerar_autorizacao_acesso_gov(request, associado_id):
     # Texto da Autorização acesso e Gestão conta Gov
     texto1 = (
         f"<strong>ATORIZAÇÂO</strong>: Eu, <strong>{associado.user.get_full_name()}</strong>, "
-        f"profissão, {associado.profissao}, estado civil, {associado.estado_civil}, CPF nº {associado.cpf}, "
+        f"{associado.profissao}, {associado.estado_civil}, CPF nº {associado.cpf}, "
         f"RG nº {associado.rg_numero}, com residência e domicílio estabelecido á {associado.logradouro}, "
         f"nº {associado.numero}, {associado.complemento}, {associado.bairro}, {associado.municipio} -"
         f" {associado.uf} {associado.cep}. "
@@ -2103,7 +2103,7 @@ def gerar_declaracao_desfiliacao(request, associado_id):
     # Texto do pedido de desfiliação
     texto1 = (
         f"<strong>EU</strong>: <strong>{associado.user.get_full_name()}</strong>, "
-        f"profissão, {associado.profissao}, estado civil, {associado.estado_civil}, CPF nº {associado.cpf}, "
+        f"{associado.profissao}, {associado.estado_civil}, CPF nº {associado.cpf}, "
         f"RG nº {associado.rg_numero}, com residência e domicílio estabelecido á {associado.logradouro}, "
         f"nº {associado.numero}, {associado.complemento}, {associado.bairro}, {associado.municipio} -"
         f" {associado.uf} {associado.cep}. "
@@ -2121,8 +2121,6 @@ def gerar_declaracao_desfiliacao(request, associado_id):
         f"<br /><br />Reitero que esta decisão é tomada por minha livre e espontânea vontade, sem qualquer coação ou influência de terceiros, "
         f"e reconheço o trabalho e a importância da APAPESC na defesa dos interesses dos pescadores catarinenses."
     )
-
-
 
 
     # Local e data
