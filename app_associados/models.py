@@ -241,7 +241,7 @@ class AssociadoModel(models.Model):
     rg_numero = models.CharField(
         max_length=20, 
         unique=True, 
-        verbose_name="Número do RG", 
+        verbose_name="Número do RG - CIN", 
         blank=True, 
         null=True
     )
@@ -291,7 +291,7 @@ class AssociadoModel(models.Model):
         max_length=20, 
         blank=True, 
         null=True, 
-        verbose_name="Número do CAEPEF"
+        verbose_name="Número do CAEPF"
     )
     cei = models.CharField(
         max_length=20, 

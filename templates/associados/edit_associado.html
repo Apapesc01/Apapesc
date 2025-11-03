@@ -436,7 +436,7 @@
         </div>
       
         <!--Identidade-->
-        <br><label>RG - CNH - CTPS - RGP</label>
+        <br><label>RG / CIN</label><small style="color:#a1a1a1"> - Prefira a CIN</small>
         <div class="form-grid grid-5-cols">  
             <div class="form-group">
                 {{ form.rg_numero.label_tag }}
@@ -447,9 +447,8 @@
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div>
-                {% endif %}                 
+                {% endif %}                              
             </div>              
- 
             <div class="form-group">
                 {{ form.rg_data_emissao.label_tag }}
                 {{ form.rg_data_emissao }}
@@ -619,6 +618,7 @@
         
 
         <!--Documento RGP-->
+        <label>RGP - PESCADOR</label>
         <div class="form-grid grid-4-cols">  
             <div class="form-group">
                 {{ form.rgp.label_tag }}
@@ -668,7 +668,7 @@
         </div> 
 
         <!--Documento do Cidadão-->
-        <label>DOCUMENTOS DE CIDADANIA</label>
+        <label>NIT, PIS, CAEPF, CEI, Título</label>
         <div class="form-grid grid-5-cols">  
             <div class="form-group">
                 {{ form.nit.label_tag }}
