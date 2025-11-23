@@ -116,3 +116,32 @@ button {
     text-transform: capitalize;
     font-size: 0.7rem;
 }
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  font-size: 0.95rem;
+}
+
+.pagination .step-links a,
+.pagination .step-links span {
+  margin: 0 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #374151;
+  background-color: #f1f5f9;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.pagination .step-links a:hover {
+  background-color: #cbd5e1;
+  color: #1f2937;
+}
+
+.pagination .current {
+  font-weight: 600;
+  background-color: #dbeafe;
+  color: #1e3a8a;
+}

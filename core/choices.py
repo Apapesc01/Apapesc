@@ -246,7 +246,7 @@ BOLSA_FAMILIA_CHOICES = [
     ('Undefined ', 'Undefined'),
 ]
 CASA_ONDE_MORA = [
-    ('Mora em casa prórpia', 'Mora em pasa prórpia'),
+    ('Mora em casa prórpia', 'Mora em casa prórpia'),
     ('Mora em casa augada', 'Mora em casa augada'),
     ('Mora em casa cedida', 'Mora em casa cedida'),
     ('Mora em casa de terceiros', 'Mora em casa de terceiros'),

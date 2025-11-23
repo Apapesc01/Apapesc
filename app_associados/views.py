@@ -117,31 +117,32 @@ class AssociadoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
         # DOCUMENTOS ESSENCIAIS E RELACIONADOS
         tipos_doc_essencial = [
             '001_Autodeclaracao_Pesca',
-            '002_Autorizacao_Acesso_GOV',
-            '003_Autorizacao_Imagem',
+            '002_Autorizacao_Acesso_GOV_ASS_associado',
+            '003_Autorizacao_Imagem_ASS_associado',
             '004_CAEPF',
             '005_CEI',
-            '006_CNH',
-            '007_Comprovante_Residencia',
-            '008_Comprovante_Seguro_Defeso',
-            '009_CPF',
-            '010_CTPS',
-            '011_Declaracao_Residencia_MAPA',
-            '012_Declaracao_Veracidade',
-            '013_Ficha_Filiacao',
-            '014_Foto_3x4',
-            '015_Licenca_Embarcacao',
-            '016_NIT_Extrato',
-            '017_Procuracao_Judicial',
-            '018_Procuracao_Administrativa',
-            '019_Protocolo_Entrada_RGP',
-            '020_RG_Antigo',
-            '021_RG_CIN',
-            '022_RGP',
-            '023_POP',
-            '024_TIE',
-            '025_Titulo_Eleitor',
+            '007_CNH',
+            '008_Comprovante_Residencia',
+            '009_Comprovante_Seguro_Defeso',
+            '010_CPF',
+            '011_CTPS',
+            '012_Declaracao_Residencia_MAPA',
+            '014_Declaracao_Veracidade_ASS_associado',
+            '016_Declaracao_Filiacao_ASS_Jur',
+            '019_Foto_3x4',
+            '020_Licenca_Embarcacao',
+            '021_NIT_Extrato',
+            '022_Procuracao_Judicial',
+            '023_Procuracao_Administrativa',
+            '024_Protocolo_Entrada_RGP',
+            '025_RG_Antigo',
+            '026_RG_CIN',
+            '027_RGP',
+            '028_POP',
+            '029_TIE',
+            '030_Titulo_Eleitor',
         ]
+
 
         content_type = ContentType.objects.get_for_model(AssociadoModel)
         documentos_up = UploadsDocs.objects.filter(
@@ -691,7 +692,7 @@ class AssociadoListView(LoginRequiredMixin, GroupRequiredMixin, ListView):
         'admin_associacao',
         'auxiliar_associacao'
     ]       
-    paginate_by = 25  # Opcional, se quiser paginação
+    paginate_by = 10  
 
     def dispatch(self, request, *args, **kwargs):
         if not (

@@ -82,6 +82,7 @@ class InsertUserGroupView(LoginRequiredMixin, GroupRequiredMixin, View):
     'Superuser', # Somente Superusuário tem permissão para inserir INTEGRANTE à um grupo. OBS, o type também deve corresponder ao super usuário.
     ]   
     
+    
     def dispatch(self, request, *args, **kwargs):
         # Verifica se o usuário tem permissão para criar um associado
         if not (request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'auxiliar_associacao' or request.user.user_type == 'admin_associacao')):

@@ -286,4 +286,4 @@ def delete_upload(request, pk):
             return JsonResponse({'status': 'ok'})
         except UploadsDocs.DoesNotExist:
             return JsonResponse({'status': 'not_found'}, status=404)
-    return JsonResponse({'status': 'invalid'}, status=400)    
+    return JsonResponse({'status': 'invalid'}, status=400)

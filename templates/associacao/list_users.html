@@ -31,7 +31,7 @@
         </form>
 
         <a href="{% url 'app_accounts:criar_usuario_fake' %}" class="btn-action btn-right">
-        👤 Criar Usuário Fake
+        🟢 Criar Usuário Fake
         </a><br>
         <div id="toast-container">
             {% for message in messages %}
@@ -145,5 +145,26 @@
                 {% endfor %}
             </tbody>
         </table>
+
+            {% if is_paginated %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}{% if request.GET.associacao %}&associacao={{ request.GET.associacao }}{% endif %}{% if request.GET.reparticao %}&reparticao={{ request.GET.reparticao }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Primeira</a>
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}{% if request.GET.associacao %}&associacao={{ request.GET.associacao }}{% endif %}{% if request.GET.reparticao %}&reparticao={{ request.GET.reparticao }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Anterior</a>
+            {% endif %}
+
+            <span class="current">
+                Página {{ page_obj.number }} de {{ paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}{% if request.GET.associacao %}&associacao={{ request.GET.associacao }}{% endif %}{% if request.GET.reparticao %}&reparticao={{ request.GET.reparticao }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Próxima</a>
+                <a href="?page={{ paginator.num_pages }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}{% if request.GET.associacao %}&associacao={{ request.GET.associacao }}{% endif %}{% if request.GET.reparticao %}&reparticao={{ request.GET.reparticao }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Última</a>
+            {% endif %}
+        </span>
+    </div>
+    {% endif %}
+    
     </div>
 {% endblock %}

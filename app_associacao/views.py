@@ -15,7 +15,7 @@ class UserListView(LoginRequiredMixin, GroupRequiredMixin, ListView):
         'admin_associacao',
         'auxiliar_associacao'
     ]        
-
+    paginate_by = 30
     def dispatch(self, request, *args, **kwargs):
         if not (
             request.user.is_authenticated and 

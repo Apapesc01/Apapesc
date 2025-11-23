@@ -66,7 +66,7 @@
     <table class="table-list">
         <thead>
             <tr>
-                <th>Nome</th>
+                <th>👥 Nome</th>
                 <th>CPF</th>
                 <th>Gov</th>
                 <th>Cel</th>
@@ -80,10 +80,8 @@
                 <td data-label="Associado">
                     <a href="{% url 'app_associados:single_associado' associado.pk %}" class="link-associado-list">
                         {{associado.user.get_full_name}}
-                    </a>
-                    
+                    </a>                    
                 </td>
-
                 <td data-label="CPF">
                     <div class="copy-wrapper" style="display: flex; align-items: center;">
                         <span id="cpf-{{ associado.pk }}">{{ associado.cpf }}</span>
@@ -122,6 +120,28 @@
             {% endfor %}
         </tbody>
     </table>
+
+    {% if is_paginated %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}{% if request.GET.associacao %}&associacao={{ request.GET.associacao }}{% endif %}{% if request.GET.reparticao %}&reparticao={{ request.GET.reparticao }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Primeira</a>
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}{% if request.GET.associacao %}&associacao={{ request.GET.associacao }}{% endif %}{% if request.GET.reparticao %}&reparticao={{ request.GET.reparticao }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Anterior</a>
+            {% endif %}
+
+            <span class="current">
+                Página {{ page_obj.number }} de {{ paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}{% if request.GET.associacao %}&associacao={{ request.GET.associacao }}{% endif %}{% if request.GET.reparticao %}&reparticao={{ request.GET.reparticao }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Próxima</a>
+                <a href="?page={{ paginator.num_pages }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}{% if request.GET.associacao %}&associacao={{ request.GET.associacao }}{% endif %}{% if request.GET.reparticao %}&reparticao={{ request.GET.reparticao }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Última</a>
+            {% endif %}
+        </span>
+    </div>
+    {% endif %}
+
+
 </div>
 {% block extra_js %}
     <script src="{% static 'js/copy_to_clipboard.js' %}"></script>
