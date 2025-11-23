@@ -52,7 +52,7 @@
 .hero-apapesc {
   text-align: center;
   background: linear-gradient(135deg, #d8fdee, #e0e2ff);
-  padding: 60px 20px;
+  padding: 20px 20px;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.05);
   margin: 40px auto;
@@ -66,7 +66,7 @@
 }
 
 .hero-apapesc p {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   color: #334155;
   margin-bottom: 16px;
 }

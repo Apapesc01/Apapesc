@@ -12,7 +12,7 @@
                 <div class="navbar-links" id="navbar-menu">                
                 {% if user.is_authenticated %}
                     <div class="user-info">
-                        👤<span class="nav-user-info"> {{ user.first_name|default:user.username }}</span>
+                        🐸<span class="nav-user-info"> {{ user.first_name|default:user.username }}</span>
                         <a href="{% url 'account_logout' %}">Logout</a>
                     </div>
                 {% else %}

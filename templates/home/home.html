@@ -32,23 +32,14 @@
     <body style="background-color:#b7dbff; margin:0;">
 
         <div class="hero-wrapper">
-            {% for obj in ApapescHome %}
-                <div class="hero-section">
-                    <div class="hero-content">
-                        <h1>{{ obj.titulo }}</h1>
-                        <p>{{ obj.descricao }}</p>
-                        <a href="#" class="hero-button">Ver detalhes</a>
-                    </div>
-                </div>
-            {% empty %}
-                <div class="hero-apapesc">
-                    <h1 class="fade-in">Sistema APAPESC</h1>
-                    <p class="fade-in delay-1">Gestão de Associados e Embarcações</p>
-                    <p class="fade-in delay-2">Seja bem-vindo(a), {{ user.username }}!</p>
-                    <a href="{% url 'app_accounts:dashboard_superuser' %}" class="btn-hero fade-in delay-3">📊 Acessar Dashboard</a>
-                </div>
-            {% endfor %}
-
+            <div class="hero-apapesc">
+                <img src="{% static 'img/Mascote_Taiacan_2025.jpeg' %}" alt="Logo ou barquinho" style="max-height: 80px; margin-bottom: 16px;">
+                <h3 class="fade-in">Sistema APAPESC</h3>                    
+                <p class="fade-in delay-1">Gestão da Associação e Associados</p>
+                <p class="fade-in delay-2">Seja bem-vindo(a), {{ user.username }}!</p>                   
+                <a href="{% url 'app_accounts:dashboard_superuser' %}" class="btn-hero fade-in delay-3">📊 Acessar Dashboard</a>                   
+            </div>
+             
             <div class="hero-links">
                 {% if user.is_authenticated %}
                 <p><a href="{% url 'app_accounts:dashboard_superuser' %}">Ir para o Dashboard</a></p>
@@ -57,6 +48,13 @@
                 <p><a href="{% url 'account_login' %}">Login</a> | <a href="{% url 'account_signup' %}">Cadastro</a></p>
                 {% endif %}
             </div>
+            {% for obj in ApapescHome %}
+                <div class="hero-content">
+                    <h1>{{ obj.titulo }}</h1>
+                    <small>{{ obj.descricao }}</small>
+                </div>
+            {% endfor %}              
         </div>
     </body>
+    {% include "components/footer.html" %}
 {% endblock %}

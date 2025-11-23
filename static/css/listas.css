@@ -283,3 +283,23 @@
   color: #666;
   margin-bottom: 10px;
 }
+.btn-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.btn-fake {
+  background-color: #129d6f;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+}
+
+.btn-fake:hover {
+  background-color: #059669;
+}

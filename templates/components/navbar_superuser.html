@@ -30,6 +30,7 @@
                     <a href="{% url 'app_associacao:create_municipio' %}">Novo Município</a>                    
                     <a href="{% url 'app_associacao:create_profissao' %}">Nova Profissão</a>                    
                     <a href="{% url 'app_associacao:create_cargo' %}">Novo Cargo (Int)</a>
+                    <a href="{% url 'app_uploads:create_tipo_doc' %}">Novo Tipo (Doc)</a>
                     <hr>
                     <a href="{% url 'app_associacao:list_associacoes' %}">Lista Associações</a>
                     <a href="{% url 'app_associacao:list_reparticoes' %}">Lista Repartições</a>
@@ -37,6 +38,7 @@
                     <a href="{% url 'app_associacao:list_municipios' %}">Lista Municipios</a>
                     <a href="{% url 'app_associacao:list_profissoes' %}">Lista Profissões</a>
                     <a href="{% url 'app_associacao:list_cargos' %}">Lista Cargos</a>
+                    <a href="{% url 'app_uploads:list_tipo_docs' %}">Lista Tipo(Docs)</a>
                     <a href="{% url 'app_associacao:list_users' %}">Lista Usuários</a>                                        
                 </div>
             </div>
@@ -44,9 +46,9 @@
                 <a href="#">Associados ▾</a>
                 <div class="dropdown-menu">
                     <a href="{% url 'app_associados:list_associados' %}">👥 Lista Associados</a>
-                    <a href="{% url 'app_associacao:list_users' %}">🟢 Novo Associado</a> 
+                    <a href="{% url 'app_associacao:list_users' %}">🥳 Novo Associado</a> 
                     <hr>
-                    <a href="{% url 'app_embarcacoes:list_embarcacoes' %}">Embarcações</a>
+                    <a href="{% url 'app_embarcacoes:list_embarcacoes' %}">⛵ Lista Embarcações</a>
 
                 </div>
             </div>

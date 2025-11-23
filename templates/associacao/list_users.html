@@ -30,9 +30,11 @@
             {% endif %}
         </form>
 
-        <a href="{% url 'app_accounts:criar_usuario_fake' %}" class="btn-action btn-right">
-        🟢 Criar Usuário Fake
-        </a><br>
+        <div class="btn-container">
+        <a href="{% url 'app_accounts:criar_usuario_fake' %}" class="btn-fake">
+            👻 Criar Usuário Fake
+        </a>
+        </div>
         <div id="toast-container">
             {% for message in messages %}
                 {% with message.tags as tag %}

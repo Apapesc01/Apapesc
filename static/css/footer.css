@@ -1,0 +1,19 @@
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1;
+}
+
+.footer-apapesc {
+    background-color: #130f2b;
+    text-align: center;
+    padding: 20px 10px;
+    font-size: 0.9rem;
+    color: #6b7280;
+    box-shadow: 0 -1px 3px rgba(0,0,0,0.05);
+}
+

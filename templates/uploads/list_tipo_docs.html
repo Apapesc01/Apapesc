@@ -20,56 +20,56 @@
     {% endif %}
 
 
-<div class="lista-container">
-    <h1>Lista de Tipos de Documentos</h1>
-    <a href="{% url 'app_uploads:create_tipo_doc' %}" class="btn-action btn-right">
-        Novo Tipo Documento
-    </a>
-    <div id="toast-container">
-        {% for message in messages %}
-            {% with message.tags as tag %}
-                <div class="toast 
-                    {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
-                    {% elif 'info' in tag %}toast-info
-                    {% elif 'warning' in tag %}toast-warning
-                    {% else %}toast-info{% endif %}">
-                    <span>{{ message }}</span>
-                    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
-                </div>
-            {% endwith %}
-        {% endfor %}
-    </div>
-
-    <table class="table-list">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Descricao</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for tipo in object_list %}
-            <tr>
-                <td>{{ tipo.nome }}</td>
-                <td>{{ tipo.descricao }}</td>
-                <td>
-                    <a href="{% url 'app_uploads:edit_tipo_doc' tipo.pk %}" title="Editar"><span class="material-icons icon-edit">edit</span></a>
-                    <a href="{% url 'app_uploads:delete_tipo_doc' tipo.pk %}" 
-                        title="Excluir">
-                        <span class="material-icons icon-delete">delete</span>
-                    </a>
-
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4">Nenhum Tipo de Documento encontrado.</td>
-            </tr>
+    <div class="lista-container">
+        <h1>Lista de Tipos de Documentos</h1>
+        <a href="{% url 'app_uploads:create_tipo_doc' %}" class="btn-action btn-right">
+            Novo Tipo Documento
+        </a>
+        <div id="toast-container">
+            {% for message in messages %}
+                {% with message.tags as tag %}
+                    <div class="toast 
+                        {% if 'success' in tag %}toast-success{% elif 'error' in tag or 'danger' in tag %}toast-error
+                        {% elif 'info' in tag %}toast-info
+                        {% elif 'warning' in tag %}toast-warning
+                        {% else %}toast-info{% endif %}">
+                        <span>{{ message }}</span>
+                        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+                    </div>
+                {% endwith %}
             {% endfor %}
-        </tbody>
-    </table>
-</div>
+        </div>
 
+        <table class="table-list">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Descricao</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tipo in object_list %}
+                <tr>
+                    <td>{{ tipo.nome }}</td>
+                    <td>{{ tipo.descricao }}</td>
+                    <td>
+                        <a href="{% url 'app_uploads:edit_tipo_doc' tipo.pk %}" title="Editar"><span class="material-icons icon-edit">edit</span></a>
+                        <a href="{% url 'app_uploads:delete_tipo_doc' tipo.pk %}" 
+                            title="Excluir">
+                            <span class="material-icons icon-delete">delete</span>
+                        </a>
+
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">Nenhum Tipo de Documento encontrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include "components/footer.html" %}
 
 {% endblock %}
