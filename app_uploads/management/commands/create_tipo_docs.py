@@ -10,7 +10,7 @@ TIPOS_DOCS = [
     ("006_CIN_Marinha", "Carteira Marinha (CIN)."),
     ("007_CNH", "Carteira Nacional de Habilitação."),
     ("008_Comprovante_Residencia", "Comprovante de residência: luz, água, faturas."),
-    ("009_Comprovante_Seguro_Defeso", "Comprovante de Seguro Defeso."),
+    ("009_Comprovante_Seguro_DPEM", "Comprovante de Seguro DPEM."),
     ("010_CPF", "CPF do associado."),
     ("011_CTPS", "Carteira de Trabalho e Previdência Social."),
     ("012_Declaracao_Residencia_MAPA", "Declaração de residência para o MAPA."),
@@ -33,6 +33,7 @@ TIPOS_DOCS = [
     ("029_POP", "Carteira POP do pescador."),
     ("030_TIE", "Título de Embarcação (TIE)."),
     ("031_Titulo_Eleitor", "Título de Eleitor do associado."),
+    ("032_Comprovante_Protocolo_Defeso," "Comprovante Protocolo Seg. Defeso."),
 ]
 
 class Command(BaseCommand):

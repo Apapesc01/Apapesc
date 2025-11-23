@@ -747,15 +747,24 @@
                     </div>
 
                     <div class="form-group" style="grid-column:1 / -1;">
-                    {{ defeso_form.comprovante_protocolo.label_tag }}
-                    {{ defeso_form.comprovante_protocolo }}
-                    {% if controle_defeso and controle_defeso.comprovante_protocolo %}
-                        <div style="margin-top:6px;">
-                        <a href="{{ controle_defeso.comprovante_protocolo.url }}" target="_blank">Ver comprovante atual</a>
+                        <div class="uploaded-documents">
+                            {% for doc in documentos_protocolo_up %}
+                                <div class="doc-item">
+                                    <a href="{{ doc.arquivo.url }}" target="_blank" class="doc-link">
+                                        📄 {{ doc.tipo.nome|default:"Documento" }} – Enviado em {{ doc.data_envio|date:"d/m/Y H:i" }}
+                                    </a>
+                                </div>
+                            {% empty %}
+                                <p class="doc-empty">Nenhum comprovante de protocolo do defeso enviado.</p>
+                            {% endfor %}
                         </div>
-                    {% endif %}
-                    {{ defeso_form.comprovante_protocolo.errors }}
+
+                        <a href="{% url 'app_uploads:create_upload' %}?type=associado&id={{ associado.id }}&from=defeso_tab&beneficio={{ beneficio_defeso_ultimo.id }}"
+                            class="btn-doc-upload">
+                            ⚠️ Somente Enviar comprovante de protocolo do Seg. Defeso
+                        </a>
                     </div>
+
                 </div>
 
                 <button type="submit" name="salvar_defeso" class="btn btn-primary" style="margin-top:8px;">

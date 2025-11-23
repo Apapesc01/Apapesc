@@ -176,7 +176,7 @@ class ServicoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
             '006_CIN_Marinha',
             '007_CNH',
             '008_Comprovante_Residencia',
-            '009_Comprovante_Seguro_Defeso',
+            '009_Comprovante_Seguro_DPEM',
             '010_CPF',
             '011_CTPS',
             '012_Declaracao_Residencia_MAPA',
@@ -185,8 +185,8 @@ class ServicoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
             '015_Declaracao_Hipo_ASS_associado',
             '016_Declaracao_Filiacao_ASS_Jur',
             '017_Declaracao_Ativ_Pesqueira_ASS_Jur',
-            '018_Ficha_Prod_Anual_reap_ASS_associado'
-            '019_Ficha_Requer_Filiacao_ASS_associado'
+            '018_Ficha_Prod_Anual_reap_ASS_associado',
+            '019_Ficha_Requer_Filiacao_ASS_associado',
             '020_Foto_3x4',
             '021_Licenca_Embarcacao',
             '022_NIT_Extrato',
@@ -199,8 +199,8 @@ class ServicoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
             '029_POP',
             '030_TIE',
             '031_Titulo_Eleitor',
+            '032_Comprovante_Protocolo_Defeso',
         ]
-
 
 
         documentos_up = UploadsDocs.objects.filter(

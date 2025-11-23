@@ -95,14 +95,23 @@
         <div class="form-grid grid-2-cols">
             <!-- Upload do comprovante -->
             <div class="form-group">
-                {{ form.comprovante_protocolo.label_tag }}
-                {{ form.comprovante_protocolo }}
-                {% if controle.comprovante_protocolo %}
-                    <div style="margin-top:4px;">
-                        <a href="{{ controle.comprovante_protocolo.url }}" target="_blank">Ver arquivo atual</a>
+            <!-- Uploads já enviados -->
+            <div class="uploaded-documents">
+                {% for doc in documentos_protocolo_up %}
+                    <div class="doc-item">
+                        <a href="{{ doc.arquivo.url }}" target="_blank" class="doc-link">
+                            📄 {{ doc.tipo.nome|default:"Documento" }} – Enviado em {{ doc.data_envio|date:"d/m/Y H:i" }}
+                        </a>
                     </div>
-                {% endif %}
+                {% empty %}
+                    <p class="doc-empty">Nenhum comprovante de protocolo do defeso enviado.</p>
+                {% endfor %}
             </div>
+            <a href="{% url 'app_uploads:create_upload' %}?type=associado&id={{ controle.associado.id }}&from=defeso&beneficio={{ controle.id }}"class="btn-doc-upload">
+                ⚠️ Somente Enviar comprovante de protocolo do Seg. Defeso
+            </a>              
+            </div>
+
             <!-- Data Concessão -->
             <div class="form-group">
                 {{ form.data_concessao.label_tag }}
@@ -133,8 +142,6 @@
                         </div>
                     </div>
                 </div>
-
-
             {% endif %}
             
             <a href="{% url 'app_defeso:lancamento_defeso' %}" class="btn btn-light">Voltar</a>

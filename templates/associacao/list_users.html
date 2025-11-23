@@ -69,13 +69,40 @@
             <tbody>
                 {% for user in users %}
                 <tr>
-                    <td>{{ user.get_full_name }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if user.integrante %}
+                            <a href="{% url 'app_associacao:single_integrante' user.integrante.id %}" class="link-associado-list">
+                                {{ user.get_full_name }}
+                            </a>
+                        {% elif user.associado %}
+                            <a href="{% url 'app_associados:single_associado' user.associado.id %}" class="link-associado-list">
+                                {{ user.get_full_name }}
+                            </a>
+                        {% else %}
+                            <span style="color: gray;">{{ user.get_full_name }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not user.integrante and not user.associado %}
+                            <span style="color: red;">{{ user.username }}</span>
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not user.integrante and not user.associado %}
+                            <span style="color: red;">{{ user.email }}</span>
+                        {% else %}
+                            {{ user.email }}
+                        {% endif %}
+                    </td>
+
                     <td>{{ user.date_joined|date:"d/m/Y" }}</td>
                     <td>
-                        {% if user.integrante.reparticao %}
+                        {% if user.integrante and user.integrante.reparticao %}
                             {{ user.integrante.reparticao.nome_reparticao }}
+                        {% elif user.associado and user.associado.reparticao %}
+                            {{ user.associado.reparticao.nome_reparticao }}
                         {% else %}
                             Nenhuma
                         {% endif %}

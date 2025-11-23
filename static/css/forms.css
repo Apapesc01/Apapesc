@@ -297,3 +297,45 @@
 .switch input:checked + .slider:before {
   transform: translateX(26px);
 }
+
+.uploaded-documents {
+  padding: 10px 0;
+}
+
+.doc-item {
+  margin-bottom: 6px;
+}
+
+.doc-link {
+  color: #61646c;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.92rem;
+}
+
+.doc-link:hover {
+  text-decoration: underline;
+  color: #1d4ed8;
+}
+
+.doc-empty {
+  color: #888;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.btn-doc-upload {
+  display: inline-block;
+  background-color: #e0f2f1;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.btn-doc-upload:hover {
+  background-color: #ccfbf1;
+}

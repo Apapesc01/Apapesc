@@ -146,7 +146,7 @@ class ControleBeneficioEditView(LoginRequiredMixin, GroupRequiredMixin, UpdateVi
             '006_CIN_Marinha',
             '007_CNH',
             '008_Comprovante_Residencia',
-            '009_Comprovante_Seguro_Defeso',
+            '009_Comprovante_Seguro_DPEM',
             '010_CPF',
             '011_CTPS',
             '012_Declaracao_Residencia_MAPA',
@@ -155,8 +155,8 @@ class ControleBeneficioEditView(LoginRequiredMixin, GroupRequiredMixin, UpdateVi
             '015_Declaracao_Hipo_ASS_associado',
             '016_Declaracao_Filiacao_ASS_Jur',
             '017_Declaracao_Ativ_Pesqueira_ASS_Jur',
-            '018_Ficha_Prod_Anual_reap_ASS_associado'
-            '019_Ficha_Requer_Filiacao_ASS_associado'
+            '018_Ficha_Prod_Anual_reap_ASS_associado',
+            '019_Ficha_Requer_Filiacao_ASS_associado',
             '020_Foto_3x4',
             '021_Licenca_Embarcacao',
             '022_NIT_Extrato',
@@ -169,6 +169,7 @@ class ControleBeneficioEditView(LoginRequiredMixin, GroupRequiredMixin, UpdateVi
             '029_POP',
             '030_TIE',
             '031_Titulo_Eleitor',
+            '032_Comprovante_Protocolo_Defeso',
         ]
 
 
@@ -217,7 +218,15 @@ class ControleBeneficioEditView(LoginRequiredMixin, GroupRequiredMixin, UpdateVi
             self.request.user == controle.em_processamento_por
         )
 
-        context['pode_salvar_proximo'] = pode_salvar_proximo        
+        context['pode_salvar_proximo'] = pode_salvar_proximo  
+        # Listar apenas comprovantes de protocolo do defeso
+        content_type = ContentType.objects.get_for_model(associado)
+        documentos_protocolo_up = UploadsDocs.objects.filter(
+            proprietario_content_type=content_type,
+            proprietario_object_id=associado.id,
+            tipo__nome__icontains="032_Comprovante_Protocolo_Defeso"
+        ).select_related('tipo')
+        context['documentos_protocolo_up'] = documentos_protocolo_up              
         return context
     
     def get_success_url(self):

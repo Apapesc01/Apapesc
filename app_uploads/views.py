@@ -35,7 +35,11 @@ class UploadsDocsCreateView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
 
         content_type = request.GET.get('type')
         object_id = request.GET.get('id')
-
+        
+        if not object_id:
+            messages.error(request, "ID do associado não informado. Verifique o link ou o contexto.")
+            return redirect(request.META.get('HTTP_REFERER', '/'))
+    
         tipo_tuple = TIPO_MODELOS_MAP.get(content_type.lower())
         if not tipo_tuple:
             raise Http404("Modelo inválido.")
@@ -65,31 +69,52 @@ class UploadsDocsCreateView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
             )
             inst.save()
             instances.append(inst)
+            # ------------------------------------------------------------------
+            #   🔥 SE O UPLOAD VEIO DO DEFESO → COPIAR PARA O BENEFÍCIO
+            # ------------------------------------------------------------------
+            if request.GET.get('from') == 'defeso':
+                beneficio_id = request.GET.get('beneficio')
+                from app_defeso.models import ControleBeneficioModel  # evita import circular
 
+                beneficio = ControleBeneficioModel.objects.filter(id=beneficio_id).first()
+                if beneficio:
+                    beneficio.comprovante_protocolo = inst.arquivo  # copia o arquivo
+                    beneficio.save(update_fields=['comprovante_protocolo'])
+                
         messages.success(request, f'{len(instances)} arquivo(s) enviados com sucesso!')
         return HttpResponseRedirect(self.get_success_url())
 
 
     def get_success_url(self):
+        from_param = self.request.GET.get('from')
+
+        if from_param == 'defeso':
+            beneficio_id = self.request.GET.get('beneficio')
+            return reverse('app_defeso:controle_beneficio_edit', kwargs={'pk': beneficio_id})
+
+        elif from_param == 'defeso_tab':
+            associado_id = self.request.GET.get('id')
+            return f"{reverse('app_associados:single_associado', kwargs={'pk': associado_id})}#tab-defeso"
+
+        # 🎯 Redirecionamento baseado no tipo de objeto vinculado
         content_type = self.request.GET.get('type')
         object_id = self.request.GET.get('id')
 
-        # Verifica se temos um tipo conhecido no mapa
         if content_type and content_type.lower() in TIPO_MODELOS_MAP:
             tipo = content_type.lower()
             pk = object_id
 
-            # Mapeamento dos nomes das views single por tipo
             if tipo == 'associado':
                 url = reverse('app_associados:single_associado', kwargs={'pk': pk})
-                return f"{url}#tab-uploads" 
+                return f"{url}#tab-uploads"
             elif tipo == 'associacao':
                 return reverse('app_associacao:single_associacao', kwargs={'pk': pk})
             elif tipo == 'reparticao':
                 return reverse('app_associacao:single_reparticao', kwargs={'pk': pk})
 
-        # fallback
+        # 🧭 Fallback seguro
         return reverse('app_home:home')
+
 
 
 
