@@ -37,42 +37,47 @@ User = get_user_model()
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.user_type == 'admin_associacao' or u.user_type == 'auxiliar_associacao')
 def criar_usuario_fake(request):
-    prefix = "0000FAKE"
-    base_username = "0000fake"
-    base_email = "@email.com"
-    password = "@senhafake"
-    user_type_default = "cliente"
+    try:
+        prefix = "0000FAKE"
+        base_username = "0000fake"
+        base_email = "@email.com"
+        password = "@senhafake"
+        user_type_default = "cliente"
 
-    # Busca maior número usado
-    existing_fakes = User.objects.filter(username__startswith=base_username)
-    next_number = 1
+        # Busca maior número usado
+        existing_fakes = User.objects.filter(username__startswith=base_username)
+        next_number = 1
 
-    if existing_fakes.exists():
-        ultimos_numeros = [
-            int(u.username.replace(base_username, '').replace('User_fake', '')) 
-            for u in existing_fakes if u.username.replace(base_username, '').replace('User_fake', '').isdigit()
-        ]
-        next_number = max(ultimos_numeros) + 1 if ultimos_numeros else 1
+        if existing_fakes.exists():
+            ultimos_numeros = [
+                int(u.username.replace(base_username, '').replace('User_fake', '')) 
+                for u in existing_fakes if u.username.replace(base_username, '').replace('User_fake', '').isdigit()
+            ]
+            next_number = max(ultimos_numeros) + 1 if ultimos_numeros else 1
 
-    # Formata número
-    numero_formatado = f"{next_number:04d}"
+        # Formata número
+        numero_formatado = f"{next_number:04d}"
 
-    # Cria campos
-    username = f"{base_username}{numero_formatado}"
-    email = f"{prefix}{numero_formatado}{base_email}"
+        # Cria campos
+        username = f"{base_username}{numero_formatado}"
+        email = f"{prefix}{numero_formatado}{base_email}"
 
-    # Cria usuário
-    novo_user = User.objects.create_user(
-        username=username,
-        email=email,
-        password=password,
-        user_type=user_type_default
-    )
+        # Cria usuário
+        novo_user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+            user_type=user_type_default
+        )
 
-    messages.success(request, f"✅ Usuário fake criado: {username} / {email}")
+        messages.success(request, f"✅ Usuário fake criado: {username} / {email}")
+        return redirect('app_associacao:list_users')
 
-    # Redireciona para lista ou edição
-    return redirect('app_associacao:list_users')  
+    except Exception as e:
+        print("❌ Erro ao criar usuário fake:", str(e))
+        traceback.print_exc()
+        messages.error(request, "Erro interno ao criar usuário fake. Consulte os logs.")
+        return redirect('app_associacao:list_users')  
 
 
 
