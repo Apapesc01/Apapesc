@@ -1,6 +1,7 @@
 # app_accounts
 from core.views.base_imports import *
 from core.views.app_accounts_imports import *
+from django.db import IntegrityError
 
 @login_required
 def dashboard(request):
@@ -35,49 +36,50 @@ class AcessoNegadoView(TemplateView):
 User = get_user_model()
 
 @login_required
+
 @user_passes_test(lambda u: u.is_superuser or u.user_type == 'admin_associacao' or u.user_type == 'auxiliar_associacao')
+@login_required
 def criar_usuario_fake(request):
+    prefix = "0000FAKE"
+    base_username = "0000fake"
+    base_email = "@email.com"
+    password = "@senhafake"
+    user_type_default = "cliente"
+
+    # Busca próximo username disponível
+    existing_usernames = User.objects.filter(username__startswith=base_username).values_list('username', flat=True)
+    username_number = 1
+    while True:
+        numero_username = f"{username_number:04d}"
+        username_candidate = f"{base_username}{numero_username}"
+        if username_candidate not in existing_usernames:
+            break
+        username_number += 1
+
+    # Busca próximo email disponível
+    existing_emails = User.objects.filter(email__startswith=prefix).values_list('email', flat=True)
+    email_number = 1
+    while True:
+        numero_email = f"{email_number:04d}"
+        email_candidate = f"{prefix}{numero_email}{base_email}"
+        if email_candidate.lower() not in [e.lower() for e in existing_emails]:
+            break
+        email_number += 1
+
     try:
-        prefix = "0000FAKE"
-        base_username = "0000fake"
-        base_email = "@email.com"
-        password = "@senhafake"
-        user_type_default = "cliente"
-
-        # Busca maior número usado
-        existing_fakes = User.objects.filter(username__startswith=base_username)
-        next_number = 1
-
-        if existing_fakes.exists():
-            ultimos_numeros = [
-                int(u.username.replace(base_username, '').replace('User_fake', '')) 
-                for u in existing_fakes if u.username.replace(base_username, '').replace('User_fake', '').isdigit()
-            ]
-            next_number = max(ultimos_numeros) + 1 if ultimos_numeros else 1
-
-        # Formata número
-        numero_formatado = f"{next_number:04d}"
-
-        # Cria campos
-        username = f"{base_username}{numero_formatado}"
-        email = f"{prefix}{numero_formatado}{base_email}"
-
-        # Cria usuário
         novo_user = User.objects.create_user(
-            username=username,
-            email=email,
+            username=username_candidate,
+            email=email_candidate,
             password=password,
             user_type=user_type_default
         )
-
-        messages.success(request, f"✅ Usuário fake criado: {username} / {email}")
-        return redirect('app_associacao:list_users')
-
+        messages.success(request, f"✅ Usuário fake criado com sucesso: {username_candidate} / {email_candidate}")
+    except IntegrityError as e:
+        messages.error(request, f"❌ Erro ao criar usuário fake: {str(e)}. Verifique duplicidades.")
     except Exception as e:
-        print("❌ Erro ao criar usuário fake:", str(e))
-        traceback.print_exc()
-        messages.error(request, "Erro interno ao criar usuário fake. Consulte os logs.")
-        return redirect('app_associacao:list_users')  
+        messages.error(request, f"❌ Erro inesperado ao criar usuário fake: {str(e)}")
+
+    return redirect('app_associacao:list_users')
 
 
 
