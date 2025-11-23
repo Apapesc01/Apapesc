@@ -138,25 +138,25 @@
                     </div>
                 {% endif %}
 
-<!-- BLOCO PARA INSS -->
-{% if associado.recolhe_inss == 'Sim' %}
-    {% if inss_aplicado %}
-        <div style="color:green; font-size:13px;">
-            Todas as guias INSS já foram aplicadas a este associado!
-        </div>
-    {% else %}
-        <form method="post" style="margin: 15px 0;">
-            {% csrf_token %}
-            <button type="submit" name="aplicar_inss" class="btn btn-success">
-                Incluir guias INSS do ano vigente 
-            </button>
-        </form>
-    {% endif %}
-{% else %}
-    <div style="color:#888; font-size:13px;">
-        <strong>INSS: </strong>Associado com status marcado como não recolhe INSS.
-    </div>
-{% endif %}
+                <!-- BLOCO PARA INSS -->
+                {% if associado.recolhe_inss == 'Sim' %}
+                    {% if inss_aplicado %}
+                        <div style="color:green; font-size:13px;">
+                            Todas as guias INSS já foram aplicadas a este associado!
+                        </div>
+                    {% else %}
+                        <form method="post" style="margin: 15px 0;">
+                            {% csrf_token %}
+                            <button type="submit" name="aplicar_inss" class="btn btn-success">
+                                Incluir guias INSS do ano vigente 
+                            </button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <div style="color:#888; font-size:13px;">
+                        <strong>INSS: </strong>Associado com status marcado como não recolhe INSS.
+                    </div>
+                {% endif %}
 
 
                 <!-- BLOCO PARA SEGURO DEFESO -->
