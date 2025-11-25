@@ -2538,7 +2538,7 @@ def gerar_declaracao_veracidade(request, associado_id):
         f"{associado.complemento or ''}, {associado.bairro}, {associado.municipio} - {associado.uf}, "
         f"CEP {associado.cep}; que "
         f"estou diretamente envolvido(a) e/ou vinculado(a) às atividades da pesca, conforme declarado à "
-        f"APAPESC – Associação de Pescadores e Agricultores de Santa Catarina;"
+        f"APAPESC – Associação dos Pescadores Artesanais Profissionais do Estado de Santa Catarina;"
         f"<br/><br/>"
         f"Reconheço que todas as informações prestadas à APAPESC são verdadeiras e de minha inteira responsabilidade, "
         f"comprometendo-me a responder civil, administrativa e criminalmente por qualquer declaração falsa ou omissão "
