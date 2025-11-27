@@ -38,6 +38,7 @@ class DefesosLancamentoView(LoginRequiredMixin, GroupRequiredMixin, View):
                 associados_beneficiados = ControleBeneficioModel.objects.filter(
                     beneficio=beneficio
                 ).select_related('associado')
+                
             except SeguroDefesoBeneficioModel.DoesNotExist:
                 beneficio = None
 
@@ -62,7 +63,7 @@ class DefesosLancamentoView(LoginRequiredMixin, GroupRequiredMixin, View):
 
                 mostrar_reset = (total_controles > 0) and (total_processados == total_controles)
                 mostrar_iniciar = (total_controles > 0) and (total_processados < total_controles)
-
+                total_beneficiados = associados_beneficiados.count()
         return render(request, self.template_name, {
             'beneficios': beneficios,
             'beneficio_id': beneficio_id,
@@ -70,6 +71,7 @@ class DefesosLancamentoView(LoginRequiredMixin, GroupRequiredMixin, View):
             'associados_beneficiados': associados_beneficiados,
             'mostrar_reset': mostrar_reset,
             'mostrar_iniciar': mostrar_iniciar,
+            'total_beneficiados': total_beneficiados,
         })
 
         

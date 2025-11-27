@@ -60,7 +60,7 @@
     </form>
 
     {% if associados_beneficiados %}
-        <h2>Associados beneficiados</h2>
+        <h2>Associados beneficiados: {{ total_beneficiados }}</h2>
         <!-- SÓ MOSTRA O BOTÃO SE HÁ BENEFÍCIO SELECIONADO E ASSOCIADOS -->
     {% if beneficio and beneficio.id %}
         {% if mostrar_iniciar %}
