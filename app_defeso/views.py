@@ -30,6 +30,7 @@ class DefesosLancamentoView(LoginRequiredMixin, GroupRequiredMixin, View):
         beneficio = None
         mostrar_reset = False
         mostrar_iniciar = False
+        total_beneficiados = 0  
 
         if beneficio_id:  # <-- Aqui está o correto!
             try:
@@ -64,6 +65,7 @@ class DefesosLancamentoView(LoginRequiredMixin, GroupRequiredMixin, View):
                 mostrar_reset = (total_controles > 0) and (total_processados == total_controles)
                 mostrar_iniciar = (total_controles > 0) and (total_processados < total_controles)
                 total_beneficiados = associados_beneficiados.count()
+                
         return render(request, self.template_name, {
             'beneficios': beneficios,
             'beneficio_id': beneficio_id,
