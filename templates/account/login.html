@@ -28,21 +28,29 @@
 
     <div class="auth-container">
         <h1 class="auth-title">{% trans "Entrar" %}</h1>
-
-        <p>Se você ainda não criou uma conta, por favor, <a href="{% url 'account_signup' %}">cadastre-se</a>.</p>
-
         <form method="POST" action="{% url 'account_login' %}">
             {% csrf_token %}
-            {{ form.as_p }}
+            
+            <p>
+                <label for="{{ form.login.id_for_label }}">Usuário ou Email:</label>
+                {{ form.login }}
+                {% if form.login.errors %}
+                    <div class="error">{{ form.login.errors }}</div>
+                {% endif %}
+            </p>
+
+            <p>
+                <label for="{{ form.password.id_for_label }}">Senha:</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <div class="error">{{ form.password.errors }}</div>
+                {% endif %}
+            </p>
 
             <div class="form-actions">
                 <button type="submit" class="btn-primary">{% trans "Entrar" %}</button>
             </div>
         </form>
-
-        <p style="margin-top: 16px;">
-            <a href="{% url 'account_reset_password' %}">Esqueceu sua senhaa?</a>
-        </p>
     </div>
     
 {% endblock %}

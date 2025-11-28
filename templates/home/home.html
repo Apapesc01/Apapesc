@@ -37,7 +37,7 @@
                 <h3 class="fade-in">Sistema APAPESC</h3>                    
                 <p class="fade-in delay-1">Gestão da Associação e Associados</p>
                 <p class="fade-in delay-2">Seja bem-vindo(a), {{ user.username }}!</p>                   
-                <a href="{% url 'app_accounts:dashboard_superuser' %}" class="btn-hero fade-in delay-3">📊 Acessar Dashboard</a>                   
+                <a href="{% url 'app_accounts:dashboard_superuser' %}" class="btn-hero fade-in delay-3">📊 Acessar</a>                   
             </div>
              
             <div class="hero-links">
@@ -45,7 +45,7 @@
                 <p><a href="{% url 'app_accounts:dashboard_superuser' %}">Ir para o Dashboard</a></p>
                 <p><a href="{% url 'account_logout' %}">Logout</a></p>
                 {% else %}
-                <p><a href="{% url 'account_login' %}">Login</a> | <a href="{% url 'account_signup' %}">Cadastro</a></p>
+                <p>Faça o Login</p>
                 {% endif %}
             </div>
             {% for obj in ApapescHome %}
