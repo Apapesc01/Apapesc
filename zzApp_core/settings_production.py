@@ -18,7 +18,7 @@ SECRET_KEY = env("SECRET_KEY", default="chave-padrao-insegura")
 
 DEBUG = env.bool("DEBUG", default=True)
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS_PROD", default=["127.0.0.1", "34.132.210.178"])
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS_PROD", default=["127.0.0.1","apapescadm.com","www.apapescadm.com","34.132.210.178"])
 
 # Application definition
 
@@ -168,3 +168,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_TRUSTED_ORIGINS = [
+    "https://apapescadm.com",
+    "https://www.apapescadm.com",
+]
