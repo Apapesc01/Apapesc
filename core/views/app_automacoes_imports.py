@@ -18,6 +18,7 @@ from app_automacoes.models import (
     DireitosDeveres,
     RetiradaDocumentos,
     DeclaracaoDeVeracidade,
+    RequerimentoFiliacao,
     )
 
 from app_associados.models import AssociadoModel

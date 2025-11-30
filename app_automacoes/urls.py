@@ -23,6 +23,7 @@ urlpatterns = [
      path('upload/autorizacao-acesso-gov/', views.upload_pdf_base, {'automacao': 'autorizacao_acesso_gov'}, name='upload_pdf_autorizacao_acesso_gov'),
      path('upload/declaracao-desfiliacao/', views.upload_pdf_base, {'automacao': 'declaracao_desfiliacao'}, name='upload_pdf_declaracao_desfiliacao'),
      path('upload/declaracao-veracidade/', views.upload_pdf_base, {'automacao': 'declaracao_veracidade'}, name='upload_pdf_declaracao_veracidade'),
+     path('upload/requerimento-filiacao/', views.upload_pdf_base, {'automacao': 'requerimento_filiacao'}, name='upload_pdf_requerimento_filiacao'),
      path('upload/direitos-deveres/', views.upload_pdf_base, {'automacao': 'direitos_deveres'}, name='upload_pdf_direitos_deveres'),
      path('upload/retirada-documentos/', views.upload_pdf_base, {'automacao': 'retirada_documentos'}, name='upload_pdf_retirada_documentos'),
 
@@ -64,10 +65,6 @@ urlpatterns = [
      
      path('gerar-cobrancas-em-lote/',views.gerar_cobrancas_em_lote, 
           name='gerar_cobrancas_em_lote'),
-
-     
-     #path('gerar-recibo-servico-extra/<int:entrada_id>/', views.gerar_recibo_entrada_extra, 
-          #name='gerar_recibo_servico_extra'),
      
      path('gerar-carteirinha/<int:associado_id>/', views.gerar_carteirinha_apapesc,
           name='gerar_carteirinha_apapesc'), 
@@ -87,11 +84,20 @@ urlpatterns = [
      path('gerar-declaracao-veracidade/<int:associado_id>/', views.gerar_declaracao_veracidade,
           name='gerar_declaracao_veracidade'),
           
-     
+     path('gerar-requerimento-filiacao/<int:associado_id>/', views.gerar_requerimento_filiacao,
+          name='gerar_requerimento_filiacao'),
+          
      path('gerar-direitos-deveres/<int:associado_id>/', views.gerar_direitos_deveres,
           name='gerar_direitos_deveres'),
      
      path('gerar-retirada_documentos/<int:associado_id>/', views.gerar_retirada_documentos,
           name='gerar_retirada_documentos'),
 
+
+    path(
+        'gerar-pacote-documentos/<int:associado_id>/',
+        views.gerar_pacote_documentos,
+        name='gerar_pacote_documentos'
+    ),
+    
 ]

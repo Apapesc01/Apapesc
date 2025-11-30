@@ -607,16 +607,17 @@
                 </a>
             </div>  
             <div>
-                <h2>Aguardando...</h2>
-                <a href="">
+                <h2>Requerimento Filiação Apapesc</h2>
+                <a href="{% url 'app_automacoes:gerar_requerimento_filiacao' associado.id %}">
                     Gerar Documento
                 </a>
             </div>  
             <div>
                 <h2>Aguardando...</h2>
-                <a href="">
-                    Gerar Documento
-                </a>
+<a href="{% url 'app_automacoes:gerar_pacote_documentos' associado.id %}"
+   class="btn btn-danger mt-3">
+   Gerar Pacote Completo de Documentos
+</a>
             </div>                                                                                                                                                                                                                     
         </div>
     </div>    

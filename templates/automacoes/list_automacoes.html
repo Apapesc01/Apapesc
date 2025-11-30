@@ -30,438 +30,460 @@
         {% endfor %}
     </div>
 
-<table class="table-list">
-    <thead>
-        <tr>
-            <th>Nome Arquivo</th>
-            <th>ID</th>
-            <th>PDF Base</th>
-            <th>Última Atualização</th>
-            <th>Ação</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% if declaracoes_residencia.exists %}
-            {% for declaracao in declaracoes_residencia %}
+    <table class="table-list">
+        <thead>
             <tr>
-                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
-                <td>{{ declaracao.id }}</td>
-                <td>
-                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
-                </td>
-                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'app_automacoes:upload_pdf_residencia' %}">
-                        Substituir Modelo
-                    </a>
-                </td>
+                <th>Nome Arquivo</th>
+                <th>ID</th>
+                <th>PDF Base</th>
+                <th>Última Atualização</th>
+                <th>Ação</th>
             </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">
-                    <a href="{% url 'app_automacoes:upload_pdf_residencia' %}">
-                        Upload Modelo Base Residência
-                    </a>
-                </td>
-            </tr>        
-        {% endif %}
+        </thead>
+        <tbody>
+            {% if declaracoes_residencia.exists %}
+                {% for declaracao in declaracoes_residencia %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_residencia' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_residencia' %}">
+                            Upload Modelo Base Residência
+                        </a>
+                    </td>
+                </tr>        
+            {% endif %}
 
-        {% if declaracoes_filiacao.exists %}
-            {% for declaracao in declaracoes_filiacao %}
-            <tr>
-                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
-                <td>{{ declaracao.id }}</td>
-                <td>
-                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
-                </td>
-                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'app_automacoes:upload_pdf_filiacao' %}">
-                        Substituir Modelo
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">
-                    <a href="{% url 'app_automacoes:upload_pdf_filiacao' %}">
-                        Upload Modelo Base Filiação
-                    </a>
-                </td>
-            </tr>        
-        {% endif %}
+            {% if declaracoes_filiacao.exists %}
+                {% for declaracao in declaracoes_filiacao %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_filiacao' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_filiacao' %}">
+                            Upload Modelo Base Filiação
+                        </a>
+                    </td>
+                </tr>        
+            {% endif %}
 
-        {% if declaracoes_atividade_pesqueira.exists %}
-            {% for declaracao in declaracoes_atividade_pesqueira %}
-            <tr>
-                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
-                <td>{{ declaracao.id }}</td>
-                <td>
-                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
-                </td>
-                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'app_automacoes:upload_pdf_atividade_pesqueira' %}">
-                        Substituir Modelo
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">
-                    <a href="{% url 'app_automacoes:upload_pdf_atividade_pesqueira' %}">
-                        Upload Modelo Base Atividade Pesqueira
-                    </a>
-                </td>
-            </tr>        
-        {% endif %}
+            {% if declaracoes_atividade_pesqueira.exists %}
+                {% for declaracao in declaracoes_atividade_pesqueira %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_atividade_pesqueira' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_atividade_pesqueira' %}">
+                            Upload Modelo Base Atividade Pesqueira
+                        </a>
+                    </td>
+                </tr>        
+            {% endif %}
 
-        {% if declaracoes_hipossuficiencia.exists %}
-            {% for declaracao in declaracoes_hipossuficiencia %}
-            <tr>
-                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
-                <td>{{ declaracao.id }}</td>
-                <td>
-                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
-                </td>
-                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'app_automacoes:upload_pdf_hipossuficiencia' %}">
-                        Substituir Modelo
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">
-                    <a href="{% url 'app_automacoes:upload_pdf_hipossuficiencia' %}">
-                        Upload Modelo Base Hipossuficiência
-                    </a>
-                </td>
-            </tr>        
-        {% endif %}
+            {% if declaracoes_hipossuficiencia.exists %}
+                {% for declaracao in declaracoes_hipossuficiencia %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_hipossuficiencia' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_hipossuficiencia' %}">
+                            Upload Modelo Base Hipossuficiência
+                        </a>
+                    </td>
+                </tr>        
+            {% endif %}
 
-        {% if procuracoes_procuracao_juridica.exists %}
-            {% for declaracao in procuracoes_procuracao_juridica %}
-            <tr>
-                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
-                <td>{{ declaracao.id }}</td>
-                <td>
-                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
-                </td>
-                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'app_automacoes:upload_pdf_procuracao_juridica' %}">
-                        Substituir Modelo
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">
-                    <a href="{% url 'app_automacoes:upload_pdf_procuracao_juridica' %}">
-                        Upload Modelo Base Procuração Jurídica
-                    </a>
-                </td>
-            </tr>        
-        {% endif %}
+            {% if procuracoes_procuracao_juridica.exists %}
+                {% for declaracao in procuracoes_procuracao_juridica %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_procuracao_juridica' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_procuracao_juridica' %}">
+                            Upload Modelo Base Procuração Jurídica
+                        </a>
+                    </td>
+                </tr>        
+            {% endif %}
 
-        {% if procuracoes_procuracao_administrativa.exists %}
-            {% for declaracao in procuracoes_procuracao_administrativa %}
-            <tr>
-                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
-                <td>{{ declaracao.id }}</td>
-                <td>
-                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
-                </td>
-                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'app_automacoes:upload_pdf_procuracao_administrativa' %}">
-                        Substituir Modelo
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">
-                    <a href="{% url 'app_automacoes:upload_pdf_procuracao_administrativa' %}">
-                        Upload Modelo Base Procuração Administrativa
-                    </a>
-                </td>
-            </tr>        
-        {% endif %}
+            {% if procuracoes_procuracao_administrativa.exists %}
+                {% for declaracao in procuracoes_procuracao_administrativa %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_procuracao_administrativa' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_procuracao_administrativa' %}">
+                            Upload Modelo Base Procuração Administrativa
+                        </a>
+                    </td>
+                </tr>        
+            {% endif %}
 
-        {% if  autorizacao_direito_imagem.exists %}
-            {% for declaracao in autorizacao_direito_imagem %}
-            <tr>
-                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
-                <td>{{ declaracao.id }}</td>
-                <td>
-                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
-                </td>
-                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'app_automacoes:upload_pdf_autorizacao_direito_imagem' %}">
-                        Substituir Modelo
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">
-                    <a href="{% url 'app_automacoes:upload_pdf_autorizacao_direito_imagem' %}">
-                        Upload Modelo Base Autorização Direito de Imagem
-                    </a>
-                </td>
-            </tr>        
-        {% endif %}
+            {% if  autorizacao_direito_imagem.exists %}
+                {% for declaracao in autorizacao_direito_imagem %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_autorizacao_direito_imagem' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_autorizacao_direito_imagem' %}">
+                            Upload Modelo Base Autorização Direito de Imagem
+                        </a>
+                    </td>
+                </tr>        
+            {% endif %}
 
-        {% if autorizacao_acesso_gov.exists %}
-            {% for declaracao in autorizacao_acesso_gov %}
-            <tr>
-                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
-                <td>{{ declaracao.id }}</td>
-                <td>
-                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
-                </td>
-                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'app_automacoes:upload_pdf_autorizacao_acesso_gov' %}">
-                        Substituir Modelo
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">
-                    <a href="{% url 'app_automacoes:upload_pdf_autorizacao_acesso_gov' %}">
-                        Upload Modelo Base Autorização Acesso Gov
-                    </a>
-                </td>
-            </tr>        
-        {% endif %}
+            {% if autorizacao_acesso_gov.exists %}
+                {% for declaracao in autorizacao_acesso_gov %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_autorizacao_acesso_gov' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_autorizacao_acesso_gov' %}">
+                            Upload Modelo Base Autorização Acesso Gov
+                        </a>
+                    </td>
+                </tr>        
+            {% endif %}
 
-        {% if direitos_deveres.exists %}
-            {% for declaracao in direitos_deveres %}
-            <tr>
-                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
-                <td>{{ declaracao.id }}</td>
-                <td>
-                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
-                </td>
-                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'app_automacoes:upload_pdf_direitos_deveres' %}">
-                        Substituir Modelo
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">
-                    <a href="{% url 'app_automacoes:upload_pdf_direitos_deveres' %}">
-                        Upload Modelo Base Direitos e Deveres
-                    </a>
-                </td>
-            </tr>      
-        {% endif %}
+            {% if direitos_deveres.exists %}
+                {% for declaracao in direitos_deveres %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_direitos_deveres' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_direitos_deveres' %}">
+                            Upload Modelo Base Direitos e Deveres
+                        </a>
+                    </td>
+                </tr>      
+            {% endif %}
 
-        {% if recibo_parcial_anuidade.exists %}
-            {% for declaracao in recibo_parcial_anuidade %}
-            <tr>
-                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
-                <td>{{ declaracao.id }}</td>
-                <td>
-                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
-                </td>
-                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'app_automacoes:upload_pdf_recibo_parcial_anuidade' %}">
-                        Substituir Modelo
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">
-                    <a href="{% url 'app_automacoes:upload_pdf_recibo_parcial_anuidade' %}">
-                        Upload Modelo Base Recibo Parcial
-                    </a>
-                </td>
-            </tr>        
-        {% endif %}
+            {% if recibo_parcial_anuidade.exists %}
+                {% for declaracao in recibo_parcial_anuidade %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_recibo_parcial_anuidade' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_recibo_parcial_anuidade' %}">
+                            Upload Modelo Base Recibo Parcial
+                        </a>
+                    </td>
+                </tr>        
+            {% endif %}
 
+            {% if recibos_anuidades.exists %}
+                {% for declaracao in recibos_anuidades %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_recibo_anuidade' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_recibo_anuidade' %}">
+                            Upload Modelo Base Recibo Anuidade
+                        </a>
+                    </td>
+                </tr>        
+            {% endif %}
 
+            {% if cobranca_anuidades.exists %}
+                {% for declaracao in cobranca_anuidades %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_cobranca_anuidade' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_cobranca_anuidade' %}">
+                            Upload Modelo Base Cobrança Anuidade
+                        </a>
+                    </td>
+                </tr>        
+            {% endif %}
 
+            {% if carteirinha_apapesc.exists %}
+                {% for declaracao in carteirinha_apapesc %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_carteirinha_apapesc' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_carteirinha_apapesc' %}">
+                            Upload Modelo Base Carteirinha APAPESC
+                        </a>
+                    </td>
+                </tr>        
+            {% endif %}
 
+            {% if retirada_documentos.exists %}
+                {% for declaracao in retirada_documentos %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_retirada_documentos' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_retirada_documentos' %}">
+                            Upload Modelo Base Retirada de Documentos
+                        </a>
+                    </td>
+                </tr>        
+            {% endif %}
 
-        {% if recibos_anuidades.exists %}
-            {% for declaracao in recibos_anuidades %}
-            <tr>
-                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
-                <td>{{ declaracao.id }}</td>
-                <td>
-                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
-                </td>
-                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'app_automacoes:upload_pdf_recibo_anuidade' %}">
-                        Substituir Modelo
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">
-                    <a href="{% url 'app_automacoes:upload_pdf_recibo_anuidade' %}">
-                        Upload Modelo Base Recibo Anuidade
-                    </a>
-                </td>
-            </tr>        
-        {% endif %}
+            {% if declaracao_desfiliacao.exists %}
+                {% for declaracao in declaracao_desfiliacao %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_declaracao_desfiliacao' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_declaracao_desfiliacao' %}">
+                            Upload Modelo Base Desfiliação
+                        </a>
+                    </td>
+                </tr>
+            {% endif %}
 
-        {% if cobranca_anuidades.exists %}
-            {% for declaracao in cobranca_anuidades %}
-            <tr>
-                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
-                <td>{{ declaracao.id }}</td>
-                <td>
-                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
-                </td>
-                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'app_automacoes:upload_pdf_cobranca_anuidade' %}">
-                        Substituir Modelo
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">
-                    <a href="{% url 'app_automacoes:upload_pdf_cobranca_anuidade' %}">
-                        Upload Modelo Base Cobrança Anuidade
-                    </a>
-                </td>
-            </tr>        
-        {% endif %}
+            {% if declaracao_veracidade.exists %}
+                {% for declaracao in declaracao_veracidade %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_declaracao_veracidade' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_declaracao_veracidade' %}">
+                            Upload Modelo Base Declaração Veracidade
+                        </a>
+                    </td>
+                </tr>
+            {% endif %}  
 
-        {% if carteirinha_apapesc.exists %}
-            {% for declaracao in carteirinha_apapesc %}
-            <tr>
-                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
-                <td>{{ declaracao.id }}</td>
-                <td>
-                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
-                </td>
-                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'app_automacoes:upload_pdf_carteirinha_apapesc' %}">
-                        Substituir Modelo
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">
-                    <a href="{% url 'app_automacoes:upload_pdf_carteirinha_apapesc' %}">
-                        Upload Modelo Base Carteirinha APAPESC
-                    </a>
-                </td>
-            </tr>        
-        {% endif %}
-
-        {% if retirada_documentos.exists %}
-            {% for declaracao in retirada_documentos %}
-            <tr>
-                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
-                <td>{{ declaracao.id }}</td>
-                <td>
-                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
-                </td>
-                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'app_automacoes:upload_pdf_retirada_documentos' %}">
-                        Substituir Modelo
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">
-                    <a href="{% url 'app_automacoes:upload_pdf_retirada_documentos' %}">
-                        Upload Modelo Base Retirada de Documentos
-                    </a>
-                </td>
-            </tr>        
-        {% endif %}
-
-        {% if declaracao_desfiliacao.exists %}
-            {% for declaracao in declaracao_desfiliacao %}
-            <tr>
-                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
-                <td>{{ declaracao.id }}</td>
-                <td>
-                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
-                </td>
-                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'app_automacoes:upload_pdf_declaracao_desfiliacao' %}">
-                        Substituir Modelo
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">
-                    <a href="{% url 'app_automacoes:upload_pdf_declaracao_desfiliacao' %}">
-                        Upload Modelo Base Desfiliação
-                    </a>
-                </td>
-            </tr>
-        {% endif %}
-
-        {% if declaracao_veracidade.exists %}
-            {% for declaracao in declaracao_veracidade %}
-            <tr>
-                <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
-                <td>{{ declaracao.id }}</td>
-                <td>
-                    <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
-                </td>
-                <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
-                <td>
-                    <a href="{% url 'app_automacoes:upload_pdf_declaracao_veracidade' %}">
-                        Substituir Modelo
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">
-                    <a href="{% url 'app_automacoes:upload_pdf_declaracao_veracidade' %}">
-                        Upload Modelo Base Declaração Veracidade
-                    </a>
-                </td>
-            </tr>
-        {% endif %}            
-    </tbody>
-</table>
+            {% if requerimento_filiacao.exists %}
+                {% for declaracao in requerimento_filiacao %}
+                <tr>
+                    <td>{{ declaracao.pdf_base.name|default:"(Sem arquivo)" }}</td>
+                    <td>{{ declaracao.id }}</td>
+                    <td>
+                        <a href="{{ declaracao.pdf_base.url }}" target="_blank">Visualizar PDF</a>
+                    </td>
+                    <td>{{ declaracao.atualizado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'app_automacoes:upload_pdf_requerimento_filiacao' %}">
+                            Substituir Modelo
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        <a href="{% url 'app_automacoes:upload_pdf_requerimento_filiacao' %}">
+                            Upload Modelo Requerimento de Filiação Junto à Apapesc
+                        </a>
+                    </td>
+                </tr>
+            {% endif %}                    
+        </tbody>
+    </table>
 
 </div>
 

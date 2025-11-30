@@ -18,9 +18,10 @@ MODELO_MAP = {
     'autorizacao_direito_imagem': AutorizacaoDireitoImagemModel,
     'autorizacao_acesso_gov': AutorizacaoAcessoGovModel,
     'declaracao_desfiliacao': DeclaracaoDesfiliacaoModel,
-    'direitos_deveres':DireitosDeveres,
+    'direitos_deveres': DireitosDeveres,
     'retirada_documentos': RetiradaDocumentos,
-    'declaracao_veracidade':DeclaracaoDeVeracidade,
+    'declaracao_veracidade': DeclaracaoDeVeracidade,
+    'requerimento_filiacao': RequerimentoFiliacao,
 
 }
 
@@ -44,6 +45,7 @@ def upload_pdf_base(request, automacao, anuidade_assoc_id=None):
         'direitos_deveres': DireitosDeveres,
         'retirada_documentos': RetiradaDocumentos,
         'declaracao_veracidade': DeclaracaoDeVeracidade,
+        'requerimento_filiacao': RequerimentoFiliacao,
     }
     
     modelo = modelo_map.get(automacao)
@@ -126,6 +128,7 @@ class ListaTodosArquivosView(LoginRequiredMixin, GroupRequiredMixin,  TemplateVi
         context['direitos_deveres'] = DireitosDeveres.objects.all()
         context['retirada_documentos'] = RetiradaDocumentos.objects.all()
         context['declaracao_veracidade'] = DeclaracaoDeVeracidade.objects.all()
+        context['requerimento_filiacao'] = RequerimentoFiliacao.objects.all()
         
         return context
 
@@ -2595,3 +2598,250 @@ def gerar_declaracao_veracidade(request, associado_id):
 
 # =======================================================================================================
 
+
+# GERAR REQUERIMENTO DE FILIAÇÃO
+def gerar_requerimento_filiacao(request, associado_id):
+    associado = get_object_or_404(AssociadoModel, id=associado_id)
+    associacao = associado.associacao
+
+    # PDF base
+    template_path = os.path.join(settings.MEDIA_ROOT, 'pdf/requerimento_filiacao.pdf')
+    if not os.path.exists(template_path):
+        return HttpResponse("O PDF base para o Requerimento de Filiação não foi encontrado.", status=404)
+
+    template_pdf = PdfReader(template_path)
+    template_page = template_pdf.pages[0]
+
+    buffer = BytesIO()
+
+    # Estilos
+    styles = getSampleStyleSheet()
+
+    style_title = ParagraphStyle(
+        'Title',
+        parent=styles['Title'],
+        fontName='Times-Bold',
+        fontSize=16,
+        alignment=1,
+        leading=28,
+        spaceBefore=40,
+        textColor=colors.black,
+    )
+
+    style_normal = ParagraphStyle(
+        'Normal',
+        parent=styles['Normal'],
+        fontName='Times-Roman',
+        fontSize=12,
+        leading=20,
+        alignment=TA_JUSTIFY,
+    )
+
+    style_italic_small = ParagraphStyle(
+        'ItalicSmall',
+        parent=styles['Normal'],
+        fontName='Times-Italic',
+        fontSize=10,
+        leading=15,
+        alignment=TA_JUSTIFY,
+        textColor=colors.black,
+        spaceBefore=10,
+    )
+
+    style_data = ParagraphStyle(
+        'Data',
+        parent=styles['Normal'],
+        fontName='Times-Roman',
+        fontSize=12,
+        leading=20,
+        alignment=0,
+        spaceBefore=10,
+    )
+
+    style_assinatura = ParagraphStyle(
+        'Assinatura',
+        parent=styles['Normal'],
+        fontName='Times-Roman',
+        fontSize=12,
+        leading=20,
+        alignment=TA_CENTER,
+        textColor=colors.black,   
+        spaceBefore=40,
+    )
+
+    # ======== DADOS =========
+    data_atual = datetime.now().strftime('%d/%m/%Y')
+
+    nome_pai = associado.nome_pai or "Não informado"
+    nome_mae = associado.nome_mae or "Não informado"
+    municipio_circ = f"{associado.municipio}/{associado.uf}"
+
+    # Local com capitalização correta
+    local = associado.municipio.capitalize()
+
+    # ======== TEXTO PRINCIPAL =========
+    texto = (
+        f"Eu, <strong>{associado.user.get_full_name()}</strong>, portador(a) do CPF nº {associado.cpf}, "
+        f"inscrito(a) no RG nº {associado.rg_numero or ''}, residente no endereço "
+        f"{associado.logradouro}, nº {associado.numero}, {associado.complemento or ''}, "
+        f"{associado.bairro}, {associado.municipio}/{associado.uf}, CEP {associado.cep}, "
+        f"filho(a) de {nome_pai} e de {nome_mae}, venho requerer minha filiação à "
+        f"<strong>APAPESC – Associação dos Pescadores Artesanais Profissionais do Estado de Santa Catarina</strong>."
+
+        f"<br/><br/>Declaro ainda que exerço a atividade de pesca artesanal no município de "
+        f"<strong>{municipio_circ}</strong>, comprometendo-me a prestar informações verdadeiras e "
+        f"assumindo integral responsabilidade civil, administrativa e penal por omissões ou "
+        f"declarações inverídicas."
+    )
+
+    # Direitos (itálico)
+    texto_direitos = (
+        "<i>O associado possui como principais direitos sociais, nos termos do Estatuto Social: "
+        "a) tomar parte nas Assembleias Gerais, podendo votar e ser votado; "
+        "b) participar de todas as atividades sociais organizadas e promovidas pela APAPESC; "
+        "c) usufruir dos serviços e benefícios oferecidos pela APAPESC; "
+        "d) propor à Diretoria e ao Conselho Fiscal, por escrito, qualquer medida de interesse da APAPESC; "
+        "f) requerer, extraordinariamente, a convocação da Assembleia Geral; "
+        "g) usufruir da assistência e dos serviços jurídicos ofertados pela APAPESC, relacionados com os objetivos "
+        "e interesses coletivos da associação, nos termos de seu Estatuto Social.</i>"
+    )
+
+    # Local e data
+    data_filiacao_extenso = formatar_data_por_extenso(associado.data_filiacao)
+
+    local_data = (
+        f"E por ser expressão da verdade, firmo o presente Requerimento de Filiação.<br/>"
+        f"{local}, {data_filiacao_extenso}."
+    )
+    # Assinaturas finais
+    assinatura_associado = (
+        "_______________________________________________<br/>"
+        f"{associado.user.get_full_name()}<br/>CPF: {associado.cpf}"
+    )
+
+    assinatura_presidente = (
+        "_______________________________________________<br/>"
+        f"Assinatura do Presidente da APAPESC"
+    )
+
+    # ======== MONTAGEM DO PDF =========
+    elements = [
+        Paragraph("REQUERIMENTO DE FILIAÇÃO", style_title),
+        Spacer(1, 15),
+
+        Paragraph(texto, style_normal),
+        Spacer(1, 12),
+
+        Paragraph(texto_direitos, style_italic_small),
+        Spacer(1, 15),
+
+        Paragraph(local_data, style_data),
+        Spacer(1, 15),
+
+        Paragraph(assinatura_associado, style_assinatura),
+        Spacer(1, 30),
+
+        Paragraph(assinatura_presidente, style_assinatura),
+    ]
+
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=85,
+        leftMargin=85,
+        topMargin=100,
+        bottomMargin=20,
+    )
+
+    doc.build(elements)
+
+    buffer.seek(0)
+    overlay_pdf = PdfReader(buffer)
+    overlay_page = overlay_pdf.pages[0]
+
+    PageMerge(template_page).add(overlay_page).render()
+
+    # Salvar
+    pdf_name = f"requerimento_filiacao_{slugify(associado.user.get_full_name())}.pdf"
+    pdf_path = os.path.join(settings.MEDIA_ROOT, 'documentos', pdf_name)
+    os.makedirs(os.path.dirname(pdf_path), exist_ok=True)
+    PdfWriter(pdf_path, trailer=template_pdf).write()
+
+    pdf_url = f"{settings.MEDIA_URL}documentos/{pdf_name}"
+    query_string = urlencode({'pdf_url': pdf_url})
+    redirect_url = f"{reverse('app_automacoes:pagina_acoes', kwargs={'associado_id': associado.id})}?{query_string}"
+    return redirect(redirect_url)
+
+def formatar_data_por_extenso(data):
+    meses = [
+        "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+        "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+    ]
+    return f"{data.day} de {meses[data.month - 1]} de {data.year}"
+
+# =======================================================================================================
+
+import glob
+from PyPDF2 import PdfMerger
+
+
+LISTA_FUNCOES = [
+    gerar_declaracao_filiado,
+    gerar_declaracao_atividade_pesqueira,
+    gerar_declaracao_residencia,
+    gerar_declaracao_hipo,
+    gerar_declaracao_veracidade,
+    gerar_procuracao_juridica,
+    gerar_procuracao_administrativa,
+    gerar_autorizacao_direitos_imagem,
+    gerar_autorizacao_acesso_gov,
+    gerar_direitos_deveres,
+    gerar_requerimento_filiacao,
+]
+
+
+def listar_pdfs_existentes():
+    caminho = os.path.join(settings.MEDIA_ROOT, "documentos", "*.pdf")
+    return set(glob.glob(caminho))
+
+
+def gerar_pacote_documentos(request, associado_id):
+    associado = get_object_or_404(AssociadoModel, pk=associado_id)
+    pdfs_gerados = []
+
+    for func in LISTA_FUNCOES:
+
+        antes = listar_pdfs_existentes()
+
+        # Executa a função normal, ela gera o PDF e faz redirect (IGNORAMOS)
+        try:
+            func(request, associado_id)
+        except Exception:
+            pass  # ignorar redirects e respostas
+
+        depois = listar_pdfs_existentes()
+
+        novos = depois - antes
+        if novos:
+            pdfs_gerados.append(list(novos)[0])
+
+    # === UNIR TODOS ===
+    merger = PdfMerger()
+    for pdf in pdfs_gerados:
+        merger.append(pdf)
+
+    pdf_final = os.path.join(
+        settings.MEDIA_ROOT,
+        "documentos",
+        f"pacote_documentos_{slugify(associado.user.get_full_name())}.pdf"
+    )
+
+    merger.write(pdf_final)
+    merger.close()
+
+    pdf_url = f"{settings.MEDIA_URL}documentos/{os.path.basename(pdf_final)}"
+    query_string = urlencode({'pdf_url': pdf_url})
+
+    return redirect(
+        f"{reverse('app_automacoes:pagina_acoes', kwargs={'associado_id': associado.id})}?{query_string}"
+    )
