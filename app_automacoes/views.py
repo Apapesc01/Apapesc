@@ -2780,79 +2780,127 @@ def formatar_data_por_extenso(data):
     return f"{data.day} de {meses[data.month - 1]} de {data.year}"
 
 # =======================================================================================================
-
-import glob
+import os
 from PyPDF2 import PdfMerger
+from django.contrib import messages
+from django.utils.text import slugify
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 
+# 👇 mapeia CADA função geradora com o NOME EXATO do PDF que ela salva
+MAPEAMENTO_GERADORES = [
+    # Declaração de Filiação Apapesc
+    (
+        gerar_declaracao_filiado,
+        lambda a: f"declaracao_filiado_{a.id}_{a.user.get_full_name().replace(' ', '_')}.pdf"
+    ),
 
-LISTA_FUNCOES = [
-    gerar_declaracao_filiado,
-    gerar_declaracao_atividade_pesqueira,
-    gerar_declaracao_residencia,
-    gerar_declaracao_hipo,
-    gerar_declaracao_veracidade,
-    gerar_procuracao_juridica,
-    gerar_procuracao_administrativa,
-    gerar_autorizacao_direitos_imagem,
-    gerar_autorizacao_acesso_gov,
-    gerar_direitos_deveres,
-    gerar_requerimento_filiacao,
+    # Declaração de Ativ. Pesqueira
+    (
+        gerar_declaracao_atividade_pesqueira,
+        lambda a: f"declaracao_atividade_pesqueira_{a.id}_{a.user.get_full_name().replace(' ', '_')}.pdf"
+    ),
+
+    # Declaração de Residência
+    (
+        gerar_declaracao_residencia,
+        lambda a: f"declaracao_residencia_{a.user.get_full_name().replace(' ', '_')}.pdf"
+    ),
+
+    # Declaração de Hipossuficiência
+    (
+        gerar_declaracao_hipo,
+        lambda a: f"declaracao_hipo_{a.user.get_full_name().replace(' ', '_')}.pdf"
+    ),
+
+    # Declaração de Veracidade
+    (
+        gerar_declaracao_veracidade,
+        lambda a: f"declaracao_veracidade_{slugify(a.user.get_full_name())}.pdf"
+    ),
+
+    # Procuração Jurídica (Ad Judicia)
+    (
+        gerar_procuracao_juridica,
+        lambda a: f"procuracao_juridica_{a.user.get_full_name().replace(' ', '_')}.pdf"
+    ),
+
+    # Procuração Administrativa
+    (
+        gerar_procuracao_administrativa,
+        lambda a: f"procuracao_administrativa_{a.user.get_full_name().replace(' ', '_')}.pdf"
+    ),
+
+    # Autorização Direito e uso de Imagem
+    (
+        gerar_autorizacao_direitos_imagem,
+        lambda a: f"autorizacao_direito_imagem_{a.user.get_full_name().replace(' ', '_')}.pdf"
+    ),
+
+    # Autorização Acesso Conta Gov
+    (
+        gerar_autorizacao_acesso_gov,
+        lambda a: f"autorizacao_acesso_gov_{a.user.get_full_name().replace(' ', '_')}.pdf"
+    ),
+
+    # Regramentos Apapesc Direitos e Deveres
+    (
+        gerar_direitos_deveres,
+        lambda a: f"direitos_deveres_{a.user.get_full_name().replace(' ', '_')}.pdf"
+    ),
+
+    # Requerimento Filiação Apapesc
+    (
+        gerar_requerimento_filiacao,
+        lambda a: f"requerimento_filiacao_{slugify(a.user.get_full_name())}.pdf"
+    ),
 ]
-
-
-def listar_pdfs_existentes():
-    caminho = os.path.join(settings.MEDIA_ROOT, "documentos", "*.pdf")
-    return set(glob.glob(caminho))
 
 
 def gerar_pacote_documentos(request, associado_id):
     associado = get_object_or_404(AssociadoModel, pk=associado_id)
 
-    # 1) Disparar TODAS as funções geradoras (cada uma gera seu próprio PDF)
-    for func in LISTA_FUNCOES:
+    pdfs_paths = []
+
+    # 1) Gera cada documento com as funções que já existem
+    for func, build_name in MAPEAMENTO_GERADORES:
         try:
-            # Chama normalmente – elas geram o PDF e retornam redirect,
-            # que aqui a gente simplesmente ignora
-            func(request, associado_id)
+            # Cada função vai gerar o PDF e fazer redirect – aqui ignoramos o retorno
+            func(request, associado.id)
         except Exception:
-            # Se alguma falhar, seguimos com as demais
+            # Se alguma der erro, só pula esse doc e continua
             continue
 
-    # 2) Agora pegamos TODOS os PDFs desse associado na pasta documentos
-    slug_nome = slugify(associado.user.get_full_name())
-    padrao = os.path.join(
-        settings.MEDIA_ROOT,
-        "documentos",
-        f"*{slug_nome}*.pdf"
-    )
-    pdfs_gerados = sorted(glob.glob(padrao))
+        # 2) Monta o caminho exato do PDF que essa função gerou
+        pdf_name = build_name(associado)
+        pdf_path = os.path.join(settings.MEDIA_ROOT, "documentos", pdf_name)
 
-    # Se não achou nada, evita erro "documento sem páginas"
-    if not pdfs_gerados:
-        messages.error(request, "Não foi possível localizar os documentos gerados para este associado.")
-        return redirect('app_automacoes:pagina_acoes', associado_id=associado.id)
+        if os.path.exists(pdf_path):
+            pdfs_paths.append(pdf_path)
 
-    # 3) Unir todos em um único PDF
+    # Nenhum PDF localizado
+    if not pdfs_paths:
+        messages.error(request, "Não foi possível localizar os documentos para este associado.")
+        return redirect("app_automacoes:pagina_acoes", associado_id=associado.id)
+
+    # 3) Unir todos os PDFs em um só
     merger = PdfMerger()
-    for pdf in pdfs_gerados:
+    for pdf_path in pdfs_paths:
         try:
-            merger.append(pdf)
+            merger.append(pdf_path)
         except Exception:
-            # Se algum PDF estiver corrompido, pula
             continue
 
-    pdf_final = os.path.join(
-        settings.MEDIA_ROOT,
-        "documentos",
-        f"pacote_documentos_{slug_nome}.pdf"
-    )
-    os.makedirs(os.path.dirname(pdf_final), exist_ok=True)
-    merger.write(pdf_final)
+    output_name = f"pacote_documentos_{slugify(associado.user.get_full_name())}.pdf"
+    output_path = os.path.join(settings.MEDIA_ROOT, "documentos", output_name)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    merger.write(output_path)
     merger.close()
 
-    # 4) Monta URL e redireciona para pagina_acoes
-    pdf_url = f"{settings.MEDIA_URL}documentos/{os.path.basename(pdf_final)}"
-    query_string = urlencode({'pdf_url': pdf_url})
-    redirect_url = f"{reverse('app_automacoes:pagina_acoes', kwargs={'associado_id': associado.id})}?{query_string}"
+    # 4) Redireciona com o link do pacote
+    pdf_url = f"{settings.MEDIA_URL}documentos/{output_name}"
+    qs = urlencode({"pdf_url": pdf_url})
+    redirect_url = f"{reverse('app_automacoes:pagina_acoes', kwargs={'associado_id': associado.id})}?{qs}"
 
     return redirect(redirect_url)
