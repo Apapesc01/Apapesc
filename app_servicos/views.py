@@ -250,7 +250,6 @@ class ServicoListView(LoginRequiredMixin, GroupRequiredMixin, ListView):
 
     
 # Painel KANBAN
-
 class PainelStatusServicoView(LoginRequiredMixin, GroupRequiredMixin, View):
     template_name = 'servicos/painel_status.html'
     group_required = [

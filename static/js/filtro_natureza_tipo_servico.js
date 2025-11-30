@@ -2,6 +2,7 @@
 const tiposPorNatureza = {
     "assessoria": [
         {value: "assessoria_administrativa", label: "Assessoria Administrativa (Recursos)"},
+        {value: "assessoria_administrativa_correcao_dados", label: "Assessoria Administrativa (Correção de dados)"},
         {value: "assessoria_processo_paa", label: "Assessoria Processo PAA"},
         {value: "assessoria_processo_pronaf", label: "Assessoria Processo PRONAF"},
     ],
@@ -9,6 +10,7 @@ const tiposPorNatureza = {
         {value: "emissao_tie", label: "Emissão de TIE"},
         {value: "emissao_rgp", label: "Emissão de RGP"},
         {value: "emissao_licanca_pesca", label: "Emissão Licença Pesca"},
+        {value: "emissao_pop", label: "Emissão Carteira POP"},
     ],
     "consultoria": [
         {value: "consultoria_geral", label: "Consultoria Geral"},

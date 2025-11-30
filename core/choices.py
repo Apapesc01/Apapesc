@@ -208,6 +208,7 @@ SEGURO_DEFESO_CHOICES = [
 STATUS_BENEFICIO_CHOICES = [
     ('EM_PREPARO', 'Em Preparo'),
     ('PROTOCOLADO_EM_ANALISE', 'Protocolado, em Análise'),
+    ('EM_EXIGENCIA', 'Em Exigência'),
     ('CUMPRIDA_EXIGENCIA_EM_ANALISE', 'Exigência cumprida, em Análise'),
     ('CONCEDIDO', 'Concedido'),
     ('NEGADO', 'Negado'),
@@ -300,7 +301,7 @@ TIPO_ATO_NORMATIVO_CHOICES = [
     ('MUNICIPAL', 'Municipal'),
 ]
 
-
+# App Serviços
 NATUREZA_SERVICO_CHOICES = [
     ('assessoria', 'Assessoria'),    
     ('consultoria', 'Consultoria'),           
@@ -311,6 +312,7 @@ NATUREZA_SERVICO_CHOICES = [
 TIPO_SERVICO = [
     # Assessoria
     ('assessoria_administrativa', 'Assessoria Administrativa (Recursos)'),    
+    ('assessoria_administrativa_correcao_dados', 'Assessoria Administrativa (Correção de dados)'),# novo campo
     ('assessoria_processo_paa', 'Assessoria Processo PAA'),     
     ('assessoria_processo_pronaf', 'Assessoria Processo PRONAF'),
     
@@ -325,10 +327,10 @@ TIPO_SERVICO = [
 ]
 
 
-
 STATUS_EMISSAO_DOC = [
     ('pendente', 'Pendente'),
     ('protocolado_analise', 'Protocolado, em Análise'),
+    ('em_exigência', 'Em Exigência'),# novo campo
     ('exigencia_cumprida', 'Exigencia cumprida, em análise'),
     ('deferido', 'Documento Deferido'),
     ('indeferido', 'Documento Indeferido'),
@@ -340,6 +342,7 @@ STATUS_ASSESSORIA_PROCESSO = [
     ('agendada', 'Agendada'),
     ('processo_preparo', 'Processo em Preparo'),
     ('processo_protocolado_analise', 'Protocolado, em Análise'),
+    ('processo_em_exigência', 'Processo em Exigência'), # novo campo
     ('processo_exigencia_cumprida', 'Exigencia cumprida, em análise'),
     ('processo_deferido', 'Documento Deferido'),
     ('processo_indeferido', 'Documento Indeferido'),
@@ -355,7 +358,7 @@ STATUS_CONSULTORIA = [
     ('concluida', 'Concluída'),
     ('cancelada', 'Cancelada'),
 ]
-
+# App Despesas
 FORMA_PAGAMENTO_CHOICES = [
     ('pix', 'PIX'),
     ('credito', 'Cartão de Crédito'),
