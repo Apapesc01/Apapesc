@@ -526,8 +526,16 @@
     <!--Declarações DECLARAÇÔES-->
     <div class="tab-content" id="tab-declaracoes">
         <h2>Declarações automatizadas</h2>
+        <span>Não esqueça de conferir o documento, caso algum campo não estiver preenchido, poderá encontra a palavra None ou Não Informado/Declarado.</span>
         <div class="detail-section five-cols">  
-                
+
+            <div style="background-color:#F5F9FF;">
+                <h2>Pacote Inicial de Filiação</h2>
+                <a href="{% url 'app_automacoes:gerar_pacote_documentos' associado.id %}"
+                class="btn btn-danger mt-3">
+                Gerar Pacote de Documentos
+                </a>
+            </div>                 
             <div>
                 <h2>Declaração de Filiação Apapesc</h2>
                 <a href="{% url 'app_automacoes:gerar_declaracao_filiado' associado.id %}">
@@ -611,14 +619,7 @@
                 <a href="{% url 'app_automacoes:gerar_requerimento_filiacao' associado.id %}">
                     Gerar Documento
                 </a>
-            </div>  
-            <div>
-                <h2>Aguardando...</h2>
-<a href="{% url 'app_automacoes:gerar_pacote_documentos' associado.id %}"
-   class="btn btn-danger mt-3">
-   Gerar Pacote Completo de Documentos
-</a>
-            </div>                                                                                                                                                                                                                     
+            </div>                                                                                                                                                                                                                      
         </div>
     </div>    
 
