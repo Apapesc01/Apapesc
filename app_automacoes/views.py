@@ -2707,7 +2707,10 @@ def gerar_requerimento_filiacao(request, associado_id):
     )
 
     # Local e data
-    data_filiacao_extenso = formatar_data_por_extenso(associado.data_filiacao)
+    if associado.data_filiacao:
+        data_filiacao_extenso = formatar_data_por_extenso(associado.data_filiacao)
+    else:
+        data_filiacao_extenso = formatar_data_por_extenso(datetime.now().date())
 
     local_data = (
         f"E por ser expressão da verdade, firmo o presente Requerimento de Filiação.<br/>"
@@ -2773,11 +2776,16 @@ def gerar_requerimento_filiacao(request, associado_id):
     return redirect(redirect_url)
 
 def formatar_data_por_extenso(data):
+    if not data:
+        data = datetime.now().date()
+
     meses = [
         "janeiro", "fevereiro", "março", "abril", "maio", "junho",
         "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
     ]
+
     return f"{data.day} de {meses[data.month - 1]} de {data.year}"
+
 
 # =======================================================================================================
 import os
