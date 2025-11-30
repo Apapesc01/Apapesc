@@ -2707,14 +2707,10 @@ def gerar_requerimento_filiacao(request, associado_id):
     )
 
     # Local e data
-    if associado.data_filiacao:
-        data_filiacao_extenso = formatar_data_por_extenso(associado.data_filiacao)
-    else:
-        data_filiacao_extenso = formatar_data_por_extenso(datetime.now().date())
 
     local_data = (
         f"E por ser expressão da verdade, firmo o presente Requerimento de Filiação.<br/>"
-        f"{local}, {data_filiacao_extenso}."
+   
     )
     # Assinaturas finais
     assinatura_associado = (
@@ -2773,18 +2769,10 @@ def gerar_requerimento_filiacao(request, associado_id):
     pdf_url = f"{settings.MEDIA_URL}documentos/{pdf_name}"
     query_string = urlencode({'pdf_url': pdf_url})
     redirect_url = f"{reverse('app_automacoes:pagina_acoes', kwargs={'associado_id': associado.id})}?{query_string}"
+    
     return redirect(redirect_url)
 
-def formatar_data_por_extenso(data):
-    if not data:
-        data = datetime.now().date()
 
-    meses = [
-        "janeiro", "fevereiro", "março", "abril", "maio", "junho",
-        "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
-    ]
-
-    return f"{data.day} de {meses[data.month - 1]} de {data.year}"
 
 
 # =======================================================================================================
