@@ -2673,6 +2673,7 @@ def gerar_requerimento_filiacao(request, associado_id):
 
     nome_pai = associado.nome_pai or "Não informado"
     nome_mae = associado.nome_mae or "Não informado"
+    
     municipio_seguro = associado.municipio or "Não informado"
     uf_seguro = associado.uf or "Não informado"
     municipio_circ = f"{municipio_seguro}/{uf_seguro}"
@@ -2682,8 +2683,6 @@ def gerar_requerimento_filiacao(request, associado_id):
     else:
         local = "Município não informado"
         
-    # Local com capitalização correta
-    local = associado.municipio.capitalize()
 
     # Endereço seguro
     logradouro = associado.logradouro or "Não informado"
