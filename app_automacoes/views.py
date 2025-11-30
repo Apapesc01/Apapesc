@@ -2670,7 +2670,6 @@ def gerar_requerimento_filiacao(request, associado_id):
     )
 
     # ======== DADOS =========
-    data_atual = datetime.now().strftime('%d/%m/%Y')
 
     nome_pai = associado.nome_pai or "Não informado"
     nome_mae = associado.nome_mae or "Não informado"
@@ -2685,7 +2684,7 @@ def gerar_requerimento_filiacao(request, associado_id):
         f"inscrito(a) no RG nº {associado.rg_numero or ''}, residente no endereço "
         f"{associado.logradouro}, nº {associado.numero}, {associado.complemento or ''}, "
         f"{associado.bairro}, {associado.municipio}/{associado.uf}, CEP {associado.cep}, "
-        f"venho requerer minha filiação à "
+        f"filho(a) de {nome_pai} e de {nome_mae}, venho requerer minha filiação à "
         f"<strong>APAPESC – Associação dos Pescadores Artesanais Profissionais do Estado de Santa Catarina</strong>."
 
         f"<br/><br/>Declaro ainda que exerço a atividade de pesca artesanal no município de "
@@ -2773,7 +2772,6 @@ def gerar_requerimento_filiacao(request, associado_id):
     pdf_url = f"{settings.MEDIA_URL}documentos/{pdf_name}"
     query_string = urlencode({'pdf_url': pdf_url})
     redirect_url = f"{reverse('app_automacoes:pagina_acoes', kwargs={'associado_id': associado.id})}?{query_string}"
-    
     return redirect(redirect_url)
 
 def formatar_data_por_extenso(data):
