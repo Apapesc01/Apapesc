@@ -2807,41 +2807,52 @@ def listar_pdfs_existentes():
 
 def gerar_pacote_documentos(request, associado_id):
     associado = get_object_or_404(AssociadoModel, pk=associado_id)
-    pdfs_gerados = []
 
+    # 1) Disparar TODAS as funções geradoras (cada uma gera seu próprio PDF)
     for func in LISTA_FUNCOES:
-
-        antes = listar_pdfs_existentes()
-
-        # Executa a função normal, ela gera o PDF e faz redirect (IGNORAMOS)
         try:
+            # Chama normalmente – elas geram o PDF e retornam redirect,
+            # que aqui a gente simplesmente ignora
             func(request, associado_id)
         except Exception:
-            pass  # ignorar redirects e respostas
+            # Se alguma falhar, seguimos com as demais
+            continue
 
-        depois = listar_pdfs_existentes()
+    # 2) Agora pegamos TODOS os PDFs desse associado na pasta documentos
+    slug_nome = slugify(associado.user.get_full_name())
+    padrao = os.path.join(
+        settings.MEDIA_ROOT,
+        "documentos",
+        f"*{slug_nome}*.pdf"
+    )
+    pdfs_gerados = sorted(glob.glob(padrao))
 
-        novos = depois - antes
-        if novos:
-            pdfs_gerados.append(list(novos)[0])
+    # Se não achou nada, evita erro "documento sem páginas"
+    if not pdfs_gerados:
+        messages.error(request, "Não foi possível localizar os documentos gerados para este associado.")
+        return redirect('app_automacoes:pagina_acoes', associado_id=associado.id)
 
-    # === UNIR TODOS ===
+    # 3) Unir todos em um único PDF
     merger = PdfMerger()
     for pdf in pdfs_gerados:
-        merger.append(pdf)
+        try:
+            merger.append(pdf)
+        except Exception:
+            # Se algum PDF estiver corrompido, pula
+            continue
 
     pdf_final = os.path.join(
         settings.MEDIA_ROOT,
         "documentos",
-        f"pacote_documentos_{slugify(associado.user.get_full_name())}.pdf"
+        f"pacote_documentos_{slug_nome}.pdf"
     )
-
+    os.makedirs(os.path.dirname(pdf_final), exist_ok=True)
     merger.write(pdf_final)
     merger.close()
 
+    # 4) Monta URL e redireciona para pagina_acoes
     pdf_url = f"{settings.MEDIA_URL}documentos/{os.path.basename(pdf_final)}"
     query_string = urlencode({'pdf_url': pdf_url})
+    redirect_url = f"{reverse('app_automacoes:pagina_acoes', kwargs={'associado_id': associado.id})}?{query_string}"
 
-    return redirect(
-        f"{reverse('app_automacoes:pagina_acoes', kwargs={'associado_id': associado.id})}?{query_string}"
-    )
+    return redirect(redirect_url)
