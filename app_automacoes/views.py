@@ -2678,12 +2678,24 @@ def gerar_requerimento_filiacao(request, associado_id):
     # Local com capitalização correta
     local = associado.municipio.capitalize()
 
+    # Endereço seguro
+    logradouro = associado.logradouro or "Não informado"
+    numero = associado.numero or "Não informado"
+    complemento = associado.complemento or ""
+    bairro = associado.bairro or "Não informado"
+    municipio_seguro = associado.municipio or "Não informado"
+    uf_seguro = associado.uf or "Não informado"
+    cep = associado.cep or "Não informado"
+
+    endereco_completo = (
+        f"{logradouro}, nº {numero}, {complemento}, "
+        f"{bairro}, {municipio_seguro}/{uf_seguro}, CEP {cep}"
+    )
+
     # ======== TEXTO PRINCIPAL =========
     texto = (
         f"Eu, <strong>{associado.user.get_full_name()}</strong>, portador(a) do CPF nº {associado.cpf}, "
-        f"inscrito(a) no RG nº {associado.rg_numero or ''}, residente no endereço "
-        f"{associado.logradouro}, nº {associado.numero}, {associado.complemento or ''}, "
-        f"{associado.bairro}, {associado.municipio}/{associado.uf}, CEP {associado.cep}, "
+        f"inscrito(a) no RG nº {associado.rg_numero or ''}, residente no endereço: {endereco_completo}, "
         f"filho(a) de {nome_pai} e de {nome_mae}, venho requerer minha filiação à "
         f"<strong>APAPESC – Associação dos Pescadores Artesanais Profissionais do Estado de Santa Catarina</strong>."
 
