@@ -2685,7 +2685,7 @@ def gerar_requerimento_filiacao(request, associado_id):
         f"inscrito(a) no RG nº {associado.rg_numero or ''}, residente no endereço "
         f"{associado.logradouro}, nº {associado.numero}, {associado.complemento or ''}, "
         f"{associado.bairro}, {associado.municipio}/{associado.uf}, CEP {associado.cep}, "
-        f"filho(a) de {nome_pai} e de {nome_mae}, venho requerer minha filiação à "
+        f"venho requerer minha filiação à "
         f"<strong>APAPESC – Associação dos Pescadores Artesanais Profissionais do Estado de Santa Catarina</strong>."
 
         f"<br/><br/>Declaro ainda que exerço a atividade de pesca artesanal no município de "
@@ -2707,10 +2707,14 @@ def gerar_requerimento_filiacao(request, associado_id):
     )
 
     # Local e data
+    if associado.data_filiacao:
+        data_filiacao_extenso = formatar_data_por_extenso(associado.data_filiacao)
+    else:
+        data_filiacao_extenso = formatar_data_por_extenso(datetime.now().date())
 
     local_data = (
         f"E por ser expressão da verdade, firmo o presente Requerimento de Filiação.<br/>"
-   
+        f"{local}, {data_filiacao_extenso}."
     )
     # Assinaturas finais
     assinatura_associado = (
@@ -2772,7 +2776,16 @@ def gerar_requerimento_filiacao(request, associado_id):
     
     return redirect(redirect_url)
 
+def formatar_data_por_extenso(data):
+    if not data:
+        data = datetime.now().date()
 
+    meses = [
+        "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+        "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+    ]
+
+    return f"{data.day} de {meses[data.month - 1]} de {data.year}"
 
 
 # =======================================================================================================
