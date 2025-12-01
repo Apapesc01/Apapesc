@@ -302,7 +302,7 @@ class AssociadoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
 
         context['controle_defeso'] = controle_defeso
         context['defeso_form'] = defeso_form
-        context['defeso_status_elegivel'] = associado.status in ['associado_lista_ativo', 'associado_lista_aposentado']
+        context['defeso_status_elegivel'] = associado.status in ['associado_lista_ativo']
 
         # Listar apenas comprovantes de protocolo do defeso
         content_type = ContentType.objects.get_for_model(associado)
@@ -311,6 +311,7 @@ class AssociadoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
             proprietario_object_id=associado.id,
             tipo__nome__icontains="032_Comprovante_Protocolo_Defeso"
         ).select_related('tipo')
+        
         context['documentos_protocolo_up'] = documentos_protocolo_up
     
         context['servicos'] = ServicoModel.objects.filter(associado=self.object)
@@ -485,7 +486,7 @@ class AssociadoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
         # Só permite se clicar no botão do defeso
         if 'salvar_defeso' in request.POST:
             # Regra: só Ativo ou Aposentado podem editar/aplicar defeso
-            status_ok = associado.status in ['associado_lista_ativo', 'associado_lista_aposentado']
+            status_ok = associado.status in ['associado_lista_ativo']
 
             if not status_ok:
                 messages.error(request, "Este associado não é elegível para operações de Seguro Defeso (status não permitido).")
