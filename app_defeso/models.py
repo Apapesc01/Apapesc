@@ -200,7 +200,7 @@ class SeguroDefesoBeneficioModel(models.Model):
         Ao criar um Seguro Defeso, aplica para todos os associados ativos e que recebem seguro defeso.
         """
         associados = AssociadoModel.objects.filter(
-            status__in=['associado_lista_ativo', 'associado_lista_aposentado'],  # ajuste se necessário
+            status__in=['associado_lista_ativo'],  # ajuste se necessário
             recebe_seguro='Recebe',
             municipio_circunscricao__uf=self.estado
         )
