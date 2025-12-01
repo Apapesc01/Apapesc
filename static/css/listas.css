@@ -74,6 +74,22 @@
 .table-list tbody td:last-child a {
     margin-right: 6px;
 }
+.badge {
+    padding: 2px 6px;          /* menor */
+    border-radius: 4px;        /* mais discreto */
+    font-size: 11px;           /* menor */
+    font-weight: 600;
+    display: inline-block;
+    color: #333;               /* texto mais suave */
+}
+
+/* Cores suaves (pastel) */
+.badge-green  { background: #d4f7df; }   /* verde bem claro */
+.badge-blue   { background: #d9eaff; }   /* azul suave */
+.badge-orange { background: #ffe8cc; }   /* laranja suave */
+.badge-purple { background: #f2e6ff; }   /* lilás suave */
+.badge-gray   { background: #eeeeee; }   /* cinza claro */
+.badge-red    { background: #ffd6d6; }   /* vermelho claro */
 
 /* Responsividade simples: Scroll horizontal em telas muito pequenas */
 @media (max-width: 768px) {

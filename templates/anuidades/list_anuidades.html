@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load moeda %}
 
 {% block title %}Anuidades Lançadas{% endblock title%}
 
@@ -51,7 +52,7 @@
                 <td>{{ anuidade.valor_anuidade }}</td>
                 <td>{{ anuidade.data_criacao|date:"d/m/Y H:i" }}</td>
                 <td>{{ anuidade.qtd_anuidades }}</td>
-                <td>{{ anuidade.valor_total_anuidades|floatformat:2 }}</td>
+                <td>{{ anuidade.valor_total_anuidades|moeda_br }}</td>
                 <td>
                     <a href="#" title="Editar"><span class="material-icons icon-edit">edit</span></a>
                     <a href="#" title="Excluir"><span class="material-icons icon-delete">delete</span></a>

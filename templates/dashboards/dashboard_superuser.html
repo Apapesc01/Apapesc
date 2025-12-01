@@ -2,6 +2,8 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}SuperDash {% endblock %}
+{% load moeda %}
+
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/associado.css' %}"> <!-- Cards-->
@@ -104,7 +106,7 @@
                     </div>
                     <div class="card info">
                         <h3>Valores Aplicados</h3>
-                        <p class="card-value">{{ total_valor_aplicado|floatformat:2 }}</p>
+                        <p class="card-value">{{ total_valor_aplicado|moeda_br }}</p>
                     </div>
                 </div>
             </header>
@@ -135,11 +137,11 @@
                 <div class="section-content">
                    <div class="card warning">
                         <h3>🔖 Descontos</h3>
-                        <p class="card-value">{{ total_descontos_concedidos|floatformat:2 }}</p>
+                        <p class="card-value">{{ total_descontos_concedidos|moeda_br }}</p>
                     </div>                    
                     <div class="card positive">
                         <h3>💰 Valor Arrecado</h3>
-                        <p class="card-value">{{ valor_anuidades_pagas|floatformat:2 }}</p>
+                        <p class="card-value">{{ valor_anuidades_pagas|moeda_br }}</p>
                     </div>
                     <div class="card positive">
                         <h3>✅ Anuidades Pagas</h3>
@@ -151,7 +153,7 @@
                     </div>
                     <div class="card negative">
                         <h3>📥 À Receber</h3>
-                        <p class="card-value">{{ valor_anuidades_aberto|floatformat:2 }}</p>
+                        <p class="card-value">{{ valor_anuidades_aberto|moeda_br }}</p>
                     </div>                
                 </div>
             </section>
@@ -171,9 +173,9 @@
                         {% for item in dados_por_ano %}
                         <tr>
                             <td>{{ item.ano }}</td>
-                            <td>R$ {{ item.valor_unitario|floatformat:2 }}</td>
+                            <td>R$ {{ item.valor_unitario|moeda_br }}</td>
                             <td>{{ item.qtd_aplicadas }}</td>
-                            <td>R$ {{ item.valor_total_ano|floatformat:2 }}</td>
+                            <td>R$ {{ item.valor_total_ano|moeda_br }}</td>
                         </tr>
                         {% empty %}
                         <tr><td colspan="4">Nenhuma anuidade lançada.</td></tr>

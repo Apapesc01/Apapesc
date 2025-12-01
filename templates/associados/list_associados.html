@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load associado_extras %}
 
 {% block title %}LG Associados{% endblock title%}
 
@@ -63,6 +64,7 @@
         </div>
     </form><br>
 
+
     <table class="table-list">
         <thead>
             <tr>
@@ -70,6 +72,7 @@
                 <th>CPF</th>
                 <th>Gov</th>
                 <th>Cel</th>
+                <th>Status</th>
                 <th>Circunscrição</th>
                 <th>Ações</th>
             </tr>
@@ -105,7 +108,12 @@
                             <i class="material-icons" style="font-size:14px;">content_copy</i>
                         </button>
                     </div>
-                </td>                
+                </td>  
+                <td data-label="Status">
+                    <span class="badge {{ associado.status|status_cor }}">
+                        {{ associado.status|status_resumido }}
+                    </span>
+                </td>                              
                 <td>{{associado.municipio_circunscricao}}</td>
                 <td>
                     <a href="{% url 'app_associados:single_associado' associado.pk %}" title="Ver"><span class="material-icons icon-view">visibility</span></a>
