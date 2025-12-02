@@ -165,6 +165,28 @@ class AssociadoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
         context['status_documentos_up'] = status_documentos_up
         # Documentos relacionados ao associado
         context['documentos_up'] = documentos_up 
+        
+        DOCS_OBRIGATORIOS = {
+            "001": "001_Autodeclaracao_Pesca",
+            "002": "002_Autorizacao_Acesso_GOV_ASS_associado",
+            "003": "003_Autorizacao_Imagem_ASS_associado",
+            "014": "014_Declaracao_Veracidade_ASS_associado",
+            "019": "019_Ficha_Requer_Filiacao_ASS_associado",
+        }        
+        # --- MAPA DOS DOCUMENTOS OBRIGATÓRIOS  Segurança Apapesc---
+        # pega uploads do associado
+        uploads = UploadsDocs.objects.filter(
+            proprietario_object_id=associado.id,
+            proprietario_content_type__model="associadomodel"
+        ).values_list("tipo__nome", flat=True)
+
+        # cria mapa: {"001": True, "002": False, ...}
+        docs_status = {}
+        for codigo, nome in DOCS_OBRIGATORIOS.items():
+            docs_status[codigo] = any(nome in (up or "") for up in uploads)
+
+        context["docs_obrigatorios"] = docs_status
+              
         # ANUIDADES
         ultimas_anuidades_qs = AnuidadeAssociado.objects.filter(
             associado=associado

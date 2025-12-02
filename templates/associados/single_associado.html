@@ -81,6 +81,7 @@
     <!--Vínculos PRINCIPAL-->
     <div class="tab-content active" id="tab-principal">
         <div class="detail-section three-cols">
+
             <div>
                 <h2>Vínculos</h2>
                 <p><strong>Associação:</strong> {{associado.associacao.nome_fantasia}}</p>
@@ -211,6 +212,16 @@
                 </div>
                 {% endif %}
           
+                <div>
+                    <h4>Documentos p/ Apapesc</h4>
+                    <small>Autodeclaração; Acesso Gov; Imagem, Veracidade e Req. Filiação </small>
+                    {% for cod, status in docs_obrigatorios.items %}
+                        <span class="doc-circle {% if status %}doc-ok{% else %}doc-bad{% endif %}">
+                            {{ cod }}
+                        </span>
+                    {% endfor %}
+                    
+                </div>
             </div>  
 
             <div>

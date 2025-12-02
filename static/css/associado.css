@@ -298,3 +298,24 @@
   }
 }
 
+
+.doc-circle {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    margin-right: 6px;
+    font-weight: bold;
+    color: white;
+}
+
+.doc-ok {
+    background-color: #4CAF50; /* verde suave */
+}
+
+.doc-bad {
+    background-color: #E53935; /* vermelho suave */
+}
