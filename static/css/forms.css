@@ -339,3 +339,19 @@
 .btn-doc-upload:hover {
   background-color: #ccfbf1;
 }
+
+.select-dez {
+    background-color: #b7f8b7 !important;
+}
+
+.select-jan {
+    background-color: #fbe987 !important;
+}
+
+.select-fev {
+    background-color: #fdd0f9 !important;
+}
+
+.select-mar {
+    background-color: #f7a6a5 !important;
+}

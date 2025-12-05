@@ -3,10 +3,10 @@ version: '3.9'
 services:
   db:
     image: postgres:16
-    container_name: dataApapescLocal
+    container_name: dataApapescLocal_bk_1
     restart: unless-stopped
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_bk_1:/var/lib/postgresql/data
     env_file:
       - .env
     environment:
@@ -31,4 +31,4 @@ services:
       - db
 
 volumes:
-  postgres_data:
+  postgres_data_bk_1:

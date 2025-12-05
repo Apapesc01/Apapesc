@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{% static 'css/associado.css' %}"> <!-- Cards-->
     <link rel="stylesheet" href="{% static 'css/dash_superuser.css' %}"> 
     <link rel="stylesheet" href="{% static 'css/tabs.css' %}">
+    <link rel="stylesheet" href="{% static 'css/charts.css' %}">
     <link rel="stylesheet" href="{% static 'css/listas.css' %}">
     <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
     <link rel="stylesheet" href="{% static 'css/responsive_patch.css' %}">
@@ -96,9 +97,18 @@
         </div>
 
         <div class="tab-content" id="tab-defesosgraficosdash">
+            <h1>Defeso</h1>
             <div class="detail-section three-cols">
-                <h1>Defeso</h1>
+
+                {% include 'components/graficos/defeso_graficos/chart_especies.html' %}
+                {% include 'components/graficos/defeso_graficos/chart_estados.html' %}
+                {% include 'components/graficos/defeso_graficos/chart_anos.html' %}
+                {% include 'components/graficos/defeso_graficos/chart_status_beneficio.html' %}
+                {% include 'components/graficos/defeso_graficos/chart_concedido_negado.html' %}
+                {% include 'components/graficos/defeso_graficos/chart_status_processamento.html' %}
+        
             </div>
+
         </div>
 
         <div class="tab-content" id="tab-despesasgraficosdash">
@@ -108,14 +118,14 @@
             </section>
 
         </div>            
-        </div>  
-        
-        
 
     </div>
 
 {% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'js/tabs.js' %}"></script>
+
+    <script src="{% static 'js/graficos_defeso.js' %}"></script>
 
 {% endblock %}
 {% endblock %}

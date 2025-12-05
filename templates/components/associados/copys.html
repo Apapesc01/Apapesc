@@ -1,14 +1,14 @@
-        <div >
-            <div class="identidade-grid" style="background-color:rgb(247, 247, 247); padding: 20px; border-radius: 8px;">
+        <div>
+            <div class="identidade-grid" style="background-color:rgba(248, 252, 253, 1); padding: 20px; border-radius: 8px;">
                 <h2>Identidade CIN / CPF</h2>
                 <div class="copy-wrapper">
-                    🗂️<p id="cpf-{{ associado.pk }}"><strong>CPF:</strong> {{ associado.cpf }}</p>
+                    🗂️<p id="cpf-{{ associado.pk }}" style="color:red;"><strong>CPF:</strong> {{ associado.cpf }}</p>
                     <button onclick="copyToClipboard('cpf-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
                         <i class="material-icons">content_copy</i>
                     </button>
                 </div>           
                 <div class="copy-wrapper">
-                    ⚠️<p id="senha_gov-{{ associado.pk }}"><strong>Senha Gov:</strong> {{ associado.senha_gov }}</p>
+                    ⚠️<p id="senha_gov-{{ associado.pk }}" style="color:red;"><strong>Senha Gov:</strong> {{ associado.senha_gov }}</p>
                     <button onclick="copySenhas('senha_gov-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
                         <i class="material-icons">content_copy</i>
                     </button>
@@ -56,29 +56,8 @@
 
         <div class="detail-section three-cols">
             <div>
-                <h2>Carteira Motorista</h2>
-                <div class="copy-wrapper">
-                    <p id="cnh-{{ associado.pk }}"><strong>No Registro:</strong> {{ associado.cnh }}</p>
-                    <button onclick="copyToClipboard('cnh-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número Registro">
-                        <i class="material-icons">content_copy</i>
-                    </button>
-                </div>                
-                <div class="copy-wrapper">
-                    <p id="cnh_data_emissao-{{ associado.pk }}"><strong>Data Emissão:</strong> {{ associado.cnh_data_emissao|date:"d/m/Y" }}</p>
-                    <button onclick="copyToClipboard('cnh_data_emissao-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Data Emissão">
-                        <i class="material-icons">content_copy</i>
-                    </button>
-                </div>
-                <div class="copy-wrapper">
-                    <p id="cnh_data_validade-{{ associado.pk }}"><strong>Data Validade:</strong> {{ associado.cnh_data_validade|date:"d/m/Y" }}</p>
-                    <button onclick="copyToClipboard('cnh_data_validade-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Data Validade">
-                        <i class="material-icons">content_copy</i>
-                    </button>
-                </div>
-                <p><strong>UF:</strong> {{ associado.cnh_uf }}</p>
-            </div>
-            <div>
-                <h2>Carteira de Pescador</h2>
+                
+                <h2>RGP e End</h2>
                 <div class="copy-wrapper">
                     <p id="rgp-{{ associado.pk }}"><strong>RGP:</strong> {{ associado.rgp }}</p>
                     <button onclick="copyToClipboard('rgp-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número RGP">
@@ -102,31 +81,23 @@
                     <button onclick="copyToClipboard('primeiro_registro-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Primeiro Registro">
                         <i class="material-icons">content_copy</i>
                     </button>
-                </div>                
-            </div>
+                </div>   
+                <!--End-->
+                <div class="copy-wrapper">
+                    <p id="cep-{{ associado.pk }}"><strong>CEP:</strong> {{ associado.cep }}</p>
+                    <button onclick="copyToClipboard('cep-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>  
+                <div class="copy-wrapper">
+                    <p id="end-{{ associado.pk }}"><strong>End:</strong> {{ associado.logradouro }},
+                        {{ object.associado.numero }}, {{ associado.complemento }}, {{ associado.municipio }}, {{ associado.uf }}</p>
+                    <button onclick="copyToClipboard('end-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                 
+            </div>  
 
-            <div>
-                <h2>Carteira de Trabalho</h2>
-                <div class="copy-wrapper">
-                    <p id="ctps-{{ associado.pk }}"><strong>No Registro:</strong> {{ associado.ctps }}</p>
-                    <button onclick="copyToClipboard('ctps-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número CTPS">
-                        <i class="material-icons">content_copy</i>
-                    </button>
-                </div>                
-                <div class="copy-wrapper">
-                    <p id="ctps_data_emissao-{{ associado.pk }}"><strong>Data Emissão:</strong> {{ associado.ctps_data_emissao|date:"d/m/Y" }}</p>
-                    <button onclick="copyToClipboard('ctps_data_emissao-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Data Emissão">
-                        <i class="material-icons">content_copy</i>
-                    </button>
-                </div>                
-                <div class="copy-wrapper">
-                    <p id="ctps_serie-{{ associado.pk }}"><strong>No Série:</strong> {{ associado.ctps_serie }}</p>
-                    <button onclick="copyToClipboard('ctps_serie-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número Série">
-                        <i class="material-icons">content_copy</i>
-                    </button>
-                </div>                      
-                <p><strong>UF:</strong> {{ associado.ctps_uf }}</p>
-            </div>
             <div>
                 <h2>Documentos Cidadania</h2>
                 <div class="copy-wrapper">
@@ -160,6 +131,55 @@
                     </button>
                 </div>               
             </div>
+
+
+            <div>
+                <h2>Carteira de Trabalho</h2>
+                <div class="copy-wrapper">
+                    <p id="ctps-{{ associado.pk }}"><strong>No Registro:</strong> {{ associado.ctps }}</p>
+                    <button onclick="copyToClipboard('ctps-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número CTPS">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                
+                <div class="copy-wrapper">
+                    <p id="ctps_data_emissao-{{ associado.pk }}"><strong>Data Emissão:</strong> {{ associado.ctps_data_emissao|date:"d/m/Y" }}</p>
+                    <button onclick="copyToClipboard('ctps_data_emissao-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Data Emissão">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                
+                <div class="copy-wrapper">
+                    <p id="ctps_serie-{{ associado.pk }}"><strong>No Série:</strong> {{ associado.ctps_serie }}</p>
+                    <button onclick="copyToClipboard('ctps_serie-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número Série">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                      
+                <p><strong>UF:</strong> {{ associado.ctps_uf }}</p>
+            </div>
+
+            <div>
+                <h2>Carteira Motorista</h2>
+                <div class="copy-wrapper">
+                    <p id="cnh-{{ associado.pk }}"><strong>No Registro:</strong> {{ associado.cnh }}</p>
+                    <button onclick="copyToClipboard('cnh-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número Registro">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                
+                <div class="copy-wrapper">
+                    <p id="cnh_data_emissao-{{ associado.pk }}"><strong>Data Emissão:</strong> {{ associado.cnh_data_emissao|date:"d/m/Y" }}</p>
+                    <button onclick="copyToClipboard('cnh_data_emissao-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Data Emissão">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <div class="copy-wrapper">
+                    <p id="cnh_data_validade-{{ associado.pk }}"><strong>Data Validade:</strong> {{ associado.cnh_data_validade|date:"d/m/Y" }}</p>
+                    <button onclick="copyToClipboard('cnh_data_validade-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Data Validade">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <p><strong>UF:</strong> {{ associado.cnh_uf }}</p>
+            </div>
+
+
             <div>
                 <h2>Contato</h2>
                 <div class="copy-wrapper">

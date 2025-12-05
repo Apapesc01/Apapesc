@@ -43,7 +43,9 @@
 
     <form method="post" enctype="multipart/form-data" class="form-group">
         {% csrf_token %}
-        <div class="form-grid grid-4-cols">
+        <div class="form-grid grid-5-cols">
+
+      
             <!-- Nome do Associado (readonly) -->
             <div class="form-group">
                 <label>Nome Completo:</label>
@@ -51,6 +53,10 @@
                     {{ object.associado.user.get_full_name }}
                 </div>
             </div>
+            <div class="form-group">
+                {{ form.dar_entrada.label_tag }}
+                {{ form.dar_entrada }}
+            </div>               
             <!-- Data de Soliciatação -->
             <div class="form-group">
                 {{ form.data_solicitacao.label_tag }}
@@ -70,6 +76,17 @@
                 {{ form.status_pedido }}
             </div>                
         </div>
+        <!-- Anotações -->
+        <div class="form-group">
+            {{ form.anotacoes.label_tag }}
+            {{ form.anotacoes }}
+        </div>
+
+        <style>
+        #id_anotacoes {
+            color: red !important;
+        }
+        </style>
 
         <!-- Motivo Exigência -->
         <div class="form-group">
@@ -81,11 +98,7 @@
             {{ form.motivo_negativa.label_tag }}
             {{ form.motivo_negativa }}
         </div>
-        <!-- Anotações -->
-        <div class="form-group">
-            {{ form.anotacoes.label_tag }}
-            {{ form.anotacoes }}
-        </div>
+
         <!-- Resultado Final -->
         <div class="form-group">
             {{ form.resultado_final.label_tag }}
@@ -173,6 +186,23 @@
             </div>
         </div>
 
+        <!-- RGP -->
+        <div class="card-doc">
+            <h3>Carteira de Pescador</h3>
+            <div class="copy-wrapper">
+                <p id="rgp-{{ associado.pk }}"><strong>RGP:</strong> {{ object.associado.rgp }}</p>
+                <button onclick="copyToClipboard('rgp-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número RGP">
+                    <i class="material-icons">content_copy</i>
+            </button>
+            </div>
+            <div class="copy-wrapper">
+                <p id="primeiro_registro-{{ associado.pk }}"><strong>Primeiro Registro:</strong> {{ object.associado.primeiro_registro|date:"d/m/Y" }}</p>
+                <button onclick="copyToClipboard('primeiro_registro-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Primeiro Registro">
+                    <i class="material-icons">content_copy</i>
+                </button>
+            </div>
+        </div>        
+
         <!-- CNH -->
         <div class="card-doc">
             <h3>Carteira Motorista</h3>
@@ -191,22 +221,7 @@
 
         </div>
 
-        <!-- RGP -->
-        <div class="card-doc">
-            <h3>Carteira de Pescador</h3>
-            <div class="copy-wrapper">
-                <p id="rgp-{{ associado.pk }}"><strong>RGP:</strong> {{ object.associado.rgp }}</p>
-                <button onclick="copyToClipboard('rgp-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número RGP">
-                    <i class="material-icons">content_copy</i>
-            </button>
-            </div>
-            <div class="copy-wrapper">
-                <p id="primeiro_registro-{{ associado.pk }}"><strong>Primeiro Registro:</strong> {{ object.associado.primeiro_registro|date:"d/m/Y" }}</p>
-                <button onclick="copyToClipboard('primeiro_registro-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Primeiro Registro">
-                    <i class="material-icons">content_copy</i>
-                </button>
-            </div>
-        </div>
+
         <!-- Cidadania -->
         <div class="card-doc">
             <h3>Documentos Cidadania</h3>
@@ -273,23 +288,23 @@
             <h3>Outros</h3>
 
             <div class="copy-wrapper">
-            <p id="celular-{{ associado.pk }}"><strong>CELUAR:</strong> {{ object.associado.celular }}</p>
-            <button onclick="copyToClipboard('celular-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
-                <i class="material-icons">content_copy</i>
-            </button>
+                <p id="celular-{{ associado.pk }}"><strong>CELUAR:</strong> {{ object.associado.celular }}</p>
+                <button onclick="copyToClipboard('celular-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
+                    <i class="material-icons">content_copy</i>
+                </button>
             </div>
             <div class="copy-wrapper">
-            <p id="cep-{{ associado.pk }}"><strong>CEP:</strong> {{ object.associado.cep }}</p>
-            <button onclick="copyToClipboard('cep-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
-                <i class="material-icons">content_copy</i>
-            </button>
+                <p id="cep-{{ associado.pk }}"><strong>CEP:</strong> {{ object.associado.cep }}</p>
+                <button onclick="copyToClipboard('cep-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
+                    <i class="material-icons">content_copy</i>
+                </button>
             </div>  
             <div class="copy-wrapper">
-            <p id="end-{{ associado.pk }}"><strong>End:</strong> {{ object.associado.logradouro }},
-                {{ object.associado.numero }}, {{ object.associado.complemento }}, {{ object.associado.municipio }}, {{ object.associado.uf }}</p>
-            <button onclick="copyToClipboard('end-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
-                <i class="material-icons">content_copy</i>
-            </button>
+                <p id="end-{{ associado.pk }}"><strong>End:</strong> {{ object.associado.logradouro }},
+                    {{ object.associado.numero }}, {{ object.associado.complemento }}, {{ object.associado.municipio }}, {{ object.associado.uf }}</p>
+                <button onclick="copyToClipboard('end-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
+                    <i class="material-icons">content_copy</i>
+                </button>
             </div>                        
         </div>
     </div>
@@ -345,6 +360,7 @@
 {% block extra_js %}
     <script src="{% static 'js/copy_to_clipboard.js' %}"></script>
     <script src="{% static 'js/copy_senhas.js' %}"></script>
+    <script src="{% static 'js/dar_entrada.js' %}"></script>
 {% endblock %}
 
 {% endblock %}

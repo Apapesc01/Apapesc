@@ -296,13 +296,13 @@
             <div>
                 <h2>Acesso</h2>
                 <div class="copy-wrapper">
-                    🗂️<p id="cpf-{{ associado.pk }}"><strong>CPF:</strong> {{ associado.cpf }}</p>
+                    🗂️<p id="cpf-{{ associado.pk }}" style="color:red;"><strong>CPF:</strong> {{ associado.cpf }}</p>
                     <button onclick="copyToClipboard('cpf-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
                         <i class="material-icons">content_copy</i>
                     </button>
                 </div>
                 <div class="copy-wrapper">
-                    ⚠️ <p id="senha_gov-{{ associado.pk }}"><strong>Senha Gov:</strong> {{ associado.senha_gov }}</p>
+                    ⚠️ <p id="senha_gov-{{ associado.pk }}" style="color:red;"><strong>Senha Gov:</strong> {{ associado.senha_gov }}</p>
                     <button onclick="copySenhas('senha_gov-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
                         <i class="material-icons">content_copy</i>
                     </button>
@@ -710,7 +710,12 @@
                 {% csrf_token %}
                 
                 {% if defeso_form %}
-                <div class="form-grid grid-2-cols">
+                <div class="form-grid grid-3-cols">
+                    <div class="form-group">
+                        {{ defeso_form.dar_entrada.label_tag }}
+                        {{ defeso_form.dar_entrada }}
+                    </div>    
+
                     <div class="form-group">
                     {{ defeso_form.numero_protocolo.label_tag }}
                     {{ defeso_form.numero_protocolo }}
@@ -736,6 +741,18 @@
                     </div>
 
                     <div class="form-group" style="grid-column:1 / -1;">
+                        {{ defeso_form.anotacoes.label_tag }}
+                        {{ defeso_form.anotacoes }}
+                        {{ defeso_form.anotacoes.errors }}
+                    </div>
+
+                    <style>
+                    #id_anotacoes {
+                        color: red !important;
+                    }
+                    </style>   
+
+                    <div class="form-group" style="grid-column:1 / -1;">
                     {{ defeso_form.motivo_exigencia.label_tag }}
                     {{ defeso_form.motivo_exigencia }}
                     {{ defeso_form.motivo_exigencia.errors }}
@@ -745,13 +762,8 @@
                     {{ defeso_form.motivo_negativa.label_tag }}
                     {{ defeso_form.motivo_negativa }}
                     {{ defeso_form.motivo_negativa.errors }}
-                    </div>
+                    </div>                
 
-                    <div class="form-group" style="grid-column:1 / -1;">
-                    {{ defeso_form.anotacoes.label_tag }}
-                    {{ defeso_form.anotacoes }}
-                    {{ defeso_form.anotacoes.errors }}
-                    </div>
 
                     <div class="form-group" style="grid-column:1 / -1;">
                     {{ defeso_form.resultado_final.label_tag }}
@@ -889,6 +901,7 @@
     <script src="{% static 'js/copy_senhas.js' %}"></script>
     <script src="{% static 'js/content_associados.js' %}"></script>
     <script src="{% static 'js/config_content_associados.js' %}"></script>
+    <script src="{% static 'js/dar_entrada.js' %}"></script>
 {% endblock %}
 
 {% endblock %}

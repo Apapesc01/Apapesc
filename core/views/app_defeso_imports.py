@@ -23,4 +23,4 @@ from app_defeso.forms import (
     )
 
 from app_uploads.models import UploadsDocs
-from core.choices import STATUS_BENEFICIO_CHOICES
+from core.choices import STATUS_BENEFICIO_CHOICES, DAR_ENTRADA_DEFESO_CHOICES

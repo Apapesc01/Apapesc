@@ -300,7 +300,12 @@ TIPO_ATO_NORMATIVO_CHOICES = [
     ('ESTADUAL', 'Estadual'),
     ('MUNICIPAL', 'Municipal'),
 ]
-
+DAR_ENTRADA_DEFESO_CHOICES = [
+    ('DEZ', 'Dezembro'),
+    ('JAN', 'Janeiro'),
+    ('FEV', 'Fevereiro'),
+    ('MAR', 'Março'),
+]
 # App Serviços
 NATUREZA_SERVICO_CHOICES = [
     ('assessoria', 'Assessoria'),    

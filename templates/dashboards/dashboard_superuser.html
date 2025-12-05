@@ -220,8 +220,10 @@
                 </div>
             </section>
         </div>
+
         <div class="tab-content" id="tab-defesos">
-            <div class="detail-section three-cols">
+
+            <div class="detail-section two-cols">
                 <div class="links-fasts">
                     <h2>Formulários de Criação</h2>
 
@@ -248,16 +250,24 @@
                         <a href="{% url 'app_defeso:create_instrucao_normativa' %}" class="btn-action">Nova</a>
                     </p>
                 </div>
-
                 <div>
-                    <h2>Benefícios</h2>
-
-                </div> 
-                <div>
-                    <h2>Dados</h2>
-
+                {% include 'components/graficos/defeso_graficos/chart_concedido_negado.html' %}
                 </div> 
             </div>
+            <div class="detail-section three-cols">
+                <div>
+                {% include 'components/graficos/defeso_graficos/chart_status_beneficio.html' %}
+                </div> 
+
+                <div>
+                {% include 'components/graficos/defeso_graficos/chart_status_processamento.html' %}
+                </div> 
+
+                <div>
+                {% include 'components/graficos/defeso_graficos/chart_estados.html' %}
+                </div> 
+            </div>
+
             {% include 'components/defesos/listas_dados_defesos.html'%}
         </div>
 
@@ -280,7 +290,10 @@
     </div>
 
 {% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'js/tabs.js' %}"></script>
+
+    <script src="{% static 'js/graficos_defeso.js' %}"></script>
 
 {% endblock %}
 {% endblock %}

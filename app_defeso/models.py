@@ -14,7 +14,8 @@ from core.choices import(
     UF_CHOICES,
     TIPO_ATO_NORMATIVO_CHOICES,
     STATUS_BENEFICIO_CHOICES,
-    STATUS_PROCESSAMENTO
+    STATUS_PROCESSAMENTO,
+    DAR_ENTRADA_DEFESO_CHOICES
 )
 
 
@@ -211,6 +212,7 @@ class SeguroDefesoBeneficioModel(models.Model):
                     associado=associado,
                     beneficio=self,
                     status_pedido='EM_PREPARO',
+                    dar_entrada='DEZ',
                 )
                 total_criados += 1
         print(f"✅ {total_criados} controles criados para o benefício {self}")
@@ -256,8 +258,18 @@ class ControleBeneficioModel(models.Model):
     processada = models.BooleanField(default=False)  # (se ainda não tem, recomendo adicionar!)
     rodada = models.PositiveIntegerField(default=1)
     
+    dar_entrada = models.CharField(
+        max_length=3,
+        choices=DAR_ENTRADA_DEFESO_CHOICES,
+        default='DEZ',
+        blank=True,
+        null=True,
+        help_text="Mês em que foi dada a entrada do Seguro Defeso"
+    )
+    
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
+    
     history = HistoricalRecords()
 
     class Meta:

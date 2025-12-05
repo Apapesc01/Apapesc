@@ -17,6 +17,7 @@ class ControleBeneficioForm(forms.ModelForm):
     class Meta:
         model = ControleBeneficioModel
         fields = [
+            'dar_entrada',
             'numero_protocolo',
             'status_pedido',
             'data_solicitacao',
@@ -26,8 +27,10 @@ class ControleBeneficioForm(forms.ModelForm):
             'anotacoes',
             'resultado_final',
             'comprovante_protocolo',
+            
         ]
         widgets = {
+            'dar_entrada': forms.Select(attrs={'class': 'form-control'}),
             'data_solicitacao': DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
             'data_concessao': DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
             'motivo_exigencia': forms.Textarea(attrs={'rows': 4}),
@@ -36,7 +39,16 @@ class ControleBeneficioForm(forms.ModelForm):
             'resultado_final': forms.Textarea(attrs={'rows': 4}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
+        # 👉 Se estiver criando um novo OU se o campo estiver vazio, seta "DEZ"
+        if not self.instance.pk:
+            # novo registro
+            self.fields['dar_entrada'].initial = 'DEZ'
+        elif not self.instance.dar_entrada:
+            # registro existente sem valor
+            self.fields['dar_entrada'].initial = 'DEZ'
 
 class SeguroDefesoBeneficioForm(forms.ModelForm):
     class Meta:
