@@ -223,7 +223,6 @@ class AnuidadesListaBuscaView(LoginRequiredMixin, GroupRequiredMixin, ListView):
     model = AnuidadeAssociado
     template_name = 'anuidades/anuidades_list_searchs.html'
     context_object_name = 'resultados'
-    paginate_by = 30
     group_required = [
         'Superuser',
         'admin_associacao',
@@ -237,52 +236,61 @@ class AnuidadesListaBuscaView(LoginRequiredMixin, GroupRequiredMixin, ListView):
         return super().dispatch(request, *args, **kwargs)  
     
     def get_queryset(self):
-        # Parâmetros de busca
         ano = self.request.GET.get('ano')
         associacao_id = self.request.GET.get('associacao')
         reparticao_id = self.request.GET.get('reparticao')
-        status = self.request.GET.get('status')  # em_dia, em_aberto, em_atraso
+        status = self.request.GET.get('status')
 
-        # Base: todos os AnuidadeAssociado
-        queryset = AnuidadeAssociado.objects.select_related('associado', 'anuidade', 'associado__associacao', 'associado__reparticao')
+        queryset = AnuidadeAssociado.objects.select_related(
+            'associado', 'anuidade', 'associado__associacao', 'associado__reparticao'
+        )
 
-        # Filtro por ano/anuidade
-        if ano:
+        # 🔹 FILTRO: ANO (quando não é "Todos")
+        if ano and ano != "Todos":
+            ano = int(ano)
             queryset = queryset.filter(anuidade__ano=ano)
 
-        # Filtro por associação
-        if associacao_id:
-            queryset = queryset.filter(associado__associacao_id=associacao_id)
+        # 🔹 FILTRO: ASSOCIAÇÃO
+        if associacao_id not in ("", "Todas", None):
+            queryset = queryset.filter(associado__associacao_id=int(associacao_id))
 
-        # Filtro por repartição
-        if reparticao_id:
-            queryset = queryset.filter(associado__reparticao_id=reparticao_id)
+        # 🔹 FILTRO: REPARTIÇÃO
+        if reparticao_id not in ("", "Todas", None):
+            queryset = queryset.filter(associado__reparticao_id=int(reparticao_id))
 
-        # Busca por status especial
         ano_atual = timezone.now().year
 
+        # --------------------------
+        # 🔹 FILTRO STATUS
+        # --------------------------
 
-        if status == 'em_dia':
-            ano_atual = timezone.now().year
-            em_dia_ids = AssociadoModel.objects.exclude(
-                anuidades_associados__anuidade__ano__lte=ano_atual,
-                anuidades_associados__pago=False
-            ).values_list('pk', flat=True)
-            queryset = queryset.filter(
-                associado_id__in=em_dia_ids,
-                anuidade__ano=ano_atual,  # <--- Mostra só do ano atual!
-            )
+        if status == "pagos_ano":
+            if ano and ano != "Todos":
+                queryset = queryset.filter(pago=True)
+            else:
+                messages.warning(self.request, "Selecione um ano para filtrar pagos do ano.")
+                return queryset.none()
 
+        elif status == "abertos_ano":
+            if ano and ano != "Todos":
+                queryset = queryset.filter(pago=False)
+            else:
+                messages.warning(self.request, "Selecione um ano para filtrar em aberto do ano.")
+                return queryset.none()
 
-        elif status == 'em_aberto':
-            # Apenas anuidades do ano atual NÃO pagas
-            queryset = queryset.filter(anuidade__ano=ano_atual, pago=False)
-
-        elif status == 'em_atraso':
-            # Anuidades de anos anteriores ao atual em aberto
+        elif status == "em_atraso":
             queryset = queryset.filter(anuidade__ano__lt=ano_atual, pago=False)
 
+        elif status == "em_dia":
+            associados_com_debito = AssociadoModel.objects.filter(
+                anuidades_associados__anuidade__ano__lte=ano_atual,
+                anuidades_associados__pago=False
+            ).values_list("id")
+
+            queryset = queryset.exclude(associado_id__in=associados_com_debito)
+
         return queryset
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

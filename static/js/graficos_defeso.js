@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
             buildChartStatusBeneficio(data);
             buildChartConcedidoNegado(data);
             buildChartStatusProcessamento(data);
+            buildChartEntradaMes(data);
         })
         .catch(err => console.error("Erro ao carregar dados dos gráficos:", err));
 });
@@ -77,17 +78,32 @@ function buildChartStatusBeneficio(data) {
     const ctx = document.getElementById("chartStatusBeneficio");
     if (!ctx) return;
 
+    // Mapa de cores definido por significado
+    const colorMap = {
+        "Em Preparo": "#3b82f6",                      // azul
+        "Protocolado, em Análise": "#22c55e",         // verde médio
+        "Em Exigência": "#eab308",                    // amarelo
+        "Exigência cumprida, em Análise": "#fb923c",  // laranja
+        "Concedido": "#15803d",                       // verde escuro
+        "Negado": "#dc2626",                          // vermelho forte
+        "Recurso": "#7c3aed",                         // roxo
+        "Cancelado": "#6b7280"                        // cinza escuro
+    };
+
     new Chart(ctx, {
         type: "pie",
         data: {
             labels: data.dados_status_beneficio.map(x => x.label),
             datasets: [{
                 data: data.dados_status_beneficio.map(x => x.value),
-                backgroundColor: ["#60a5fa","#34d399","#fbbf24","#f87171","#a78bfa","#f472b6","#2dd4bf","#c084fc"]
+                backgroundColor: data.dados_status_beneficio.map(x =>
+                    colorMap[x.label] || "#a3a3a3" // fallback cinza
+                )
             }]
         }
     });
 }
+
 
 /* ---------------- GRÁFICO 5 - CONCEDIDOS vs NEGADOS ---------------- */
 function buildChartConcedidoNegado(data) {
@@ -125,3 +141,33 @@ function buildChartStatusProcessamento(data) {
         }
     });
 }
+
+/* ---------------- GRÁFICO 7 - ENTRADA POR MÊS (DAR_ENTRADA) ---------------- */
+function buildChartEntradaMes(data) {
+    const ctx = document.getElementById("chartEntradaMes");
+    if (!ctx) return;
+
+    // Cores específicas para cada mês
+    const colorMap = {
+        "Dezembro": "#86efac",   // verde claro
+        "Janeiro": "#fde047",    // amarelo
+        "Fevereiro": "#d946ef",  // rosa/purple
+        "Março": "#fda4a4"       // vermelho claro
+    };    
+
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: data.dados_entrada_mes.map(x => x.label),
+            datasets: [{
+                label: "Entradas",
+                data: data.dados_entrada_mes.map(x => x.value),
+                backgroundColor: data.dados_entrada_mes.map(x => colorMap[x.label] || "#60a5fa")
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } }
+        }
+    });
+}
+

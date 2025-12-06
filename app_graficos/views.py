@@ -86,6 +86,14 @@ class DefesoChartsData(LoginRequiredMixin, View):
             for key, value in dados_status_processamento.items()
         ]
 
+        # ----- Entrada por Mês (DAR_ENTRADA) -----
+        entrada_choices_map = dict(DAR_ENTRADA_DEFESO_CHOICES)
+
+        dados_entrada_mes = []
+        for key, label in entrada_choices_map.items():
+            count = ControleBeneficioModel.objects.filter(dar_entrada=key).count()
+            dados_entrada_mes.append({"label": label, "value": count})
+            
         return JsonResponse({
             "especies": especies,
             "especies_totais": especies_totais,
@@ -96,5 +104,6 @@ class DefesoChartsData(LoginRequiredMixin, View):
             "dados_status_beneficio": dados_status_beneficio,
             "dados_concedido_negado": dados_concedido_negado,
             "dados_status_processamento": dados_status_processamento,
+            "dados_entrada_mes": dados_entrada_mes,
         })
 

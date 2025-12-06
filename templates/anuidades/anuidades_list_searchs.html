@@ -36,7 +36,7 @@
         <div class="form-group">
             <label>Ano:
                 <select name="ano">
-                    <option value="">Todos</option>
+                    <option value="Todos">Todos</option>
                     {% for a in anos %}
                         <option value="{{ a }}" {% if filtros.ano|default:'' == a|stringformat:"s" %}selected{% endif %}>{{ a }}</option>
                     {% endfor %}
@@ -46,7 +46,7 @@
         <div class="form-group">
             <label>Associação:
                 <select name="associacao">
-                    <option value="">Todas</option>
+                    <option value="Todas">Todas</option>
                     {% for assoc in associacoes %}
                         <option value="{{ assoc.pk }}" {% if filtros.associacao|default:'' == assoc.pk|stringformat:"s" %}selected{% endif %}>{{ assoc.nome_fantasia }}</option>
                     {% endfor %}
@@ -56,7 +56,7 @@
         <div class="form-group">
             <label>Repartição:
                 <select name="reparticao">
-                    <option value="">Todas</option>
+                    <option value="Todas">Todas</option>
                     {% for rep in reparticoes %}
                         <option value="{{ rep.pk }}" {% if filtros.reparticao|default:'' == rep.pk|stringformat:"s" %}selected{% endif %}>{{ rep.nome_reparticao }}</option>
                     {% endfor %}
@@ -67,10 +67,24 @@
             <label>Status:
                 <select name="status">
                     <option value="">Todos</option>
-                    <option value="em_dia" {% if filtros.status == 'em_dia' %}selected{% endif %}>Em dia</option>
-                    <option value="em_aberto" {% if filtros.status == 'em_aberto' %}selected{% endif %}>Em aberto (Ano Atual)</option>
-                    <option value="em_atraso" {% if filtros.status == 'em_atraso' %}selected{% endif %}>Em atraso (Anos anteriores)</option>
+
+                    <option value="pagos_ano" {% if filtros.status == 'pagos_ano' %}selected{% endif %}>
+                        Pagos no ano selecionado
+                    </option>
+
+                    <option value="abertos_ano" {% if filtros.status == 'abertos_ano' %}selected{% endif %}>
+                        Em aberto no ano selecionado
+                    </option>
+
+                    <option value="em_atraso" {% if filtros.status == 'em_atraso' %}selected{% endif %}>
+                        Em atraso (anos anteriores)
+                    </option>
+
+                    <option value="em_dia" {% if filtros.status == 'em_dia' %}selected{% endif %}>
+                        Em dia geral
+                    </option>
                 </select>
+
             </label>
         </div>
 

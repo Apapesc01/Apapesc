@@ -1,2 +1,2 @@
 from app_defeso.models import SeguroDefesoBeneficioModel, ControleBeneficioModel
-from core.choices import STATUS_PROCESSAMENTO, STATUS_BENEFICIO_CHOICES
+from core.choices import STATUS_PROCESSAMENTO, STATUS_BENEFICIO_CHOICES, DAR_ENTRADA_DEFESO_CHOICES
