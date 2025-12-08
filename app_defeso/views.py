@@ -276,6 +276,7 @@ def resetar_rodada_processamento(request):
     return redirect(f"{reverse('app_defeso:lancamento_defeso')}?beneficio={beneficio.id}")
 
 
+from django.db.models import Max
 
 class PainelDefesoStatusView(View):
     template_name = 'defeso/painel_status.html'
@@ -283,7 +284,7 @@ class PainelDefesoStatusView(View):
         'Superuser',
         'admin_associacao',
         'auxiliar_associacao'
-    ]        
+    ]
 
     def dispatch(self, request, *args, **kwargs):
         if not (
@@ -294,19 +295,32 @@ class PainelDefesoStatusView(View):
                 request.user.user_type == 'auxiliar_associacao'
             )
         ):
-            messages.error(self.request, "Você não tem permissão para visualizar um usuário.")
+            messages.error(self.request, "Você não tem permissão para visualizar essa página.")
             return redirect('app_accounts:unauthorized')
         return super().dispatch(request, *args, **kwargs)
-    
+
     def get(self, request):
-        # Busca todos os status possíveis (ordem definida por STATUS_BENEFICIO_CHOICES)
+
+        # 🔹 BUSCA O ANO MAIS RECENTE DE CONCESSÃO
+        ultimo_ano = SeguroDefesoBeneficioModel.objects.aggregate(
+            Max('ano_concessao')
+        )['ano_concessao__max']
+
+        # Caso não exista nenhum registro ainda
+        if not ultimo_ano:
+            ultimo_ano = date.today().year
+
+        # 🔹 FILTRA SOMENTE OS CONTROLES DO ÚLTIMO ANO
+        controles = ControleBeneficioModel.objects.select_related(
+            'associado', 'beneficio'
+        ).filter(
+            beneficio__ano_concessao=ultimo_ano
+        )
+
+        # 🔹 MONTA KANBAN POR STATUS
         status_colunas = [choice[0] for choice in STATUS_BENEFICIO_CHOICES]
         status_labels = dict(STATUS_BENEFICIO_CHOICES)
-        
-        # Busca todos os controles com benefício vigente (ou filtre por beneficio_id, se quiser)
-        controles = ControleBeneficioModel.objects.select_related('associado', 'beneficio').all()
-        
-        # Organiza os associados por status em um dicionário: {status: [controles]}
+
         colunas = {status: [] for status in status_colunas}
         for c in controles:
             colunas[c.status_pedido].append(c)
@@ -314,8 +328,10 @@ class PainelDefesoStatusView(View):
         context = {
             'colunas': colunas,
             'status_labels': status_labels,
+            'ano_mostrado': ultimo_ano,
         }
         return render(request, self.template_name, context)
+
 
 # Formulários
 class SeguroDefesoBeneficioCreateView(LoginRequiredMixin, GroupRequiredMixin, CreateView):

@@ -44,19 +44,25 @@
     <form method="post" enctype="multipart/form-data" class="form-group">
         {% csrf_token %}
         <div class="form-grid grid-5-cols">
-
-      
             <!-- Nome do Associado (readonly) -->
             <div class="form-group">
                 <label>Nome Completo:</label>
-                <div class="readonly-field" style="color:#3161ff; font-weight:bold;">
+                <div class="readonly-field" style="color:#3161ff; font-weight:bold; display:flex; align-items:center; gap:6px;">
+                    
                     {{ object.associado.user.get_full_name }}
+
+                    <!-- Ícone que abre em nova guia -->
+                    <a href="{% url 'app_associados:single_associado' object.associado.id %}" 
+                    target="_blank" 
+                    style="font-size:18px; text-decoration:none;">↗️</a>
                 </div>
             </div>
+
             <div class="form-group">
                 {{ form.dar_entrada.label_tag }}
                 {{ form.dar_entrada }}
-            </div>               
+            </div>   
+
             <!-- Data de Soliciatação -->
             <div class="form-group">
                 {{ form.data_solicitacao.label_tag }}
@@ -65,17 +71,20 @@
                     <div class="field-error">{% for error in form.data_solicitacao.errors %}<span>{{ error }}</span>{% endfor %}</div>
                 {% endif %}
             </div>
+
             <!-- Número do Protocolo -->
             <div class="form-group">
                 {{ form.numero_protocolo.label_tag }}
                 {{ form.numero_protocolo }}
-            </div>        
+            </div>    
+
             <!-- Status Pedido -->
             <div class="form-group">
                 {{ form.status_pedido.label_tag }}
                 {{ form.status_pedido }}
             </div>                
         </div>
+
         <!-- Anotações -->
         <div class="form-group">
             {{ form.anotacoes.label_tag }}
@@ -305,7 +314,10 @@
                 <button onclick="copyToClipboard('end-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
                     <i class="material-icons">content_copy</i>
                 </button>
-            </div>                        
+            </div>  
+            <div class="copy-wrapper">
+                <p><strong>Escolaridade:</strong> {{ object.associado.escolaridade }}</p>
+            </div>                                   
         </div>
     </div>
 

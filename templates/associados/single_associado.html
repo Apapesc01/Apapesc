@@ -698,7 +698,8 @@
             <strong>Benefício:</strong>
             {{ beneficio_defeso_ultimo.lei_federal }} –
             Início: {{ beneficio_defeso_ultimo.data_inicio|date:"d/m/Y" }} |
-            Fim: {{ beneficio_defeso_ultimo.data_fim|date:"d/m/Y" }}
+            Fim: {{ beneficio_defeso_ultimo.data_fim|date:"d/m/Y" }} |
+            <strong>{{ beneficio_defeso_ultimo.especie_alvo }}</strong>
             </p>
 
             {% if not defeso_status_elegivel %}

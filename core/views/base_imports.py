@@ -54,7 +54,7 @@ from django.views.generic import(
     View
     )
 from urllib.parse import urlencode
-from datetime import datetime
+from datetime import datetime, date
 from pdfrw import PdfReader, PdfWriter, PageMerge
 from pdfrw.buildxobj import pagexobj
 from reportlab.lib.pagesizes import A4

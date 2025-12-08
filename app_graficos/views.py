@@ -17,15 +17,43 @@ class GraficosSuperView(LoginRequiredMixin, GroupRequiredMixin, View):
         context = {}  # você pode passar dados aqui
         return render(request, self.template_name, context)
 
-
-
 class DefesoChartsData(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
 
+        # ==============================================================
+        # 1) IDENTIFICAR O ÚLTIMO ANO DE CONCESSÃO
+        # ==============================================================
+
+        ultimo_ano = (
+            SeguroDefesoBeneficioModel.objects
+            .order_by('-ano_concessao')
+            .values_list('ano_concessao', flat=True)
+            .first()
+        )
+
+        from datetime import date
+        if not ultimo_ano:
+            ultimo_ano = date.today().year
+
+
+        # ==============================================================
+        # 2) FILTRAR BASE POR ÚLTIMO ANO
+        # ==============================================================
+
+        beneficios_filtrados = SeguroDefesoBeneficioModel.objects.filter(
+            ano_concessao=ultimo_ano
+        )
+
+        controles_filtrados = ControleBeneficioModel.objects.filter(
+            beneficio__ano_concessao=ultimo_ano
+        )
+
+
+        # ==============================================================
         # ----- 1. Benefícios por Espécie -----
         beneficios_especie = (
-            SeguroDefesoBeneficioModel.objects
+            beneficios_filtrados
             .values("especie_alvo__nome_popular")
             .annotate(total=Count("id"))
             .order_by("-total")
@@ -33,9 +61,10 @@ class DefesoChartsData(LoginRequiredMixin, View):
         especies = [b["especie_alvo__nome_popular"] for b in beneficios_especie]
         especies_totais = [b["total"] for b in beneficios_especie]
 
+
         # ----- 2. Benefícios por Estado -----
         beneficios_estado = (
-            SeguroDefesoBeneficioModel.objects
+            beneficios_filtrados
             .values("estado")
             .annotate(total=Count("id"))
             .order_by("estado")
@@ -43,9 +72,10 @@ class DefesoChartsData(LoginRequiredMixin, View):
         estados = [b["estado"] for b in beneficios_estado]
         estados_totais = [b["total"] for b in beneficios_estado]
 
+
         # ----- 3. Benefícios por Ano -----
         beneficios_ano = (
-            SeguroDefesoBeneficioModel.objects
+            beneficios_filtrados
             .values("ano_concessao")
             .annotate(total=Count("id"))
             .order_by("ano_concessao")
@@ -53,22 +83,33 @@ class DefesoChartsData(LoginRequiredMixin, View):
         anos = [b["ano_concessao"] for b in beneficios_ano]
         anos_totais = [b["total"] for b in beneficios_ano]
 
-        # 1️⃣ Status do Benefício
+
+        # ==============================================================
+        # 4) STATUS DO BENEFÍCIO
+        # ==============================================================
+
         dados_status_beneficio = []
         for key, label in STATUS_BENEFICIO_CHOICES:
-            count = ControleBeneficioModel.objects.filter(status_pedido=key).count()
+            count = controles_filtrados.filter(status_pedido=key).count()
             dados_status_beneficio.append({"label": label, "value": count})
 
-        # 2️⃣ Concedidos x Negados
-        concedidos = ControleBeneficioModel.objects.filter(status_pedido="CONCEDIDO").count()
-        negados = ControleBeneficioModel.objects.filter(status_pedido="NEGADO").count()
+
+        # ==============================================================
+        # 5) CONCEDIDOS x NEGADOS
+        # ==============================================================
+
+        concedidos = controles_filtrados.filter(status_pedido="CONCEDIDO").count()
+        negados = controles_filtrados.filter(status_pedido="NEGADO").count()
+
         dados_concedido_negado = {
             "labels": ["Concedidos", "Negados"],
             "values": [concedidos, negados],
         }
 
-        # 3️⃣ Status de Processamento — corrigido
-        controle = ControleBeneficioModel.objects.all()
+
+        # ==============================================================
+        # 6) STATUS DE PROCESSAMENTO
+        # ==============================================================
 
         dados_status_processamento = {
             "Usuário Processando": 0,
@@ -76,25 +117,34 @@ class DefesoChartsData(LoginRequiredMixin, View):
             "Aguardando Processamento": 0,
         }
 
-        for item in controle:
-            status = item.status_processamento  # usa a property
+        for item in controles_filtrados:
+            status = item.status_processamento
             dados_status_processamento[status] += 1
 
-        # transformar para o formato usado no JS
         dados_status_processamento = [
             {"label": key, "value": value}
             for key, value in dados_status_processamento.items()
         ]
 
-        # ----- Entrada por Mês (DAR_ENTRADA) -----
+
+        # ==============================================================
+        # 7) ENTRADA POR MÊS (DAR_ENTRADA)
+        # ==============================================================
+
         entrada_choices_map = dict(DAR_ENTRADA_DEFESO_CHOICES)
 
         dados_entrada_mes = []
         for key, label in entrada_choices_map.items():
-            count = ControleBeneficioModel.objects.filter(dar_entrada=key).count()
+            count = controles_filtrados.filter(dar_entrada=key).count()
             dados_entrada_mes.append({"label": label, "value": count})
-            
+
+
+        # ==============================================================
+        # RETORNO FINAL JSON
+        # ==============================================================
+
         return JsonResponse({
+            "ultimo_ano": ultimo_ano,
             "especies": especies,
             "especies_totais": especies_totais,
             "estados": estados,
@@ -106,4 +156,3 @@ class DefesoChartsData(LoginRequiredMixin, View):
             "dados_status_processamento": dados_status_processamento,
             "dados_entrada_mes": dados_entrada_mes,
         })
-
