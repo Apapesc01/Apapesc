@@ -56,7 +56,8 @@ class DefesosLancamentoView(LoginRequiredMixin, GroupRequiredMixin, View):
                 total_processados = ControleBeneficioModel.objects.filter(
                     beneficio=beneficio,
                     rodada=ultima_rodada,
-                    processada=True
+                ).filter(
+                    Q(processada=True) | Q(status_pedido__in=['CANCELADO', 'CONCEDIDO'])
                 ).count()
 
                 print('==== DEBUG ====')  # Pode ver isso no terminal

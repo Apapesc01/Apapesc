@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Associado Seguro Defeso{% endblock title%}
+{% block title %}Associado Seguro Defeso{{ object.associado.user.get_full_name }}{% endblock title%}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/listas.css' %}">
@@ -182,13 +182,13 @@
                 </button>
             </div>
             <div class="copy-wrapper">
-                <p id="cpf-{{ associado.pk }}"><strong>CPF:</strong> {{ object.associado.cpf }}</p>
+                🗂️<p id="cpf-{{ associado.pk }}" style="color:red;"><strong>CPF:</strong> {{ object.associado.cpf }}</p>
                 <button onclick="copyToClipboard('cpf-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
                     <i class="material-icons">content_copy</i>
                 </button>
             </div>
             <div class="copy-wrapper">
-                <p id="senha_gov-{{ associado.pk }}"><strong>Senha Gov:</strong> {{ object.associado.senha_gov }}</p>
+                ⚠️<p id="senha_gov-{{ associado.pk }}" style="color:red;"><strong>Senha Gov:</strong> {{ object.associado.senha_gov }}</p>
                 <button onclick="copySenhas('senha_gov-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
                     <i class="material-icons">content_copy</i>
                 </button>
@@ -279,7 +279,7 @@
             </button>
             </div>
             <div class="copy-wrapper">
-            <p id="doc_email-{{ associado.pk }}"><strong>Email:</strong> apaescpescadores@gmail.com</p>
+            <p id="doc_email-{{ associado.pk }}" style="color:purple;"><strong>Email:</strong> apaescpescadores@gmail.com</p>
             <button onclick="copySenhas('doc_email-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
                 <i class="material-icons">content_copy</i>
             </button>
