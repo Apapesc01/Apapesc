@@ -5,6 +5,7 @@
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/listas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tabs.css' %}">
     <link rel="stylesheet" href="{% static 'css/forms.css' %}">
     <link rel="stylesheet" href="{% static 'css/defeso.css' %}">
     <link rel="stylesheet" href="{% static 'css/mensagens.css' %}">  
@@ -61,7 +62,19 @@
             <div class="form-group">
                 {{ form.dar_entrada.label_tag }}
                 {{ form.dar_entrada }}<small>Selecione o mês de entrada</small>
-            </div>   
+            </div> 
+
+            <!-- Status Pedido -->
+            <div class="form-group">
+                {{ form.status_pedido.label_tag }}
+                {{ form.status_pedido }}<small>Status/Movimentação</small>
+            </div>
+
+            <!-- Número do Protocolo -->
+            <div class="form-group">
+                {{ form.numero_protocolo.label_tag }}
+                {{ form.numero_protocolo }}<small>ou / número do requerimento</small>
+            </div>    
 
             <!-- Data de Soliciatação -->
             <div class="form-group">
@@ -71,19 +84,6 @@
                     <div class="field-error">{% for error in form.data_solicitacao.errors %}<span>{{ error }}</span>{% endfor %}</div>
                 {% endif %}
             </div>
-
-            <!-- Número do Protocolo -->
-            <div class="form-group">
-                {{ form.numero_protocolo.label_tag }}
-                {{ form.numero_protocolo }}<small>ou / Número do requerimento</small>
-            </div>    
-
-            <!-- Status Pedido -->
-<!-- Status Pedido -->
-<div class="form-group">
-    {{ form.status_pedido.label_tag }}
-    {{ form.status_pedido }}
-</div>
             
         </div>
 
@@ -178,7 +178,7 @@
         <div class="card-doc">
             <h3>Identidade - CIN</h3>
             <div class="copy-wrapper">
-                <p id="rg_numero-{{ associado.pk }}"><strong>RG:</strong> {{ object.associado.rg_numero }}</p>
+                📄 <p id="rg_numero-{{ associado.pk }}" style="color:gray;"><strong> RG:</strong> {{ object.associado.rg_numero }}</p>
                 <button onclick="copyToClipboard('rg_numero-{{ associado.pk }}', this)" class="copy-btn" title="Copiar RG">
                     <i class="material-icons">content_copy</i>
                 </button>
@@ -201,7 +201,7 @@
         <div class="card-doc">
             <h3>Carteira de Pescador</h3>
             <div class="copy-wrapper">
-                <p id="rgp-{{ associado.pk }}"><strong>RGP:</strong> {{ object.associado.rgp }}</p>
+                <p id="rgp-{{ associado.pk }}"style="color:purple;"><strong>RGP:</strong> {{ object.associado.rgp }}</p>
                 <button onclick="copyToClipboard('rgp-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Número RGP">
                     <i class="material-icons">content_copy</i>
             </button>
@@ -214,6 +214,7 @@
             </div>
         </div>        
 
+    
         <!-- CNH -->
         <div class="card-doc">
             <h3>Carteira Motorista</h3>

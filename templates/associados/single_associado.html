@@ -707,27 +707,31 @@
                 Este associado não é elegível para operações de Seguro Defeso (status atual não permite).
             </div>
             {% else %}
+
+              
             <form method="post" enctype="multipart/form-data" style="margin-top:12px;">
                 {% csrf_token %}
                 
                 {% if defeso_form %}
-                <div class="form-grid grid-3-cols">
+                <div class="form-grid grid-5-cols">
                     <div class="form-group">
                         {{ defeso_form.dar_entrada.label_tag }}
-                        {{ defeso_form.dar_entrada }}
-                    </div>    
-
-                    <div class="form-group">
-                    {{ defeso_form.numero_protocolo.label_tag }}
-                    {{ defeso_form.numero_protocolo }}
-                    {{ defeso_form.numero_protocolo.errors }}
-                    </div>
+                        {{ defeso_form.dar_entrada }}<small>Selecione o mês de entrada</small>
+                    </div>  
 
                     <div class="form-group">
                     {{ defeso_form.status_pedido.label_tag }}
-                    {{ defeso_form.status_pedido }}
+                    {{ defeso_form.status_pedido }}<small>Status/Movimentação</small>
                     {{ defeso_form.status_pedido.errors }}
                     </div>
+
+                    <div class="form-group">
+                    {{ defeso_form.numero_protocolo.label_tag }}
+                    {{ defeso_form.numero_protocolo }}<small>ou / número do requerimento</small>
+                    {{ defeso_form.numero_protocolo.errors }}
+                    </div>
+
+
 
                     <div class="form-group">
                     {{ defeso_form.data_solicitacao.label_tag }}
@@ -741,6 +745,25 @@
                     {{ defeso_form.data_concessao.errors }}
                     </div>
 
+                    <div class="copy-wrapper">
+                        🗂️<p id="cpf-{{ associado.pk }}" style="color:red;"><strong>CPF:</strong> {{ associado.cpf }}</p>
+                        <button onclick="copyToClipboard('cpf-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
+                            <i class="material-icons">content_copy</i>
+                        </button>
+                    </div>
+                    <div class="copy-wrapper">
+                        ⚠️ <p id="senha_gov-{{ associado.pk }}" style="color:red;"><strong>Senha Gov:</strong> {{ associado.senha_gov }}</p>
+                        <button onclick="copySenhas('senha_gov-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
+                            <i class="material-icons">content_copy</i>
+                        </button>
+                    </div>  
+                    <div class="copy-wrapper">
+                       📬 <p id="doc_email-{{ associado.pk }}" style="color:purple;">apaescpescadores@gmail.com</p>
+                        <button onclick="copySenhas('doc_email-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
+                            <i class="material-icons">content_copy</i>
+                        </button>
+                    </div>
+
                     <div class="form-group" style="grid-column:1 / -1;">
                         {{ defeso_form.anotacoes.label_tag }}
                         {{ defeso_form.anotacoes }}
@@ -752,6 +775,7 @@
                         color: red !important;
                     }
                     </style>   
+
 
                     <div class="form-group" style="grid-column:1 / -1;">
                     {{ defeso_form.motivo_exigencia.label_tag }}
@@ -903,6 +927,7 @@
     <script src="{% static 'js/content_associados.js' %}"></script>
     <script src="{% static 'js/config_content_associados.js' %}"></script>
     <script src="{% static 'js/dar_entrada.js' %}"></script>
+    <script src="{% static 'js/cores_status_pedido_defeso.js' %}"></script>
 {% endblock %}
 
 {% endblock %}

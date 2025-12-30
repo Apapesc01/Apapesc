@@ -34,9 +34,9 @@ class ControleBeneficioForm(forms.ModelForm):
             "status_pedido": forms.Select(attrs={"class": "status-select"}), 
             'data_solicitacao': DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
             'data_concessao': DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
-            'motivo_exigencia': forms.Textarea(attrs={'rows': 4}),
+            'motivo_exigencia': forms.Textarea(attrs={'rows': 6}),
             'motivo_negativa': forms.Textarea(attrs={'rows': 4}),
-            'anotacoes': forms.Textarea(attrs={'rows': 4}),
+            'anotacoes': forms.Textarea(attrs={'rows': 10}),
             'resultado_final': forms.Textarea(attrs={'rows': 4}),
         }
 
