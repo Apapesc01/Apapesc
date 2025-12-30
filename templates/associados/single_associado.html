@@ -692,15 +692,126 @@
     <div class="tab-content" id="tab-defeso">
 
         {% if not beneficio_defeso_ultimo %}
-            <p style="color:#888;">Não há benefício de Seguro Defeso lançado para o estado deste associado.</p>
-        {% else %}
-            <p>
-            <strong>Benefício:</strong>
-            {{ beneficio_defeso_ultimo.lei_federal }} –
-            Início: {{ beneficio_defeso_ultimo.data_inicio|date:"d/m/Y" }} |
-            Fim: {{ beneficio_defeso_ultimo.data_fim|date:"d/m/Y" }} |
-            <strong>{{ beneficio_defeso_ultimo.especie_alvo }}</strong>
+            <p style="color:#888;">
+                Não há benefício de Seguro Defeso lançado para o estado deste associado.
             </p>
+        {% else %}
+
+        <div class="form-grid grid-3-cols">
+            <!-- – DADOS GOV -->
+            <div class="defeso-gov">
+                <div class="copy-row">
+                    <span class="icon">🗂️</span>
+                    <span id="cpf-{{ associado.pk }}" style="color:#f48585;">
+                        <strong>CPF:</strong> {{ associado.cpf }}
+                    </span>
+                    <button onclick="copyToClipboard('cpf-{{ associado.pk }}', this)"
+                            class="copy-btn" title="Copiar CPF">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+
+                <div class="copy-row warning">
+                    <span class="icon">⚠️</span>
+                    <span id="senha_gov-{{ associado.pk }}" style="color:#f48585;">
+                        <strong>Senha Gov:</strong> {{ associado.senha_gov }}
+                    </span>
+                    <button onclick="copySenhas('senha_gov-{{ associado.pk }}', this)"
+                            class="copy-btn" title="Copiar Senha Gov">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+
+                <div class="copy-row email">
+                    <span class="icon">📬</span>
+                    <span id="doc_email-{{ associado.pk }}" style="color:purple;">
+                        apaescpescadores@gmail.com
+                    </span>
+                    <button onclick="copySenhas('doc_email-{{ associado.pk }}', this)"
+                            class="copy-btn" title="Copiar Email">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+            </div>
+            <!-- – BENEFÍCIO -->
+            <div class="defeso-beneficio">
+                <small>
+                    <strong>Benefício:</strong>
+                    {{ beneficio_defeso_ultimo.lei_federal }}<br>
+                    <strong>Espécie:</strong> {{ beneficio_defeso_ultimo.especie_alvo }}<br>
+                    <strong>Período:</strong>
+                    {{ beneficio_defeso_ultimo.data_inicio|date:"d/m/Y" }}
+                    →
+                    {{ beneficio_defeso_ultimo.data_fim|date:"d/m/Y" }}
+                </small>
+            </div>
+
+            {% if inss_resumo %}
+            <div class="card inss-card">
+                <div class="inss-head">
+                <div>
+
+                    <div class="inss-sub">INSS - {{ inss_ano }}</div>
+                </div>
+
+                <div class="inss-count {% if inss_qtd_paga < 8 %}bad{% else %}ok{% endif %}">
+                    {{ inss_qtd_paga }}/8
+                </div>
+                </div>
+
+                <div class="inss-bar">
+                <div class="inss-fill {% if inss_qtd_paga < 8 %}bad{% else %}ok{% endif %}"
+                    style="width: {{ inss_percent }}%;"></div>
+                </div>
+
+                {% if inss_qtd_paga < 8 %}
+                <div class="inss-pendentes">
+                    Pendentes: {{ inss_pendentes|join:", " }}
+                </div>
+                {% else %}
+                <div class="inss-ok">Em dia ✅</div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-grid grid-1-cols">
+            <div class="card">
+                <table class="table-list-small">
+                    <thead>
+                    <tr>
+                        <th>Ano</th>
+                        <th>Reap</th>
+                        <th>Atualizado</th>
+                        <th>Editar</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for reap in reap_ultimos_2 %}
+                        <tr>
+                        <td>{{ reap.ano }}</td>
+                        <td>
+                            <span class="status-tag status-reap-{{ reap.status_resposta|lower }}">
+                            {{ reap.get_status_resposta_display }}
+                            </span>
+                        </td>
+                        <td>{{ reap.atualizado_em }}</td>
+                        <td>
+                            <a href="{% url 'app_reap:processamento_reap_individual' reap.pk %}"
+                            target="_blank"
+                            title="Editar REAP {{ reap.ano }}"
+                            class="btn-icon-link">
+                                ✏️
+                            </a>
+                        </td>                            
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4">Nenhum REAP encontrado para este associado.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
             {% if not defeso_status_elegivel %}
             <div class="alert alert-warning" style="background:#fff7ed;border:1px solid #fdba74;color:#c2410c;padding:8px;border-radius:6px;">
@@ -743,25 +854,6 @@
                     {{ defeso_form.data_concessao.label_tag }}
                     {{ defeso_form.data_concessao }}
                     {{ defeso_form.data_concessao.errors }}
-                    </div>
-
-                    <div class="copy-wrapper">
-                        🗂️<p id="cpf-{{ associado.pk }}" style="color:red;"><strong>CPF:</strong> {{ associado.cpf }}</p>
-                        <button onclick="copyToClipboard('cpf-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
-                            <i class="material-icons">content_copy</i>
-                        </button>
-                    </div>
-                    <div class="copy-wrapper">
-                        ⚠️ <p id="senha_gov-{{ associado.pk }}" style="color:red;"><strong>Senha Gov:</strong> {{ associado.senha_gov }}</p>
-                        <button onclick="copySenhas('senha_gov-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
-                            <i class="material-icons">content_copy</i>
-                        </button>
-                    </div>  
-                    <div class="copy-wrapper">
-                       📬 <p id="doc_email-{{ associado.pk }}" style="color:purple;">apaescpescadores@gmail.com</p>
-                        <button onclick="copySenhas('doc_email-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
-                            <i class="material-icons">content_copy</i>
-                        </button>
                     </div>
 
                     <div class="form-group" style="grid-column:1 / -1;">
@@ -824,6 +916,7 @@
                 <p style="color:#888;">Formulário indisponível neste momento.</p>
                 {% endif %}
             </form>
+
             {% endif %}
         {% endif %}
 

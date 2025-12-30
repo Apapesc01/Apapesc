@@ -21,6 +21,13 @@ from app_defeso.forms import (
     EspeciesForm,
     LeiFederalPrevidenciariaForm
     )
+from app_inss.models import (
+    INSSGuiaDoMes
+    )
+
+from app_reap.models import (
+    REAPdoAno
+    )
 
 from app_uploads.models import UploadsDocs
 from core.choices import STATUS_BENEFICIO_CHOICES, DAR_ENTRADA_DEFESO_CHOICES

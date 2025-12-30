@@ -42,6 +42,73 @@
     <h2>Controle do Benefício - {{ object.associado.user.get_full_name }}</h2>
     <p><b>Benefício:</b> {{ object.beneficio }}</p>
 
+    <div class="form-grid grid-2-cols">
+        <div class="card">
+            <table class="table-list-small">
+                <thead>
+                <tr>
+                    <th>Ano</th>
+                    <th>Reap</th>
+                    <th>Atualizado</th>
+                    <th>Editar</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for reap in reap_ultimos_2 %}
+                    <tr>
+                    <td>{{ reap.ano }}</td>
+                    <td>
+                        <span class="status-tag status-reap-{{ reap.status_resposta|lower }}">
+                        {{ reap.get_status_resposta_display }}
+                        </span>
+                    </td>
+                    <td>{{ reap.atualizado_em }}</td>
+                    <td>
+                        <a href="{% url 'app_reap:processamento_reap_individual' reap.pk %}"
+                        target="_blank"
+                        title="Editar REAP {{ reap.ano }}"
+                        class="btn-icon-link">
+                            ✏️
+                        </a>
+                    </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">Nenhum REAP encontrado para este associado.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+        {% if inss_resumo %}
+        <div class="card inss-card">
+            <div class="inss-head">
+            <div><hr>
+                <div class="inss-title">INSS (Abr–Nov)</div>
+                <div class="inss-sub">{{ inss_ano }}</div>
+            </div>
+
+            <div class="inss-count {% if inss_qtd_paga < 8 %}bad{% else %}ok{% endif %}">
+                {{ inss_qtd_paga }}/8
+            </div>
+            </div>
+
+            <div class="inss-bar">
+            <div class="inss-fill {% if inss_qtd_paga < 8 %}bad{% else %}ok{% endif %}"
+                style="width: {{ inss_percent }}%;"></div>
+            </div>
+
+            {% if inss_qtd_paga < 8 %}
+            <div class="inss-pendentes">
+                Pendentes: {{ inss_pendentes|join:", " }}
+            </div>
+            {% else %}
+            <div class="inss-ok">Em dia ✅</div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
     <form method="post" enctype="multipart/form-data" class="form-group">
         {% csrf_token %}
         <div class="form-grid grid-5-cols">

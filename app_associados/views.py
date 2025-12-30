@@ -357,7 +357,59 @@ class AssociadoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
             user_alerta = CustomUser.objects.filter(id=alerta_user_id).first()
             if user_alerta:
                 context['alerta_refiliado_user'] = user_alerta
-                
+
+        # REAP Ultimos anos - status reposta
+        context["reap_ultimos_2"] = (
+            REAPdoAno.objects
+            .filter(associado=self.object)
+            .order_by("-ano", "-rodada")[:2]
+        )                
+        # Inss - verificação de recolhimento
+
+        MESES_ABR_NOV = ["04","05","06","07","08","09","10","11"]
+
+        # último ano que existe INSS (abr–nov) para o associado
+        inss_ano = (INSSGuiaDoMes.objects
+            .filter(associado=associado, mes__in=MESES_ABR_NOV)
+            .aggregate(Max("ano"))["ano__max"]
+        )
+
+        inss_resumo = False
+        inss_qtd_paga = 0
+        inss_percent = 0
+        inss_pendentes = []  # pra mostrar quais meses faltam
+
+        if inss_ano:
+            qs = (INSSGuiaDoMes.objects
+                .filter(associado=associado, ano=inss_ano, mes__in=MESES_ABR_NOV)
+                .order_by("mes", "-rodada", "-atualizado_em", "-id")
+            )
+
+            # pega o "último" de cada mês (maior rodada / mais recente)
+            ultimo_por_mes = {}
+            for guia in qs:
+                if guia.mes not in ultimo_por_mes:
+                    ultimo_por_mes[guia.mes] = guia
+
+            # garante 8 meses fixos (Abr–Nov)
+            total_meses = len(MESES_ABR_NOV)
+            for mes in MESES_ABR_NOV:
+                guia = ultimo_por_mes.get(mes)
+                if guia and guia.status_emissao == "pago":
+                    inss_qtd_paga += 1
+                else:
+                    # se não existe guia do mês, ou não está pago
+                    inss_pendentes.append(mes)
+
+            inss_percent = int((inss_qtd_paga / total_meses) * 100) if total_meses else 0
+            inss_resumo = True
+
+        context["inss_resumo"] = inss_resumo
+        context["inss_ano"] = inss_ano
+        context["inss_qtd_paga"] = inss_qtd_paga
+        context["inss_percent"] = inss_percent
+        context["inss_pendentes"] = inss_pendentes
+    
         return context
 
     def post(self, request, *args, **kwargs):
