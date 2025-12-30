@@ -60,7 +60,7 @@
 
             <div class="form-group">
                 {{ form.dar_entrada.label_tag }}
-                {{ form.dar_entrada }}
+                {{ form.dar_entrada }}<small>Selecione o mês de entrada</small>
             </div>   
 
             <!-- Data de Soliciatação -->
@@ -75,14 +75,16 @@
             <!-- Número do Protocolo -->
             <div class="form-group">
                 {{ form.numero_protocolo.label_tag }}
-                {{ form.numero_protocolo }}
+                {{ form.numero_protocolo }}<small>ou / Número do requerimento</small>
             </div>    
 
             <!-- Status Pedido -->
-            <div class="form-group">
-                {{ form.status_pedido.label_tag }}
-                {{ form.status_pedido }}
-            </div>                
+<!-- Status Pedido -->
+<div class="form-group">
+    {{ form.status_pedido.label_tag }}
+    {{ form.status_pedido }}
+</div>
+            
         </div>
 
         <!-- Anotações -->
@@ -373,6 +375,7 @@
     <script src="{% static 'js/copy_to_clipboard.js' %}"></script>
     <script src="{% static 'js/copy_senhas.js' %}"></script>
     <script src="{% static 'js/dar_entrada.js' %}"></script>
+    <script src="{% static 'js/cores_status_pedido_defeso.js' %}"></script>
 {% endblock %}
 
 {% endblock %}

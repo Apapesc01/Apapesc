@@ -23,58 +23,84 @@ class DefesosLancamentoView(LoginRequiredMixin, GroupRequiredMixin, View):
             return redirect('app_accounts:unauthorized')
         return super().dispatch(request, *args, **kwargs)
     
+
     def get(self, request):
-        beneficio_id = request.GET.get('beneficio')
-        beneficios = SeguroDefesoBeneficioModel.objects.all().order_by('-ano_concessao', '-data_inicio')
-        associados_beneficiados = []
+        beneficio_id = request.GET.get("beneficio")
+        beneficios = SeguroDefesoBeneficioModel.objects.all().order_by("-ano_concessao", "-data_inicio")
+
         beneficio = None
+        associados_beneficiados = ControleBeneficioModel.objects.none()
+
+        # flags e contadores (sempre definidos)
         mostrar_reset = False
         mostrar_iniciar = False
-        total_beneficiados = 0  
+        ultima_rodada = 1
+        total_beneficiados = 0
+        total_finalizados = 0
+        total_pendentes = 0
+        contagem_por_status_label = []
 
-        if beneficio_id:  # <-- Aqui está o correto!
+        if beneficio_id:
             try:
                 beneficio = SeguroDefesoBeneficioModel.objects.get(pk=beneficio_id)
-                # Sempre pega todos os controles do benefício!
-                associados_beneficiados = ControleBeneficioModel.objects.filter(
-                    beneficio=beneficio
-                ).select_related('associado')
-                
             except SeguroDefesoBeneficioModel.DoesNotExist:
                 beneficio = None
 
             if beneficio:
-                ultima_rodada = ControleBeneficioModel.objects.filter(
-                    beneficio=beneficio
-                ).aggregate(Max('rodada'))['rodada__max'] or 1
+                # última rodada desse benefício
+                ultima_rodada = (
+                    ControleBeneficioModel.objects
+                    .filter(beneficio=beneficio)
+                    .aggregate(Max("rodada"))["rodada__max"]
+                    or 1
+                )
 
-                total_controles = ControleBeneficioModel.objects.filter(
-                    beneficio=beneficio,
-                    rodada=ultima_rodada
+                # queryset SOMENTE da última rodada (use isso na tabela)
+                qs_rodada = (
+                    ControleBeneficioModel.objects
+                    .filter(beneficio=beneficio, rodada=ultima_rodada)
+                    .select_related("associado")
+                )
+                associados_beneficiados = qs_rodada
+
+                total_controles = qs_rodada.count()
+
+                total_processados = qs_rodada.filter(
+                    Q(processada=True) | Q(status_pedido__in=["CANCELADO", "CONCEDIDO"])
                 ).count()
-
-                total_processados = ControleBeneficioModel.objects.filter(
-                    beneficio=beneficio,
-                    rodada=ultima_rodada,
-                ).filter(
-                    Q(processada=True) | Q(status_pedido__in=['CANCELADO', 'CONCEDIDO'])
-                ).count()
-
-                print('==== DEBUG ====')  # Pode ver isso no terminal
-                print(f"Rodada: {ultima_rodada} - Total: {total_controles} - Processados: {total_processados}")
 
                 mostrar_reset = (total_controles > 0) and (total_processados == total_controles)
                 mostrar_iniciar = (total_controles > 0) and (total_processados < total_controles)
-                total_beneficiados = associados_beneficiados.count()
-                
+
+                # contadores pra exibir
+                total_beneficiados = total_controles
+
+                FINALIZADOS = ["CONCEDIDO", "NEGADO", "CANCELADO"]
+                total_finalizados = qs_rodada.filter(status_pedido__in=FINALIZADOS).count()
+                total_pendentes = total_beneficiados - total_finalizados
+
+                # contagem por status com label
+                contagem_por_status_label = [
+                    {"key": key, "label": label, "total": qs_rodada.filter(status_pedido=key).count()}
+                    for key, label in STATUS_BENEFICIO_CHOICES
+                ]
+
+                print("==== DEBUG ====")
+                print(f"Rodada: {ultima_rodada} - Total: {total_controles} - Processados: {total_processados}")
+
         return render(request, self.template_name, {
-            'beneficios': beneficios,
-            'beneficio_id': beneficio_id,
-            'beneficio': beneficio,
-            'associados_beneficiados': associados_beneficiados,
-            'mostrar_reset': mostrar_reset,
-            'mostrar_iniciar': mostrar_iniciar,
-            'total_beneficiados': total_beneficiados,
+            "beneficios": beneficios,
+            "beneficio_id": beneficio_id,
+            "beneficio": beneficio,
+            "associados_beneficiados": associados_beneficiados,
+            "mostrar_reset": mostrar_reset,
+            "mostrar_iniciar": mostrar_iniciar,
+
+            "ultima_rodada": ultima_rodada,
+            "total_beneficiados": total_beneficiados,
+            "total_finalizados": total_finalizados,
+            "total_pendentes": total_pendentes,
+            "status_counts": contagem_por_status_label,
         })
 
         

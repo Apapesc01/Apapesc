@@ -61,6 +61,16 @@
 
     {% if associados_beneficiados %}
         <h2>Associados beneficiados: {{ total_beneficiados }}</h2>
+            <strong>Finalizados:</strong> {{ total_finalizados }} |
+            <strong>Pendentes:</strong> {{ total_pendentes }}
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin: 8px 0 16px 0;">
+            {% for s in status_counts %}
+                <span class="badge bg-light text-dark" style="border:1px solid #ddd;">
+                {{ s.label }}: <strong>{{ s.total }}</strong>
+                </span>
+            {% endfor %}
+        </div>
+
         <!-- SÓ MOSTRA O BOTÃO SE HÁ BENEFÍCIO SELECIONADO E ASSOCIADOS -->
     {% if beneficio and beneficio.id %}
         {% if mostrar_iniciar %}
@@ -105,7 +115,11 @@
                     <td>{{ c.associado.cpf }}</td>
                     <td>{{ c.associado.municipio_circunscricao }}</td>
                     <td>{{ c.associado.municipio_circunscricao.uf }}</td>
-                    <td>{{ c.get_status_pedido_display }}</td>
+                    <td>
+                        <span class="status-tag status-{{ c.status_pedido|lower }}">
+                            {{ c.get_status_pedido_display }}
+                        </span>
+                    </td>
                     <td>{{ c.status_processamento }}</td>
                     <td>{{ c.beneficio.ano_concessao }}</td>
                 </tr>

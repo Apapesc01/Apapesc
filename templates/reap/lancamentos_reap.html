@@ -104,6 +104,12 @@
             </div>
         </form>
     </div>
+    <div style="margin: 10px 0 18px 0;">
+        <strong>Total elegíveis:</strong> {{ total_reaps }} |
+        <strong>Responderam:</strong> {{ total_respondidos }} |
+        <strong>Não responderam:</strong> {{ total_nao_respondidos }}
+    </div>
+
     <!-- Lista de Guias Criadas -->
     <table class="table-list-small">
         <thead>
@@ -124,7 +130,12 @@
                     </a>
                 </td>
                 <td>{{ reap.ano }}</td>
-                <td>{{ reap.get_status_resposta_display }}</td>
+                <td>
+                    <span class="status-tag status-reap-{{ reap.status_resposta|lower }}">
+                        {{ reap.get_status_resposta_display }}
+                    </span>
+                </td>
+
                 <td>{{ reap.atualizado_em }}</td>
                 <td>{{ reap.status_processamento }}</td>
             </tr>

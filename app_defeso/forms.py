@@ -31,6 +31,7 @@ class ControleBeneficioForm(forms.ModelForm):
         ]
         widgets = {
             'dar_entrada': forms.Select(attrs={'class': 'form-control'}),
+            "status_pedido": forms.Select(attrs={"class": "status-select"}), 
             'data_solicitacao': DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
             'data_concessao': DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
             'motivo_exigencia': forms.Textarea(attrs={'rows': 4}),
@@ -44,12 +45,16 @@ class ControleBeneficioForm(forms.ModelForm):
 
         # 👉 Se estiver criando um novo OU se o campo estiver vazio, seta "DEZ"
         if not self.instance.pk:
-            # novo registro
             self.fields['dar_entrada'].initial = 'DEZ'
         elif not self.instance.dar_entrada:
-            # registro existente sem valor
             self.fields['dar_entrada'].initial = 'DEZ'
 
+        # ✅ GARANTE a classe mesmo se o widget for trocado/alterado
+        self.fields["status_pedido"].widget.attrs.setdefault("class", "")
+        self.fields["status_pedido"].widget.attrs["class"] += " status-select"
+
+
+            
 class SeguroDefesoBeneficioForm(forms.ModelForm):
     class Meta:
         model = SeguroDefesoBeneficioModel

@@ -33,12 +33,23 @@ class LancamentosREAPListView(LoginRequiredMixin, GroupRequiredMixin, ListView):
         ano = int(self.request.GET.get('ano', timezone.now().year))
         rodada = REAPdoAno.objects.filter(ano=ano).aggregate(Max('rodada'))['rodada__max'] or 1
         
+        
+        qs_rodada = REAPdoAno.objects.filter(ano=ano, rodada=rodada)
+        total_reaps = qs_rodada.count()
+        PENDENTES = ["pendente"] 
+        total_nao_respondidos = qs_rodada.filter(status_resposta__in=PENDENTES).count()
+        total_respondidos = total_reaps - total_nao_respondidos        
+        
         total_reaps = REAPdoAno.objects.filter(ano=ano, rodada=rodada).count()
         total_processados = REAPdoAno.objects.filter(ano=ano, rodada=rodada, processada=True).count()
         todos_processados = total_reaps > 0 and total_reaps == total_processados
         tem_processamento = REAPdoAno.objects.filter(
             ano=ano, rodada=rodada, em_processamento_por__isnull=False
         ).exists()
+        
+        context["total_reaps"] = total_reaps
+        context["total_respondidos"] = total_respondidos
+        context["total_nao_respondidos"] = total_nao_respondidos
 
         # Para popular um seletor de anos (últimos 4 anos, por exemplo)
         context['anos'] = range(2022, timezone.now().year + 2)
