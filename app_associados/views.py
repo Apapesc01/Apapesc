@@ -252,6 +252,9 @@ class AssociadoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
                 break
             
         context['inss_aplicado'] = (inss_faltando == 0)
+        
+
+                
         # Seguro Defeso aplicado
         # Último benefício para o estado do associado
         uf = associado.municipio_circunscricao.uf
@@ -436,6 +439,43 @@ class AssociadoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
             self.object.save(update_fields=['content'])
 
 
+        # Salvamento Geral INSS Botão ùnico
+        guia_ids = request.POST.getlist("guia_ids")
+
+        # salvar todas
+        if request.POST.get("action") == "salvar_todas_guias_inss":
+            atualizadas = 0
+            for gid in guia_ids:
+                status_emissao = request.POST.get(f"status_emissao_{gid}")
+                status_acesso = request.POST.get(f"status_acesso_{gid}")
+
+                if not (status_emissao and status_acesso):
+                    continue
+
+                # GARANTE que é do associado atual
+                guia = INSSGuiaDoMes.objects.filter(id=gid, associado=associado).first()
+                if not guia:
+                    continue
+
+                guia.status_emissao = status_emissao
+                guia.status_acesso = status_acesso
+                guia.save(update_fields=["status_emissao", "status_acesso"])
+                atualizadas += 1
+
+            messages.success(request, f"{atualizadas} guia(s) atualizada(s) com sucesso!")
+            return redirect(request.path + "#tab-inss")
+
+        # salvar só uma linha (se você quiser manter o botão da linha)
+        gid = request.POST.get("salvar_uma")
+        if gid:
+            guia = INSSGuiaDoMes.objects.filter(id=gid, associado=associado).first()
+            if guia:
+                guia.status_emissao = request.POST.get(f"status_emissao_{gid}", guia.status_emissao)
+                guia.status_acesso = request.POST.get(f"status_acesso_{gid}", guia.status_acesso)
+                guia.save(update_fields=["status_emissao", "status_acesso"])
+                messages.success(request, "Guia atualizada!")
+            return redirect(request.path + "#tab-inss")
+        
         # Busca Guias do Associado
         guia_id = request.POST.get('guia_id')
         if guia_id:
@@ -478,6 +518,8 @@ class AssociadoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
             else:
                 messages.info(request, 'Nenhuma nova guia INSS criada: o associado já estava incluído em todas as guias.')
             return redirect('app_associados:single_associado', pk=associado.pk)
+
+
 
         # Aplicar Seguro Defeso
         if 'aplicar_defeso' in request.POST and associado.recebe_seguro == 'Recebe':

@@ -639,53 +639,82 @@
     <!--Produção INSS-->
     <div class="tab-content" id="tab-inss">
         <h2>Guias INSS</h2>
-        <table class="table-list-small">
-            <thead>
-                <tr>
-                    <th>Mês/Ano</th>
-                    <th>Status Emissão</th>
-                    <th>Status Acesso</th>
-                    <th>Ação</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for guia in guias_inss %}
-                    <tr>
-                        <form method="post" style="display: contents;">
-                            {% csrf_token %}
-                            <input type="hidden" name="guia_id" value="{{ guia.id }}">
-                            <td>{{ guia.get_mes_display }}/{{ guia.ano }}</td>
-                            <td>
-                                <div style="display: flex; gap: 6px; background: #f2faff; border-radius: 4px; padding: 4px 8px;">
-                                {% for value, label in STATUS_EMISSAO_INSS %}
-                                    <label style="font-size: 11px; margin: 0 3px 0 0;">
-                                        <input type="radio" name="status_emissao" value="{{ value }}" {% if guia.status_emissao == value %}checked{% endif %}>
-                                        {{ label }}
-                                    </label>
-                                {% endfor %}
-                                </div>
-                            </td>
-                            <td>
-                                <div style="display: flex; gap: 6px; background: #f6f6f9; border-radius: 4px; padding: 4px 8px;">
-                                {% for value, label in ACESSO_CHOICES %}
-                                    <label style="font-size: 11px; margin: 0 3px 0 0;">
-                                        <input type="radio" name="status_acesso" value="{{ value }}" {% if guia.status_acesso == value %}checked{% endif %}>
-                                        {{ label }}
-                                    </label>
-                                {% endfor %}
-                                </div>
-                            </td>
-                            <td>
-                                <button type="submit" onclick="saveTabHash(this)">Salvar</button>
+        <form id="form-inss" method="post">
+        {% csrf_token %}
+        </form>
 
-                            </td>
-                        </form>
-                    </tr>
-                {% empty %}
-                    <tr><td colspan="4">Nenhuma guia encontrada.</td></tr>
-                {% endfor %}
-            </tbody>
+        <table class="table-list-small">
+        <thead>
+            <tr>
+            <th>Mês/Ano</th>
+            <th>Status Emissão</th>
+            <th>Status Acesso</th>
+            <th>Ação</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for guia in guias_inss %}
+            <tr>
+                <!-- ids: fica dentro do form via atributo form -->
+                <input type="hidden" form="form-inss" name="guia_ids" value="{{ guia.id }}">
+
+                <td>{{ guia.get_mes_display }}/{{ guia.ano }}</td>
+
+                <td>
+                <div style="display:flex; gap:6px; background:#f2faff; border-radius:4px; padding:4px 8px;">
+                    {% for value, label in STATUS_EMISSAO_INSS %}
+                    <label style="font-size:11px; margin:0 3px 0 0;">
+                        <input
+                        form="form-inss"
+                        type="radio"
+                        name="status_emissao_{{ guia.id }}"
+                        value="{{ value }}"
+                        {% if guia.status_emissao == value %}checked{% endif %}
+                        >
+                        {{ label }}
+                    </label>
+                    {% endfor %}
+                </div>
+                </td>
+
+                <td>
+                <div style="display:flex; gap:6px; background:#f6f6f9; border-radius:4px; padding:4px 8px;">
+                    {% for value, label in ACESSO_CHOICES %}
+                    <label style="font-size:11px; margin:0 3px 0 0;">
+                        <input
+                        form="form-inss"
+                        type="radio"
+                        name="status_acesso_{{ guia.id }}"
+                        value="{{ value }}"
+                        {% if guia.status_acesso == value %}checked{% endif %}
+                        >
+                        {{ label }}
+                    </label>
+                    {% endfor %}
+                </div>
+                </td>
+
+                <td>
+                <!-- salva só uma -->
+                <button form="form-inss" type="submit" name="salvar_uma" value="{{ guia.id }}" onclick="saveTabHash(this)">
+                    Salvar
+                </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">Nenhuma guia encontrada.</td></tr>
+            {% endfor %}
+        </tbody>
         </table>
+
+        <div style="margin-top:12px; display:flex; gap:10px;">
+        <!-- salva todas -->
+        <button form="form-inss" type="submit" name="action" value="salvar_todas_guias_inss" class="btn btn-primary" onclick="saveTabHash(this)">
+            💾 Salvar todas as alterações
+        </button>
+        </div>
+
     </div>
 
     <!--Produção Defeso-->
