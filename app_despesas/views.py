@@ -9,7 +9,8 @@ class CreateDespesaView(LoginRequiredMixin, GroupRequiredMixin, CreateView):
     model = DespesaAssociacaoModel
     form_class = DespesaAssociacaoForm
     template_name = 'despesas/create_despesa.html'
-    success_url = reverse_lazy('app_despesas:list_despesas')  # ajuste conforme suas rotas
+    success_url = reverse_lazy('app_despesas:list_despesas')  
+    
     def dispatch(self, request, *args, **kwargs):
         if not (
             request.user.is_authenticated and 
@@ -78,6 +79,7 @@ class EditDespesasView(LoginRequiredMixin, GroupRequiredMixin, UpdateView):
     form_class = DespesaAssociacaoForm
     template_name = 'despesas/edit_despesa.html'
     success_url = reverse_lazy('app_despesas:list_despesas')
+    
     def dispatch(self, request, *args, **kwargs):
         if not (
             request.user.is_authenticated and 
@@ -117,7 +119,7 @@ class ListDespesasView(LoginRequiredMixin, GroupRequiredMixin, ListView):
     model = DespesaAssociacaoModel
     template_name = 'despesas/list_despesas.html'
     context_object_name = 'despesas'
-    paginate_by = 20
+    
     def dispatch(self, request, *args, **kwargs):
         if not (
             request.user.is_authenticated and 
