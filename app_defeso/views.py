@@ -60,6 +60,7 @@ class DefesosLancamentoView(LoginRequiredMixin, GroupRequiredMixin, View):
                     ControleBeneficioModel.objects
                     .filter(beneficio=beneficio, rodada=ultima_rodada)
                     .select_related("associado")
+                    .order_by("associado__user__first_name", "associado__user__last_name", "id")
                 )
                 associados_beneficiados = qs_rodada
 

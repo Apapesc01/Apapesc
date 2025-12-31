@@ -25,8 +25,21 @@ class LancamentosREAPListView(LoginRequiredMixin, GroupRequiredMixin, ListView):
         return super().dispatch(request, *args, **kwargs)
     
     def get_queryset(self):
-        ano = self.request.GET.get('ano') or timezone.now().year
-        return REAPdoAno.objects.filter(ano=ano)
+        ano = int(self.request.GET.get('ano') or timezone.now().year)
+        rodada = (
+            REAPdoAno.objects
+            .filter(ano=ano)
+            .aggregate(Max('rodada'))['rodada__max']
+            or 1
+        )
+
+        return (
+            REAPdoAno.objects
+            .filter(ano=ano, rodada=rodada)
+            .select_related("associado", "associado__user")
+            .order_by("associado__user__first_name", "associado__user__last_name", "id")
+        )
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
