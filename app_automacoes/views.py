@@ -2542,13 +2542,15 @@ def gerar_declaracao_veracidade(request, associado_id):
         f"CEP {associado.cep}; que "
         f"estou diretamente envolvido(a) e/ou vinculado(a) às atividades da pesca, conforme declarado à "
         f"APAPESC – Associação dos Pescadores Artesanais Profissionais do Estado de Santa Catarina;"
-        f"<br/><br/>"
-        f"Reconheço que todas as informações prestadas à APAPESC são verdadeiras e de minha inteira responsabilidade, "
+        f"<br/>"
+        f"<strong>DECLARO</strong> que solicitei apoio à APAPESC e prestei, de forma verídica, as informações relativas à minha produção mensal e anual na atividade pesqueira (REAP); "
+        f"<br/>"
+        f"<strong>DECLARO</strong> que todas as informações prestadas à APAPESC são verdadeiras e de minha inteira responsabilidade, "
         f"comprometendo-me a responder civil, administrativa e criminalmente por qualquer declaração falsa ou omissão "
         f"que possa vir a causar prejuízos;"
-        f"<br/><br/>"
-        f"Estou ciente de que a presente declaração servirá como base para registros, cadastros, requerimentos e demais "
-        f"atos praticados pela APAPESC em meu nome, relacionados à atividade pesqueira."
+        f"<br/>"        
+        f"<strong>DECLARO</strong> estar ciente de que a presente declaração servirá como base para registros, cadastros, requerimentos e demais "
+        f"atos praticados pela APAPESC em meu nome, relacionados à atividade pesqueira;"
         f"<br/><br/>"
         f"Por ser expressão da verdade, firmo a presente declaração."
     )
@@ -2564,9 +2566,9 @@ def gerar_declaracao_veracidade(request, associado_id):
         Paragraph("DECLARAÇÃO DE VERACIDADE", style_title),
         Spacer(1, 20),
         Paragraph(texto, style_normal),
-        Spacer(1, 20),
+        Spacer(1, 10),
         Paragraph(local_data, style_data),
-        Spacer(1, 40),
+        Spacer(1, 10),
         Paragraph(assinatura, style_assinatura),
     ]
 

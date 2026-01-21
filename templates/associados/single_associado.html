@@ -229,7 +229,12 @@
                 <a href="{% url 'app_anuidades:anuidade_associado_singular' associado.pk %}" class="upload-link">
                     📅 Ver anuidades e baixar/descontar
                 </a>
-
+                <div class="copy-wrapper">
+                    <p id="cnpj-{{ associado.pk }}"><strong>Chave Pix:</strong>48.719.703/0001-09</p>
+                    <button onclick="copySenhas('cnpj-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CNPJ">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>    
                 <div class="mini-tabela-anuidades">
                     <small>Últimas Anuidades</small>
                     <table>
@@ -255,13 +260,7 @@
                         </tbody>
                     </table>
                 </div>
-                <strong>CNPJ Apapesc</strong>
-                <div class="copy-wrapper">
-                    <p id="cnpj-{{ associado.pk }}"><strong>Chave Pix:</strong>48.719.703/0001-09</p>
-                    <button onclick="copySenhas('cnpj-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CNPJ">
-                        <i class="material-icons">content_copy</i>
-                    </button>
-                </div>                
+            
             </div>               
             <div>
                 <h2>Contato</h2>
