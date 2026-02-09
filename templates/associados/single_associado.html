@@ -225,43 +225,62 @@
             </div>  
 
             <div>
-                <h2>Financeiro</h2>
-                <a href="{% url 'app_anuidades:anuidade_associado_singular' associado.pk %}" class="upload-link">
-                    📅 Ver anuidades e baixar/descontar
-                </a>
+                <h2>Acesso</h2>
                 <div class="copy-wrapper">
-                    <p id="cnpj-{{ associado.pk }}"><strong>Chave Pix:</strong>48.719.703/0001-09</p>
-                    <button onclick="copySenhas('cnpj-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CNPJ">
+                    🗂️<p id="cpf-{{ associado.pk }}" style="color:red;"><strong>CPF:</strong> {{ associado.cpf }}</p>
+                    <button onclick="copyToClipboard('cpf-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
                         <i class="material-icons">content_copy</i>
                     </button>
-                </div>    
-                <div class="mini-tabela-anuidades">
-                    <small>Últimas Anuidades</small>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Ano</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in ultimas_anuidades %}
-                            <tr>
-                                <td>{{ item.ano }}</td>
-                                <td>
-                                <span class="status-tag {% if item.status_pagamento == 'Paga' %}status-pago{% else %}status-pendente{% endif %}">
-                                    {{ item.status_pagamento }}
-                                </span>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr><td colspan="2">Sem dados disponíveis.</td></tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
                 </div>
+                <div class="copy-wrapper">
+                    ⚠️ <p id="senha_gov-{{ associado.pk }}" style="color:red;"><strong>Senha Gov:</strong> {{ associado.senha_gov }}</p>
+                    <button onclick="copySenhas('senha_gov-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <div class="copy-wrapper">
+                    <p id="mensagem_codico" style="color:gray;"><strong></strong>😃 Oi, está por aí? Preciso do código de acesso!</p>
+                    <button onclick="copyToClipboard('mensagem_codico', this)" class="copy-btn" title="Copiar Mensagem">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>
+                <div class="copy-wrapper">
+                    <p id="mensagem_codico" style="color:gray;"><strong></strong>✅ Ok, já pode gerar o código!</p>
+                    <button onclick="copyToClipboard('mensagem_codico', this)" class="copy-btn" title="Copiar Mensagem">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                
+                <div class="copy-wrapper">
+                    <p id="mensagem_codico" style="color:gray;"><strong></strong>⚠️ Precisa ativar a verificação em duas etapas!</p>
+                    <button onclick="copyToClipboard('mensagem_codico', this)" class="copy-btn" title="Copiar Mensagem">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div> 
+                <div class="copy-wrapper">
+                    <p id="mensagem_codico" style="color:gray;"><strong></strong>🔁 Ok, preciso ir, volto aqui depois, obrigado!</p>
+                    <button onclick="copyToClipboard('mensagem_codico', this)" class="copy-btn" title="Copiar Mensagem">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>                                
+                <br><hr>
+                {% if associado.drive_folder_id %}
+                    <div class="drive-link">
+                        <a href="https://drive.google.com/drive/folders/{{ associado.drive_folder_id }}" target="_blank">
+                            <img src="https://www.gstatic.com/images/branding/product/2x/drive_2020q4_48dp.png"
+                                alt="Google Drive" class="drive-icon"> 
+                            <span> Acessar Pasta no Drive</span>
+                        </a>
+                        </div>
+                        {% else %}
+                        <div class="drive-link no-folder">
+                        <span>Nenhuma pasta no Drive vinculada.</span>
+                    </div>
+                {% endif %}
+            </div>
+
+
             
-            </div>               
+            
             <div>
                 <h2>Contato</h2>
                 <div class="copy-wrapper">
@@ -297,39 +316,52 @@
                     {{associado.numero}}, {{associado.complemento}}, {{associado.bairro}}</p>
                 <p><strong>Municipio</strong> {{associado.municipio}}</p>
                 <p><strong>UF</strong> {{associado.uf}}</p>
-                <p><strong>CEP</strong> {{associado.cep}}</p>
-            </div>  
-            <div>
-                <h2>Acesso</h2>
                 <div class="copy-wrapper">
-                    🗂️<p id="cpf-{{ associado.pk }}" style="color:red;"><strong>CPF:</strong> {{ associado.cpf }}</p>
-                    <button onclick="copyToClipboard('cpf-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CPF">
+                    <p id="cep-{{ associado.pk }}"><strong>CEP:</strong> {{ associado.cep }}</p>
+                    <button onclick="copyToClipboard('cep-{{ associado.pk }}', this)" class="copy-btn" title="Copiar">
                         <i class="material-icons">content_copy</i>
-                    </button>
-                </div>
-                <div class="copy-wrapper">
-                    ⚠️ <p id="senha_gov-{{ associado.pk }}" style="color:red;"><strong>Senha Gov:</strong> {{ associado.senha_gov }}</p>
-                    <button onclick="copySenhas('senha_gov-{{ associado.pk }}', this)" class="copy-btn" title="Copiar Senha Gov">
-                        <i class="material-icons">content_copy</i>
-                    </button>
-                </div>
-
-                <br><hr>
-                {% if associado.drive_folder_id %}
-                    <div class="drive-link">
-                        <a href="https://drive.google.com/drive/folders/{{ associado.drive_folder_id }}" target="_blank">
-                            <img src="https://www.gstatic.com/images/branding/product/2x/drive_2020q4_48dp.png"
-                                alt="Google Drive" class="drive-icon"> 
-                            <span> Acessar Pasta no Drive</span>
-                        </a>
-                        </div>
-                        {% else %}
-                        <div class="drive-link no-folder">
-                        <span>Nenhuma pasta no Drive vinculada.</span>
-                    </div>
-                {% endif %}
+                </button>
+                </div>  
             </div>
-         
+
+            <div>
+                <h2>Financeiro</h2>
+                <a href="{% url 'app_anuidades:anuidade_associado_singular' associado.pk %}" class="upload-link">
+                    📅 Ver anuidades e baixar/descontar
+                </a>
+                <div class="copy-wrapper">
+                    <p id="cnpj-{{ associado.pk }}"><strong>Chave Pix:</strong>48.719.703/0001-09</p>
+                    <button onclick="copySenhas('cnpj-{{ associado.pk }}', this)" class="copy-btn" title="Copiar CNPJ">
+                        <i class="material-icons">content_copy</i>
+                    </button>
+                </div>    
+                <div class="mini-tabela-anuidades">
+                    <small>Últimas Anuidades</small>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ano</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in ultimas_anuidades %}
+                            <tr>
+                                <td>{{ item.ano }}</td>
+                                <td>
+                                <span class="status-tag {% if item.status_pagamento == 'Paga' %}status-pago{% else %}status-pendente{% endif %}">
+                                    {{ item.status_pagamento }}
+                                </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="2">Sem dados disponíveis.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 

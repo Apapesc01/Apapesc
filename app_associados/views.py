@@ -252,9 +252,7 @@ class AssociadoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
                 break
             
         context['inss_aplicado'] = (inss_faltando == 0)
-        
-
-                
+                        
         # Seguro Defeso aplicado
         # Último benefício para o estado do associado
         uf = associado.municipio_circunscricao.uf
@@ -362,10 +360,10 @@ class AssociadoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
                 context['alerta_refiliado_user'] = user_alerta
 
         # REAP Ultimos anos - status reposta
-        context["reap_ultimos_2"] = (
+        context["reap_ultimos_3"] = (
             REAPdoAno.objects
             .filter(associado=self.object)
-            .order_by("-ano", "-rodada")[:2]
+            .order_by("-ano", "-rodada")[:3]
         )                
         # Inss - verificação de recolhimento
 
@@ -549,7 +547,7 @@ class AssociadoSingleView(LoginRequiredMixin, GroupRequiredMixin, DetailView):
             else:
                 messages.info(request, "Nenhum benefício novo a aplicar para o último ano lançado.")
 
-        # Incluir no REAP atual
+        # Incluir/aplicar no REAP atual
         if action == 'aplicar_reap':
             ultimo_ano = REAPdoAno.objects.aggregate(Max('ano'))['ano__max']
             if not ultimo_ano:

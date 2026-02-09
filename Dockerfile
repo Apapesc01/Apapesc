@@ -3,6 +3,7 @@
 FROM python:3.12-slim
 
 # Atualiza pacotes do sistema para corrigir vulnerabilidades
+
 RUN apt-get update && apt-get upgrade -y && apt-get clean
 RUN apt-get update && apt-get install -y git && apt-get clean
 
